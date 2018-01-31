@@ -1,0 +1,51 @@
+.col-md-4
+	h1 Register 
+	div(ng-show='error',class='alert alert-danger'){{errorMessage}} 
+	form(name='formData',class='form',ng-submit='register(formData)',novalidate)
+		//- .form-group
+		//- 	label Username 
+		//- 	input(type='text',class='form-control',name='username',ng-model='registerForm.username',required)
+		//- .form-group
+		//- 	label Password 
+		//- 	input(type='password',class='form-control',name='password',ng-model='registerForm.password',required)
+		//- button(type='submit',class='btn btn-default',ng-disabled='disabled') Register 
+		div(ng-class="{ 'has-danger' : formData.username.$invalid && !formData.username.$pristine , 'has-success' : formData.username.$valid && !formData.username.$pristine }").form-group.row
+			label.col-form-label Username
+			input(ng-class="{ 'form-control-danger' : formData.username.$invalid && !formData.username.$pristine , 'form-control-success' : formData.username.$valid && !formData.username.$pristine }",type='text',name='username',id='username',placeholder='username',ng-model='registerForm.username',required).form-control.form-control-sm
+		div(ng-class="{ 'has-danger' : formData.password.$invalid && !formData.password.$pristine , 'has-success' : formData.password.$valid && !formData.password.$pristine }").form-group.row
+			label.col-form-label Password
+			input(ng-class="{ 'form-control-danger' : formData.password.$invalid && !formData.password.$pristine , 'form-control-success' : formData.password.$valid && !formData.password.$pristine }",type='password',name='password',id='password',placeholder='password',ng-model='registerForm.password',required).form-control.form-control-sm
+		div(ng-class="{ 'has-danger' : formData.firstname.$invalid && !formData.firstname.$pristine , 'has-success' : formData.firstname.$valid && !formData.firstname.$pristine }").form-group.row
+			label.col-form-label Firstname
+			input(ng-class="{ 'form-control-danger' : formData.firstname.$invalid && !formData.firstname.$pristine , 'form-control-success' : formData.firstname.$valid && !formData.firstname.$pristine }",type='text',name='firstname',id='firstname',placeholder='firstname',ng-model='registerForm.firstname',required).form-control.form-control-sm
+		div(ng-class="{ 'has-danger' : formData.lastname.$invalid && !formData.lastname.$pristine , 'has-success' : formData.lastname.$valid && !formData.lastname.$pristine }").form-group.row
+			label.col-form-label Lastname
+			input(ng-class="{ 'form-control-danger' : formData.lastname.$invalid && !formData.lastname.$pristine , 'form-control-success' : formData.lastname.$valid && !formData.lastname.$pristine }",type='text',name='lastname',id='lastname',placeholder='lastname',ng-model='registerForm.lastname',required).form-control.form-control-sm
+		//- div(ng-class="{ 'has-danger' : formData.memberof.$invalid && !formData.memberof.$pristine , 'has-success' : formData.memberof.$valid && !formData.memberof.$pristine }").form-group.row
+		//- 	select(ng-options='factory._id as factory.title for factory in factories track by factory._id',ng-model='memberof',multiple).form-control
+		//- div(ng-repeat='skill in profile.skills',ng-class="{ 'has-danger' : $parent.formData.skill{{skill.name}}.$invalid && !$parent.formData.skill{{skill.name}}.$pristine , 'has-success' : $parent.formData.skill{{skill.name}}.$valid && !$parent.formData.skill{{skill.name}}.$pristine }").form-group.row
+		//- 	label.col-form-label {{skill.name}}
+		//- 	input(ng-class="{ 'form-control-danger' : $parent.formData.skill{{skill.name}}.$invalid && !$parent.formData.skill{{skill.name}}.$pristine , 'form-control-success' : $parent.formData.skill{{skill.name}}.$valid && !$parent.formData.skill{{skill.name}}.$pristine }",type='number',name='skill{{skill.name}}',placeholder='points',ng-model='$parent.profile.skills[$index].value',required).form-control.form-control-sm
+		div(ng-class="{ 'has-danger' : formData.skill1.$invalid && !formData.skill1.$pristine , 'has-success' : formData.skill1.$valid && !formData.skill1.$pristine }").form-group.row
+			label.col-form-label skill 1
+			input(ng-class="{ 'form-control-danger' : formData.skill1.$invalid && !formData.skill1.$pristine , 'form-control-success' : formData.skill1.$valid && !formData.skill1.$pristine }",type='number',name='skill1',placeholder='points',ng-model='registerForm.skill1',required,min=1,max=10).form-control.form-control-sm
+			div(ng-show='formData.skill1.$invalid && !formData.skill1.$pristine').form-control-feedback Skill is required, a minimum of 1 and maximum of 10 points.
+		div(ng-class="{ 'has-danger' : formData.skill2.$invalid && !formData.skill2.$pristine , 'has-success' : formData.skill2.$valid && !formData.skill2.$pristine }").form-group.row
+			label.col-form-label skill 2
+			input(ng-class="{ 'form-control-danger' : formData.skill2.$invalid && !formData.skill2.$pristine , 'form-control-success' : formData.skill2.$valid && !formData.skill2.$pristine }",type='number',name='skill2',placeholder='points',ng-model='registerForm.skill2',required,min=1,max=10).form-control.form-control-sm
+			div(ng-show='formData.skill2.$invalid && !formData.skill2.$pristine').form-control-feedback Skill is required, a minimum of 1 and maximum of 10 points.
+		div(ng-class="{ 'has-danger' : formData.skill3.$invalid && !formData.skill3.$pristine , 'has-success' : formData.skill3.$valid && !formData.skill3.$pristine }").form-group.row
+			label.col-form-label skill 3
+			input(ng-class="{ 'form-control-danger' : formData.skill3.$invalid && !formData.skill3.$pristine , 'form-control-success' : formData.skill3.$valid && !formData.skill3.$pristine }",type='number',name='skill3',placeholder='points',ng-model='registerForm.skill3',required,min=1,max=10).form-control.form-control-sm
+			div(ng-show='formData.skill3.$invalid && !formData.skill3.$pristine').form-control-feedback Skill is required, a minimum of 1 and maximum of 10 points.
+		div(ng-class="{ 'has-danger' : formData.skill4.$invalid && !formData.skill4.$pristine , 'has-success' : formData.skill4.$valid && !formData.skill4.$pristine }").form-group.row
+			label.col-form-label skill 4
+			input(ng-class="{ 'form-control-danger' : formData.skill4.$invalid && !formData.skill4.$pristine , 'form-control-success' : formData.skill4.$valid && !formData.skill4.$pristine }",type='number',name='skill4',placeholder='points',ng-model='registerForm.skill4',required,min=1,max=10).form-control.form-control-sm
+			div(ng-show='formData.skill4.$invalid && !formData.skill4.$pristine').form-control-feedback Skill is required, a minimum of 1 and maximum of 10 points.
+		div(ng-class="{ 'has-danger' : formData.skill5.$invalid && !formData.skill5.$pristine , 'has-success' : formData.skill5.$valid && !formData.skill5.$pristine }").form-group.row
+			label.col-form-label skill 5
+			input(ng-class="{ 'form-control-danger' : formData.skill5.$invalid && !formData.skill5.$pristine , 'form-control-success' : formData.skill5.$valid && !formData.skill5.$pristine }",type='number',name='skill5',placeholder='points',ng-model='registerForm.skill5',required,min=1,max=10).form-control.form-control-sm
+			div(ng-show='formData.skill5.$invalid && !formData.skill5.$pristine').form-control-feedback Skill is required, a minimum of 1 and maximum of 10 points.
+		div(vc-recaptcha,key="'6LfOCjMUAAAAAHMViY5YidDnok6bo260mHfzumud'",ng-model='registerForm.captcha').form-group.row
+		.form-group
+			button(type='submit',class='btn btn-default',ng-disabled='registerForm.$invalid') Register 

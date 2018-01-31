@@ -1,0 +1,11 @@
+.col-md-4
+	h1 Login 
+	div(ng-show='error',class='alert alert-danger'){{errorMessage}} 
+	form(class='form',ng-submit='login()')
+		.form-group
+			label Username 
+			input(type='text',class='form-control',name='username',ng-model='loginForm.username',required)
+		.form-group
+			label Password 
+			input(type='password',class='form-control',name='password',ng-model='loginForm.password',required)
+		button(type='submit',class='btn btn-default',ng-disabled='disabled') Login 

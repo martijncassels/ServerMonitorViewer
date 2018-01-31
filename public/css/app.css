@@ -1,0 +1,67 @@
+/* app css stylesheet */
+
+/*body {
+  padding-top:70px;
+}*/
+
+body {
+  padding-top: 2rem;
+}
+/* setting up same colors as chart.js */
+.progress-bar.bg-1 {
+	background-color: #97bbcd!important;
+  }
+.progress-bar.bg-2 {
+	background-color: #dcdcdc!important;
+  }
+.progress-bar.bg-3 {
+	background-color: #f7464a!important;
+  }
+.progress-bar.bg-4 {
+	background-color: #46bfbd!important;
+  }
+.progress-bar.bg-5 {
+	background-color: #fdb45c!important;
+  }
+
+.typeahead-demo .custom-popup-wrapper {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  background-color: #f9f9f9;
+}
+
+.typeahead-demo .custom-popup-wrapper > .message {
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  color: #868686;
+}
+
+.typeahead-demo .custom-popup-wrapper > .dropdown-menu {
+  position: static;
+  float: none;
+  display: block;
+  min-width: 160px;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+/*.uib-typeahead-match {
+  color: #fff;
+  text-decoration: none;
+  background-color: #337ab7;
+  outline: 0;
+}
+.uib-typeahead-match > a {
+  color: #ffffff;
+}*/
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('../fonts/fontawesome-webfont.eot?v=4.2.0');
+  src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff?v=4.4.0') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.4.0') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.4.0#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
