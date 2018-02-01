@@ -2,9 +2,17 @@ extends layout
 
 block append body
 	div(ng-controller='MainCtrl as main')
-		include ./header.jade
+		//- include ./header.jade
+		nav.navbar.navbar-dark.sticky-top.bg-dark.flex-md-nowrap.p-0
+			a.navbar-brand.col-sm-3.col-md-2.mr-0(href='#') Company name
+			input.form-control.form-control-dark.w-100(type='text', placeholder='Search', aria-label='Search')
+			ul.navbar-nav.px-3
+				li.nav-item.text-nowrap
+					a.nav-link(href='#') Sign out
+		div(ng-view).container-fluid
 
 block scripts
+	//- Angular core
 	script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js')
 	script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-route.min.js')
 	script(src='https://cdnjs.cloudflare.com/ajax/libs/angular-touch/1.4.5/angular-touch.min.js')
@@ -12,34 +20,26 @@ block scripts
 	script(src='js/services.js')
 	script(src='js/controllers.js')
 	script(src='js/loginControllers.js')
-	//- script(src='js/messageControllers.js')
-	//- script(src='js/profileControllers.js')
-	//- script(src='js/factoryControllers.js')
-	//- script(src='js/workshopControllers.js')
-	script(src='js/adminControllers.js')
+	//- script(src='js/adminControllers.js')
 	script(src='js/filters.js')
 	script(src='js/directives.js')
 	//- script(src='js/app.min.js')
 	//- script(src='js/gruntapp.min.js')
+	//- Angular dependencies
 	script(src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js')
 	script(src='js/lib/angular-underscore/angular-underscore-module.js')
 	script(src='js/lib/ui-bootstrap/ui-bootstrap-2.5.0.min.js')
 	script(src='js/lib/ui-bootstrap/ui-bootstrap-tpls-2.5.0.min.js')
 	script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js')
 	script(src='//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js')
-	//- script(src="https://code.jquery.com/jquery-3.2.1.slim.min.js",integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN",crossorigin="anonymous")
-	//- script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js",integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh",crossorigin="anonymous")
-	//- script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js",integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ",crossorigin="anonymous")
-	//- //- script(src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js")
-	//- //- script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment.min.js')
-	//- jQuery (necessary for Bootstrap's JavaScript plugins)
-	//- <script src="http://code.jquery.com/jquery.js"></script>
-	script(src='plugins/jquery/jquery.min.js')
-	script(src='plugins/jquery-ui/jquery-ui.min.js')
-	//- Include all compiled plugins (below), or include individual files as needed
-	script(src='plugins/bootstrap/bootstrap.min.js')
-	script(src='plugins/justified-gallery/jquery.justifiedGallery.min.js')
-	script(src='plugins/tinymce/tinymce.min.js')
-	script(src='plugins/tinymce/jquery.tinymce.min.js')
-	//- All functions for this theme + document.ready processing
-	script(src='js/devoops.js')
+	//- Bootstrap core JavaScript
+	//-  ==================================================
+	//- Placed at the end of the document so the pages load faster
+	script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
+	script.
+		window.jQuery || document.write('<script src="https://getbootstrap.com/assets/js/vendor/jquery-slim.min.js"><\\/script>')
+	script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js')
+	script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js')
+	//- Icons
+	//- script(src='https://unpkg.com/feather-icons/dist/feather.min.js')
+	script(defer='', src='https://use.fontawesome.com/releases/v5.0.6/js/all.js')
