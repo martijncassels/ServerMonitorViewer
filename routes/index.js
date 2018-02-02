@@ -34,7 +34,10 @@ FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq\
 WHERE [Metric] = 'Heartbeat'\
 GROUP BY rq.[InstanceName]").then(result => {
 		res.status(200).send(result[0]);
-	});
+	})
+  .catch(err => {
+    console.log(err);
+  });
 }
 
 exports.getqueue = function(req, res) {
@@ -42,7 +45,22 @@ exports.getqueue = function(req, res) {
   FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
   order by [RemoteQueuedMetricKey] desc").then(result => {
 		res.status(200).send(result[0]);
-	});
+	})
+  .catch(err => {
+    console.log(err);
+  });
+}
+
+exports.getmutations = function(req, res) {
+	sequelize.query("SELECT TOP 100 *\
+  FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
+  WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey + " \
+  order by [RemoteQueuedMetricKey] desc").then(result => {
+		res.status(200).send(result[0]);
+	})
+  .catch(err => {
+    console.log(err);
+  });
 }
 
 exports.getcustomermetrics = function(req, res) {
@@ -50,7 +68,10 @@ exports.getcustomermetrics = function(req, res) {
   FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
   WHERE [InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc").then(result => {
 		res.status(200).send(result[0]);
-	});
+	})
+  .catch(err => {
+    console.log(err);
+  });
 }
 
 exports.lastheartbeat = function(req, res) {
@@ -60,7 +81,10 @@ exports.lastheartbeat = function(req, res) {
   and [metric] = 'Heartbeat'\
   order by [timestamp] desc").then(result => {
 		res.status(200).send(result[0]);
-	});
+	})
+  .catch(err => {
+    console.log(err);
+  });
 }
 
 exports.partial = function (req, res) {

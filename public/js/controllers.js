@@ -19,7 +19,7 @@ function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 		vm.data = [[],[]];
 		vm.labels = [];
 		vm.series = [];
-		vm.data2 = [[]];
+		vm.data2 = [[],[]];
 		vm.labels2 = [];
 
 		$http.get('/listservers')
@@ -40,6 +40,10 @@ function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 							vm.data[1].push(vm.mockdata[i].ThresholdValue);
 							//vm.labels.push(vm.mockdata[i].Timestamp);
 							vm.labels.push('');
+
+							vm.data2[0].push(vm.mockdata[i].MetricValue);
+							vm.data2[1].push(vm.mockdata[i].ThresholdValue);
+							vm.labels2.push('');
 						}
 						vm.series = ['MetricValue', 'ThresholdValue'];
 				})
@@ -118,22 +122,52 @@ function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
       }
     };
 		// Update the dataset at 25FPS for a smoothly-animating chart
-    $interval(function () {
-      getLiveChartData();
-    }, 40);
+    // $interval(function () {
+    //   getLiveChartData();
+    // }, 40);
+    //
+    // function getLiveChartData () {
+    //   if (vm.data2[0].length) {
+    //     vm.labels2 = vm.labels2.slice(1);
+    //     vm.data2[0] = vm.data2[0].slice(1);
+    //   }
+    //
+    //   while (vm.data2[0].length < 300) {
+    //     vm.labels2.push('');
+    //     vm.data2[0].push(getRandomValue(vm.data2[0]));
+    //   }
+    // }
+		$interval(function () {
+			getLiveChartData();
+		}, 60000);
 
-    function getLiveChartData () {
-      if (vm.data2[0].length) {
-        vm.labels2 = vm.labels2.slice(1);
-        vm.data2[0] = vm.data2[0].slice(1);
-      }
+		function getLiveChartData () {
+			$http.get('/getmutations/'+vm.mockdata[0].RemoteQueuedMetricKey)
+				.success(function(data) {
+					if (vm.data2[0].length) {
+						vm.labels2 = vm.labels2.slice(1,data.length);
+						vm.data2[0] = vm.data2[0].slice(1,data.length);
+					}
 
-      while (vm.data2[0].length < 300) {
-        vm.labels2.push('');
-        vm.data2[0].push(getRandomValue(vm.data2[0]));
-      }
-    }
+					while (vm.data2[0].length < vm.data2[0].length+data.length) {
+						vm.data2.reverse();
+						vm.labels2.reverse();
 
+						vm.labels2.push('');
+						// vm.data2[0].push(data);
+
+						vm.data2[0].push(data[0].MetricValue);
+						vm.data2[1].push(data[0].ThresholdValue);
+
+						vm.data2.reverse();
+						vm.labels2.reverse();
+					}
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+			}
 }
 
 function ServerCtrl($scope,$rootScope,AuthService,$route,$http,$interval,$routeParams) {

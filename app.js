@@ -186,6 +186,7 @@ app.get('/partials/:sub/:name', routes.partial);
 // app.get('/api/admin/prostats', adminapi.prostats);
 
 app.get('/getqueue', routes.getqueue);
+app.get('/getmutations/:lastkey', routes.getmutations);
 app.get('/getcustomermetrics/:server', routes.getcustomermetrics);
 app.get('/listservers', routes.listservers);
 app.get('/lastheartbeat/:server', routes.lastheartbeat);
