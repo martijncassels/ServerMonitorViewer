@@ -3,11 +3,18 @@
 	h1.h2 Dashboard
 	.btn-toolbar.mb-2.mb-md-0
 		.btn-group.mr-2
-			button.btn.btn-sm.btn-outline-secondary Share
-			button.btn.btn-sm.btn-outline-secondary Export
-		button.btn.btn-sm.btn-outline-secondary.dropdown-toggle
-			span(data-feather='calendar')
-			|                 This week
+			button.btn.btn-sm.btn-outline-secondary Update
+ul.list-group
+	li.list-group-item.justify-content-between
+		| Some data about the database 
+		span.badge.badge-info.badge-pill 14
+	li.list-group-item.justify-content-between
+		| Some data about the database 
+		span.badge.badge-info.badge-pill 2
+	li.list-group-item.justify-content-between
+		| Some data about the database 
+		span.badge.badge-info.badge-pill 1
+br
 //canvas(id='line',chart-data='vm.data',chart-labels='vm.labels',chart-series='vm.series',chart-options='vm.options',height='50').chart.chart-line
 canvas(id='line',chart-data='vm.data',chart-labels='vm.labels',chart-series='vm.series',chart-options='vm.options',height='50').chart.chart-line
 //canvas(id='line',chart-data='main.data2',chart-labels='main.labels2',chart-series='main.series',chart-options='main.options2',height='50').chart.chart-line

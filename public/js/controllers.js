@@ -34,11 +34,9 @@ function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 		$http.get('/getqueue')
 				.success(function(data) {
 						vm.mockdata = data.reverse();
-						//console.log(data);
 						for(var i=0;i<vm.mockdata.length;i++){
 							vm.data[0].push(vm.mockdata[i].MetricValue);
 							vm.data[1].push(vm.mockdata[i].ThresholdValue);
-							//vm.labels.push(vm.mockdata[i].Timestamp);
 							vm.labels.push(vm.mockdata[i].RemoteQueuedMetricKey);
 
 							vm.data2[0].push(vm.mockdata[i].MetricValue);
@@ -52,20 +50,6 @@ function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 						vm.error = data;
 				});
 
-		// $interval(callAtInterval, 2000);
-    //
-		// function callAtInterval(){
-		// 	vm.data2.push(Math.floor((Math.random() * 100) + 1));
-		// 	vm.labels2.push('');
-		// 	}
-
-
-		//vm.labels = ["January", "February", "March", "April", "May", "June", "July"];
-		//vm.series = ['Series A', 'Series B'];
-		// vm.data = [
-		// 	[65, 59, 80, 81, 56, 55, 40],
-		// 	[28, 48, 40, 19, 86, 27, 90]
-		// ];
 		vm.onClick = function (points, evt) {
 			//console.log(points, evt);
 		};
@@ -127,38 +111,19 @@ function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
         enabled: false
       }
     };
-		// Update the dataset at 25FPS for a smoothly-animating chart
-    // $interval(function () {
-    //   getLiveChartData();
-    // }, 40);
-    //
-    // function getLiveChartData () {
-    //   if (vm.data2[0].length) {
-    //     vm.labels2 = vm.labels2.slice(1);
-    //     vm.data2[0] = vm.data2[0].slice(1);
-    //   }
-    //
-    //   while (vm.data2[0].length < 300) {
-    //     vm.labels2.push('');
-    //     vm.data2[0].push(getRandomValue(vm.data2[0]));
-    //   }
-    // }
+
 		$interval(function () {
 			vm.getLiveChartData();
 		}, 60000);
 
 		vm.getLiveChartData = function() {
 			$http.get('/getmutations/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
-			//$http.get('/getmutations/'+33898)
 				.success(function(data) {
 					console.log('updating '+data.length+' records...');
 					var tmplength = 0;
 					if (vm.data2[0].length) {
 						tmplength = vm.data2[0].length;
-						// vm.labels2 = vm.labels2.slice(0,(vm.labels2.length-data.length));
-						// vm.data2[0] = vm.data2[0].slice(0,(vm.data2[0].length-data.length));
-						// vm.data2[1] = vm.data2[1].slice(0,(vm.data2[1].length-data.length));
-						// vm.mockdata = vm.mockdata.slice(0,(vm.mockdata.length-data.length));
+
 						vm.labels2 = vm.labels2.slice(data.length);
 						vm.data2[0] = vm.data2[0].slice(data.length);
 						vm.data2[1] = vm.data2[1].slice(data.length);
@@ -166,22 +131,11 @@ function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 					}
 
 					for (var i=0;vm.data2[0].length < tmplength;i++) {
-						// vm.data2[0].reverse();
-						// vm.data2[1].reverse();
-						// vm.labels2.reverse();
-						// vm.mockdata.reverse();
-
 						vm.labels2.push(data[i].RemoteQueuedMetricKey);
 						vm.mockdata.push(data[i])
-						// vm.data2[0].push(data);
 
 						vm.data2[0].push(data[i].MetricValue);
 						vm.data2[1].push(data[i].ThresholdValue);
-
-						// vm.data2[0].reverse();
-						// vm.data2[1].reverse();
-						// vm.labels2.reverse();
-						// vm.mockdata.reverse();
 					}
 				})
 				.error(function(data) {
@@ -203,11 +157,9 @@ function ServerCtrl($scope,$rootScope,AuthService,$route,$http,$interval,$routeP
 				.success(function(data) {
 						vm.mockdata = data;
 						vm.mockdata = data.reverse();
-						//console.log(data);
 						for(var i=0;i<vm.mockdata.length;i++){
 							vm.data[0].push(vm.mockdata[i].MetricValue);
 							vm.data[1].push(vm.mockdata[i].ThresholdValue);
-							//vm.labels.push(vm.mockdata[i].Timestamp);
 							vm.labels.push(vm.mockdata[i].RemoteQueuedMetricKey);
 						}
 				})
@@ -217,7 +169,6 @@ function ServerCtrl($scope,$rootScope,AuthService,$route,$http,$interval,$routeP
 				});
 
 		vm.onClick = function (points, evt) {
-			//console.log(points, evt);
 		};
 		vm.datasetOverride = [{ yAxisID: 'y-axis-1', fill: +1 }, { yAxisID: 'y-axis-2', fill: false }];
 		vm.options = {

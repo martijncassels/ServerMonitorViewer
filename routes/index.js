@@ -1,15 +1,13 @@
 var passport	= require('passport');
 var Promise 	= require('bluebird');
-// var localStrategy = require('passport-local' ).Strategy;
 var Profile		= require('../models/profiles');
-//var passportLocalMongoose = require('passport-local-mongoose');
 
-//Profile.plugin(passportLocalMongoose);
-// var	sql				= require('mssql');
 var Sequelize = require('sequelize');
+var mockjson = require('./mockmetrics.json')
 
 var config		= require('../config/config.js');
 
+if(config.sqlstring){
 const sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user, config.sqlstring.password, {
   host: config.sqlstring.server,
 	port: 1437,
@@ -22,12 +20,14 @@ const sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user
     idle: 10000
   }
 });
+}
 
 exports.index = function(req, res){
 	res.render('index');
 }
 
 exports.listservers = function(req, res) {
+  if(config.sqlstring){
 	sequelize.query("SELECT rq.[InstanceName],max(rq.[timestamp]) as [timestamp],datediff(MINUTE,max(rq.[timestamp]),getdate()) as [Min_ago]\
 FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq\
 	left join [ServerMonitor].[axerrio].[RegisteredServer] rg on rq.[InstanceName] = rg.[Description]\
@@ -39,8 +39,28 @@ GROUP BY rq.[InstanceName]").then(result => {
     console.log(err);
   });
 }
+else{
+  res.status(200).send([
+    {
+    InstanceName: 'BA-SQL12',
+    timestamp: '2018-02-02 19:50:00.477',
+    Min_ago: 3
+    },
+    {
+    InstanceName: 'HO-SQL01',
+    timestamp: '2018-02-02 19:50:00.477',
+    Min_ago: 3
+    },
+    {
+    InstanceName: 'VVB-SQL03',
+    timestamp: '2018-02-02 19:50:00.477',
+    Min_ago: 3
+  }]);
+}
+}
 
 exports.getqueue = function(req, res) {
+  if(config.sqlstring){
 	sequelize.query("SELECT TOP 100 *\
   FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
   order by [RemoteQueuedMetricKey] desc").then(result => {
@@ -49,6 +69,21 @@ exports.getqueue = function(req, res) {
   .catch(err => {
     console.log(err);
   });
+}
+else {
+  res.status(200).send([{
+    RemoteQueuedMetricKey: null,
+    Timestamp: null,
+    InstanceName: null,
+    DatabaseName: null,
+    Metric: null,
+    MetricValue: null,
+    MetricThreshold: null,
+    ThresholdValue: null,
+    LastQueuedMetricKey: null,
+    Message: null
+  }]);
+}
 }
 
 exports.getmutations = function(req, res) {
@@ -63,6 +98,7 @@ exports.getmutations = function(req, res) {
 }
 
 exports.getcustomermetrics = function(req, res) {
+  if(config.sqlstring){
 	sequelize.query("SELECT TOP 100 *\
   FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
   WHERE [InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc").then(result => {
@@ -71,6 +107,10 @@ exports.getcustomermetrics = function(req, res) {
   .catch(err => {
     console.log(err);
   });
+}
+else {
+  res.status(200).send(mockjson);
+}
 }
 
 exports.lastheartbeat = function(req, res) {
