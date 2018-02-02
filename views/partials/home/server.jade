@@ -27,7 +27,7 @@ h2 Events
 				th LastQueuedMetricKey
 				th Message
 		tbody
-			tr(ng-repeat='records in vm.mockdata')
+			tr(ng-repeat='records in vm.mockdata | orderBy:"-RemoteQueuedMetricKey"')
 				th {{records.RemoteQueuedMetricKey}}
 				th {{records.Timestamp}}
 				th {{records.InstanceName}}

@@ -52,10 +52,9 @@ exports.getqueue = function(req, res) {
 }
 
 exports.getmutations = function(req, res) {
-	sequelize.query("SELECT TOP 100 *\
+	sequelize.query("SELECT *\
   FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
-  WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey + " \
-  order by [RemoteQueuedMetricKey] desc").then(result => {
+  WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey).then(result => {
 		res.status(200).send(result[0]);
 	})
   .catch(err => {
