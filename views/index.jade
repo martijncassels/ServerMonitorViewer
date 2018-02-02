@@ -2,14 +2,13 @@ extends layout
 
 block append body
 	div(ng-controller='MainCtrl as main')
-		//- include ./header.jade
-		nav.navbar.navbar-dark.sticky-top.bg-dark.flex-md-nowrap.p-0
-			a.navbar-brand.col-sm-3.col-md-2.mr-0(href='#') Company name
-			input.form-control.form-control-dark.w-100(type='text', placeholder='Search', aria-label='Search')
-			ul.navbar-nav.px-3
-				li.nav-item.text-nowrap
-					a.nav-link(href='#') Sign out
-		div(ng-view).container-fluid
+		//- Top menu
+		include ./header.jade
+		.container-fluid
+			.row
+				include ./menu.jade
+				//div(ng-view)
+				main.col-md-9.ml-sm-auto.col-lg-10.pt-3.px-4(role='main',ng-view)
 
 block scripts
 	//- Angular core
