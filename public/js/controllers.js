@@ -149,6 +149,7 @@ function ServerCtrl($scope,$rootScope,AuthService,$route,$http,$interval,$routeP
 		var vm = this;
 		vm.title = '';
 		vm.mockdata = [];
+		vm.licenses = [];
 		vm.servers = [];
 		vm.data = [[],[]];
 		vm.labels = [];
@@ -162,6 +163,33 @@ function ServerCtrl($scope,$rootScope,AuthService,$route,$http,$interval,$routeP
 							vm.data[1].push(vm.mockdata[i].ThresholdValue);
 							vm.labels.push(vm.mockdata[i].RemoteQueuedMetricKey);
 						}
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+
+		switch($routeParams.servername) {
+    case 'BA-SQL12':
+        vm.customer = 'BAR';
+				vm.db = 'Axerrio';
+        break;
+    case 'HO-SQL01':
+				vm.customer = 'HOL';
+				vm.db = 'FlowerCore';
+        break;
+		case 'VVB-SQL03':
+				vm.customer = 'VVB';
+				vm.db = 'ABSBloemen';
+        break;
+    default:
+				vm.customer = '';
+					vm.db = '';
+		}
+
+		$http.get('/getlicenses/'+vm.customer+'/'+vm.db)
+				.success(function(data) {
+						vm.licenses = data;
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);

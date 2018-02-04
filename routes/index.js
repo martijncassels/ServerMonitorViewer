@@ -113,6 +113,69 @@ else {
 }
 }
 
+exports.getlicenses = function(res, res) {
+  if(config.sqlstring){
+	sequelize.query("select\
+  --u.[login], u.[name]\
+  --, fp.[SPID]\
+  max(fp.[hostname]) as [hostname]\
+  , count(lt.[ID]) as ActiveLicenses, case when lt.[licenses] = count(lt.[ID]) then 'all used' else convert(nvarchar,lt.[licenses] - count(lt.[ID]))+' left' end as [status]\
+  , lt.[ID], lt. [description], lt.[licenses]\
+from [" + req.params.customer + "].[" + req.params.db + "].[dbo].[fpprocess] fp\
+	join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[licensetype] lt on lt.[key] = fp.[licensetypekey]\
+	join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[user] u on u.[key] = fp.[userkey]\
+group by fp.[hostname], lt.[ID], lt. [description], lt.[licenses]\
+  ").then(result => {
+		res.status(200).send(result[0]);
+	})
+  .catch(err => {
+    console.log(err);
+  });
+}
+else {
+  res.status(200).send([{
+    hostname: 'BA-COM04',
+    ActiveLicenses: 1,
+    status: 'all used',
+    ID: 501,
+    description: 'ABS EKT Message Processing',
+    licenses: 1
+  },
+  {
+    hostname: 'BA-COM04',
+    ActiveLicenses: 1,
+    status: 'all used',
+    ID: 502,
+    description: 'ABS Batch Lot Checkin',
+    licenses: 1
+  },
+  {
+    hostname: 'BA-COM04',
+    ActiveLicenses: 1,
+    status: 'all used',
+    ID: 503,
+    description: 'ABS eTrade Client',
+    licenses: 2
+  },
+  {
+    hostname: 'BA-COM04',
+    ActiveLicenses: 6,
+    status: 'all used',
+    ID: 504,
+    description: 'ABS Calculate Sales Prices',
+    licenses: 6
+  },
+  {
+    hostname: 'BA-COM04',
+    ActiveLicenses: 1,
+    status: '9 left',
+    ID: 800,
+    description: 'ABS Support',
+    licenses: 10
+  }]);
+}
+}
+
 exports.lastheartbeat = function(req, res) {
 	sequelize.query("select top 1 *\
   from [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
