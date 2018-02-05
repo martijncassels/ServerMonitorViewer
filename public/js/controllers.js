@@ -9,11 +9,11 @@ angular
 .controller('HomeCtrl', HomeCtrl)
 .controller('ServerCtrl', ServerCtrl);
 
-MainCtrl.$inject = ['$scope','$rootScope','AuthService', '$route','$http','$interval'];
-HomeCtrl.$inject = ['$scope','$rootScope','AuthService', '$route','$http','$interval'];
-ServerCtrl.$inject = ['$scope','$rootScope','AuthService', '$route','$http','$interval','$routeParams','$interval'];
+MainCtrl.$inject = ['$scope','$http'];
+HomeCtrl.$inject = ['$scope', '$route','$http','$interval'];
+ServerCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams','$interval'];
 
-function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
+function MainCtrl($scope,$http) {
 	var vm = this;
 	vm.title = '';
 
@@ -27,13 +27,11 @@ function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 			});
 }
 
-function HomeCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
+function HomeCtrl($scope,$route,$http,$interval) {
 		var vm = this;
 		vm.title = '';
 		vm.mockdata = [];
 		vm.servers = [];
-		//vm.data = [[],[]];
-		//vm.labels = [];
 		vm.series = [];
 		vm.data2 = [[],[]];
 		vm.labels2 = [];
@@ -42,9 +40,6 @@ function HomeCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 				.success(function(data) {
 						vm.mockdata = data.reverse();
 						for(var i=0;i<vm.mockdata.length;i++){
-							//vm.data[0].push(vm.mockdata[i].MetricValue);
-							//vm.data[1].push(vm.mockdata[i].ThresholdValue);
-							//vm.labels.push(vm.mockdata[i].RemoteQueuedMetricKey);
 
 							vm.data2[0].push(vm.mockdata[i].MetricValue);
 							vm.data2[1].push(vm.mockdata[i].ThresholdValue);
@@ -58,7 +53,6 @@ function HomeCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 				});
 
 		vm.onClick = function (points, evt) {
-			//console.log(points, evt);
 		};
 		vm.datasetOverride = [{ yAxisID: 'y-axis-1', fill: +1 }, { yAxisID: 'y-axis-2', fill: false }];
 		vm.options = {
@@ -91,36 +85,6 @@ function HomeCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 				display: false
 			}
 		};
-		// vm.options2 = {
-		//   animation: {
-		//     duration: 0
-		//   },
-		//   elements: {
-		//     line: {
-		//       borderWidth: 0.5
-		//     },
-		//     point: {
-		//       radius: 0
-		//     }
-		//   },
-		//   legend: {
-		//     display: false
-		//   },
-		//   scales: {
-		//     xAxes: [{
-		//       display: false
-		//     }],
-		//     yAxes: [{
-		//       display: false
-		//     }],
-		//     gridLines: {
-		//       display: false
-		//     }
-		//   },
-		//   tooltips: {
-		//     enabled: false
-		//   }
-		// };
 
 		var interval = $interval(function () {vm.getLiveChartData()}, 60000);
 
@@ -157,7 +121,7 @@ function HomeCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 		});
 }
 
-function ServerCtrl($scope,$rootScope,AuthService,$route,$http,$interval,$routeParams) {
+function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		var vm = this;
 		vm.title = '';
 		vm.mockdata = [];
