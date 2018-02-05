@@ -188,6 +188,7 @@ app.get('/partials/:sub/:name', routes.partial);
 app.get('/getqueue', routes.getqueue);
 app.get('/getmutations/:lastkey', routes.getmutations);
 app.get('/getcustomermetrics/:server', routes.getcustomermetrics);
+app.get('/getcustomermutations/:server/:lastkey', routes.getcustomermutations);
 app.get('/getlicenses/:customer/:db', routes.getlicenses);
 app.get('/listservers', routes.listservers);
 app.get('/lastheartbeat/:server', routes.lastheartbeat);

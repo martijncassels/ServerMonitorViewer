@@ -19,7 +19,7 @@ var ServerMonitorViewer = angular.module('ServerMonitorViewer',[
 ServerMonitorViewer
 .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider
-        .when('/home', {templateUrl: 'partials/home/home', controller: 'MainCtrl', controllerAs: 'vm', access: {restricted: false}})
+        .when('/home', {templateUrl: 'partials/home/home', controller: 'HomeCtrl', controllerAs: 'vm', access: {restricted: false}})
         .when('/server/:servername', {templateUrl: 'partials/home/server', controller: 'ServerCtrl', controllerAs: 'vm', access: {restricted: false}})
         .when('/login', {templateUrl: 'partials/login/login', controller: 'loginController', access: {restricted: false}})
         .when('/logout', {controller: 'logoutController', access: {restricted: false}})

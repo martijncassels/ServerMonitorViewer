@@ -7,7 +7,7 @@ var mockjson = require('./mockmetrics.json')
 
 var config		= require('../config/config.js');
 
-if(config.sqlstring){
+//if(typeof(config.sqlstring.database)!== 'undefined'){
 const sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user, config.sqlstring.password, {
   host: config.sqlstring.server,
 	port: 1437,
@@ -20,14 +20,14 @@ const sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user
     idle: 10000
   }
 });
-}
+//}
 
 exports.index = function(req, res){
 	res.render('index');
 }
 
 exports.listservers = function(req, res) {
-  if(config.sqlstring){
+  if(typeof(config.sqlstring.database)!== 'undefined'){
 	sequelize.query("SELECT rq.[InstanceName],max(rq.[timestamp]) as [timestamp],datediff(MINUTE,max(rq.[timestamp]),getdate()) as [Min_ago]\
 FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq\
 	left join [ServerMonitor].[axerrio].[RegisteredServer] rg on rq.[InstanceName] = rg.[Description]\
@@ -60,7 +60,7 @@ else{
 }
 
 exports.getqueue = function(req, res) {
-  if(config.sqlstring){
+  if(typeof(config.sqlstring.database)!== 'undefined'){
 	sequelize.query("SELECT TOP 100 *\
   FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
   order by [RemoteQueuedMetricKey] desc").then(result => {
@@ -98,7 +98,7 @@ exports.getmutations = function(req, res) {
 }
 
 exports.getcustomermetrics = function(req, res) {
-  if(config.sqlstring){
+  if(typeof(config.sqlstring.database)!== 'undefined'){
 	sequelize.query("SELECT TOP 100 *\
   FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
   WHERE [InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc").then(result => {
@@ -113,18 +113,15 @@ else {
 }
 }
 
-exports.getlicenses = function(res, res) {
-  if(config.sqlstring){
+exports.getlicenses = function(req, res) {
+  if(typeof(config.sqlstring.database)!== 'undefined'){
 	sequelize.query("select\
-  --u.[login], u.[name]\
-  --, fp.[SPID]\
-  max(fp.[hostname]) as [hostname]\
-  , count(lt.[ID]) as ActiveLicenses, case when lt.[licenses] = count(lt.[ID]) then 'all used' else convert(nvarchar,lt.[licenses] - count(lt.[ID]))+' left' end as [status]\
+  count(lt.[ID]) as ActiveLicenses, case when lt.[licenses] = count(lt.[ID]) then 'all used' else convert(nvarchar,lt.[licenses] - count(lt.[ID]))+' left' end as [status]\
   , lt.[ID], lt. [description], lt.[licenses]\
 from [" + req.params.customer + "].[" + req.params.db + "].[dbo].[fpprocess] fp\
 	join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[licensetype] lt on lt.[key] = fp.[licensetypekey]\
 	join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[user] u on u.[key] = fp.[userkey]\
-group by fp.[hostname], lt.[ID], lt. [description], lt.[licenses]\
+group by lt.[ID], lt. [description], lt.[licenses]\
   ").then(result => {
 		res.status(200).send(result[0]);
 	})
@@ -174,6 +171,18 @@ else {
     licenses: 10
   }]);
 }
+}
+
+exports.getcustomermutations = function(req, res) {
+	sequelize.query("SELECT *\
+  FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
+  WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey + " AND\
+  [InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc").then(result => {
+		res.status(200).send(result[0]);
+	})
+  .catch(err => {
+    console.log(err);
+  });
 }
 
 exports.lastheartbeat = function(req, res) {

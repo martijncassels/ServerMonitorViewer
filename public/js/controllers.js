@@ -6,38 +6,45 @@ angular
 .module('ServerMonitorViewer.controllers',[])
 
 .controller('MainCtrl', MainCtrl)
+.controller('HomeCtrl', HomeCtrl)
 .controller('ServerCtrl', ServerCtrl);
 
 MainCtrl.$inject = ['$scope','$rootScope','AuthService', '$route','$http','$interval'];
-ServerCtrl.$inject = ['$scope','$rootScope','AuthService', '$route','$http','$interval','$routeParams'];
+HomeCtrl.$inject = ['$scope','$rootScope','AuthService', '$route','$http','$interval'];
+ServerCtrl.$inject = ['$scope','$rootScope','AuthService', '$route','$http','$interval','$routeParams','$interval'];
 
 function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
+	var vm = this;
+	vm.title = '';
+
+	$http.get('/listservers')
+			.success(function(data) {
+					vm.servers = data;
+			})
+			.error(function(data) {
+					console.log('Error: ' + data);
+					vm.error = data;
+			});
+}
+
+function HomeCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 		var vm = this;
 		vm.title = '';
 		vm.mockdata = [];
 		vm.servers = [];
-		vm.data = [[],[]];
-		vm.labels = [];
+		//vm.data = [[],[]];
+		//vm.labels = [];
 		vm.series = [];
 		vm.data2 = [[],[]];
 		vm.labels2 = [];
-
-		$http.get('/listservers')
-				.success(function(data) {
-						vm.servers = data;
-				})
-				.error(function(data) {
-						console.log('Error: ' + data);
-						vm.error = data;
-				});
 
 		$http.get('/getqueue')
 				.success(function(data) {
 						vm.mockdata = data.reverse();
 						for(var i=0;i<vm.mockdata.length;i++){
-							vm.data[0].push(vm.mockdata[i].MetricValue);
-							vm.data[1].push(vm.mockdata[i].ThresholdValue);
-							vm.labels.push(vm.mockdata[i].RemoteQueuedMetricKey);
+							//vm.data[0].push(vm.mockdata[i].MetricValue);
+							//vm.data[1].push(vm.mockdata[i].ThresholdValue);
+							//vm.labels.push(vm.mockdata[i].RemoteQueuedMetricKey);
 
 							vm.data2[0].push(vm.mockdata[i].MetricValue);
 							vm.data2[1].push(vm.mockdata[i].ThresholdValue);
@@ -60,61 +67,62 @@ function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 					display: false
 				},
 				xAxes: [{
-          display: false
-        }],
+					display: false
+				}],
 				yAxes: [
 					{
 						id: 'y-axis-1',
 						type: 'linear',
 						display: true,
-						position: 'left'
+						position: 'left',
+						ticks: {
+							beginAtZero: true
+						}
 					}
 				]
 			},
 			tooltips: {
-        enabled: true
-      },
+				enabled: true
+			},
 			animation: {
 				duration: 0
 			},
 			legend: {
-        display: false
-      }
+				display: false
+			}
 		};
-		vm.options2 = {
-      animation: {
-        duration: 0
-      },
-      elements: {
-        line: {
-          borderWidth: 0.5
-        },
-        point: {
-          radius: 0
-        }
-      },
-      legend: {
-        display: false
-      },
-      scales: {
-        xAxes: [{
-          display: false
-        }],
-        yAxes: [{
-          display: false
-        }],
-        gridLines: {
-          display: false
-        }
-      },
-      tooltips: {
-        enabled: false
-      }
-    };
+		// vm.options2 = {
+		//   animation: {
+		//     duration: 0
+		//   },
+		//   elements: {
+		//     line: {
+		//       borderWidth: 0.5
+		//     },
+		//     point: {
+		//       radius: 0
+		//     }
+		//   },
+		//   legend: {
+		//     display: false
+		//   },
+		//   scales: {
+		//     xAxes: [{
+		//       display: false
+		//     }],
+		//     yAxes: [{
+		//       display: false
+		//     }],
+		//     gridLines: {
+		//       display: false
+		//     }
+		//   },
+		//   tooltips: {
+		//     enabled: false
+		//   }
+		// };
 
-		$interval(function () {
-			vm.getLiveChartData();
-		}, 60000);
+		var interval = $interval(function () {vm.getLiveChartData()}, 60000);
 
 		vm.getLiveChartData = function() {
 			$http.get('/getmutations/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
@@ -143,6 +151,10 @@ function MainCtrl($scope,$rootScope,AuthService,$route,$http,$interval) {
 						vm.error = data;
 				});
 			}
+
+		$scope.$on('$destroy', function() {
+			$interval.cancel(interval);
+		});
 }
 
 function ServerCtrl($scope,$rootScope,AuthService,$route,$http,$interval,$routeParams) {
@@ -170,19 +182,19 @@ function ServerCtrl($scope,$rootScope,AuthService,$route,$http,$interval,$routeP
 				});
 
 		switch($routeParams.servername) {
-    case 'BA-SQL12':
-        vm.customer = 'BAR';
+		case 'BA-SQL12':
+				vm.customer = 'BAR';
 				vm.db = 'Axerrio';
-        break;
-    case 'HO-SQL01':
+				break;
+		case 'HO-SQL01':
 				vm.customer = 'HOL';
 				vm.db = 'FlowerCore';
-        break;
+				break;
 		case 'VVB-SQL03':
 				vm.customer = 'VVB';
 				vm.db = 'ABSBloemen';
-        break;
-    default:
+				break;
+		default:
 				vm.customer = '';
 					vm.db = '';
 		}
@@ -205,21 +217,61 @@ function ServerCtrl($scope,$rootScope,AuthService,$route,$http,$interval,$routeP
 					display: false
 				},
 				xAxes: [{
-          display: false
-        }],
+					display: false
+				}],
 				yAxes: [
 					{
 						id: 'y-axis-1',
 						type: 'linear',
 						display: true,
-						position: 'left'
+						position: 'left',
+						ticks: {
+							beginAtZero: true
+						}
 					}
 				]
 			},
 			legend: {
-        display: false
-      }
+				display: false
+			},
+			animation: {
+				duration: 0
+			},
 		};
+
+var interval = $interval(function () {vm.getLiveCustomerChartData()}, 60000);
+
+vm.getLiveCustomerChartData = function() {
+	$http.get('/getcustomermutations/' + $routeParams.servername + '/' + vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
+		.success(function(data) {
+			console.log('updating '+data.length+' records...');
+			var tmplength = 0;
+			if (vm.data[0].length) {
+				tmplength = vm.data[0].length;
+
+				vm.labels = vm.labels.slice(data.length);
+				vm.data[0] = vm.data[0].slice(data.length);
+				vm.data[1] = vm.data[1].slice(data.length);
+				vm.mockdata = vm.mockdata.slice(data.length);
+			}
+
+			for (var i=0;vm.data[0].length < tmplength;i++) {
+				vm.labels.push(data[i].RemoteQueuedMetricKey);
+				vm.mockdata.push(data[i])
+
+				vm.data[0].push(data[i].MetricValue);
+				vm.data[1].push(data[i].ThresholdValue);
+			}
+		})
+		.error(function(data) {
+				console.log('Error: ' + data);
+				vm.error = data;
+		});
+	}
+
+	$scope.$on('$destroy', function() {
+		$interval.cancel(interval);
+	});
 }
 
 // helpers
