@@ -5,6 +5,29 @@ var Profile		= require('../models/profiles');
 var Sequelize = require('sequelize');
 var mockjson = require('./mockmetrics.json')
 
+//The following file isn't included and needs to be created
+//Example below
+/*
+var config = {};
+config.sqlstring = {
+		user: '',
+		password: '',
+		server: '',
+		database: '',
+		connectionString: '',
+		driver: 'tedious',
+		pool: {
+		    max: 10,
+		    min: 0,
+		    idleTimeoutMillis: 30000
+		},
+		options: {
+				database: ''
+		}
+}
+module.exports = config;
+*/
+
 var config		= require('../config/config.js');
 
 //if(typeof(config.sqlstring.database)!== 'undefined'){
@@ -32,8 +55,8 @@ exports.listservers = function(req, res) {
 FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq\
 	left join [ServerMonitor].[axerrio].[RegisteredServer] rg on rq.[InstanceName] = rg.[Description]\
 WHERE [Metric] = 'Heartbeat'\
-GROUP BY rq.[InstanceName]").then(result => {
-		res.status(200).send(result[0]);
+GROUP BY rq.[InstanceName]", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		res.status(200).send(result);
 	})
   .catch(err => {
     console.log(err);
@@ -63,8 +86,8 @@ exports.getqueue = function(req, res) {
   if(typeof(config.sqlstring.database)!== 'undefined'){
 	sequelize.query("SELECT TOP 100 *\
   FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
-  order by [RemoteQueuedMetricKey] desc").then(result => {
-		res.status(200).send(result[0]);
+  order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		res.status(200).send(result);
 	})
   .catch(err => {
     console.log(err);
@@ -89,8 +112,8 @@ else {
 exports.getmutations = function(req, res) {
 	sequelize.query("SELECT *\
   FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
-  WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey).then(result => {
-		res.status(200).send(result[0]);
+  WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey, {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		res.status(200).send(result);
 	})
   .catch(err => {
     console.log(err);
@@ -101,8 +124,8 @@ exports.getcustomermetrics = function(req, res) {
   if(typeof(config.sqlstring.database)!== 'undefined'){
 	sequelize.query("SELECT TOP 100 *\
   FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
-  WHERE [InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc").then(result => {
-		res.status(200).send(result[0]);
+  WHERE [InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		res.status(200).send(result);
 	})
   .catch(err => {
     console.log(err);
@@ -121,9 +144,8 @@ exports.getlicenses = function(req, res) {
 from [" + req.params.customer + "].[" + req.params.db + "].[dbo].[fpprocess] fp\
 	join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[licensetype] lt on lt.[key] = fp.[licensetypekey]\
 	join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[user] u on u.[key] = fp.[userkey]\
-group by lt.[ID], lt. [description], lt.[licenses]\
-  ").then(result => {
-		res.status(200).send(result[0]);
+group by lt.[ID], lt. [description], lt.[licenses]", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		res.status(200).send(result);
 	})
   .catch(err => {
     console.log(err);
@@ -173,12 +195,26 @@ else {
 }
 }
 
+exports.gettop10errors = function(req,res) {
+  sequelize.query("select top 10\
+    count(el.loggedfromsub) as [count],el.loggedfromsub,max(el.message) as [lastmessage]\
+    from (select top 10000 * from [" + req.params.customer + "].[" + req.params.db + "].[dbo].errorlog where loggedfromsub not in ('FlowerPower\\DBProcessBoughtVirtualParties.ProcessBoughtVirtualParties')) el\
+    group by el.loggedfromsub\
+    --having count(el.loggedfromsub)\
+    order by count(el.loggedfromsub) desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+      res.status(200).send(result);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
 exports.getcustomermutations = function(req, res) {
 	sequelize.query("SELECT *\
   FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
   WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey + " AND\
-  [InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc").then(result => {
-		res.status(200).send(result[0]);
+  [InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		res.status(200).send(result);
 	})
   .catch(err => {
     console.log(err);
@@ -190,8 +226,8 @@ exports.lastheartbeat = function(req, res) {
   from [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
   where [InstanceName] = 'HO-SQL01'\
   and [metric] = 'Heartbeat'\
-  order by [timestamp] desc").then(result => {
-		res.status(200).send(result[0]);
+  order by [timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		res.status(200).send(result);
 	})
   .catch(err => {
     console.log(err);

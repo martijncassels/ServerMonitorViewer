@@ -36,6 +36,21 @@ function HomeCtrl($scope,$route,$http,$interval) {
 		vm.data2 = [[],[]];
 		vm.labels2 = [];
 
+		vm.max = 60000;
+		vm.dynamic = vm.max;
+
+		// vm.max = (60000/1000);
+		// vm.dynamic = vm.max;
+		// var i = vm.max;
+		// var counterBack = setInterval(function () {
+		// 	i--;
+		// 	if (i > 0) {
+		// 		vm.dynamic = (i/1000);
+		// 	} else {
+		// 		clearInterval(counterBack);
+		// 	}
+		// }, 1000)
+
 		$http.get('/getqueue')
 				.success(function(data) {
 						vm.mockdata = data.reverse();
@@ -86,7 +101,17 @@ function HomeCtrl($scope,$route,$http,$interval) {
 			}
 		};
 
-		var interval = $interval(function () {vm.getLiveChartData()}, 60000);
+		var interval = $interval(function () {vm.getLiveChartData()}, vm.max);
+		var interval2 = $interval(function () {vm.setprogressbarvalue()}, 1000);
+
+		vm.setprogressbarvalue = function() {
+			if(vm.dynamic>0){
+				vm.dynamic = (vm.dynamic - 1000);
+			}
+			else {
+				vm.dynamic = 59000;
+			}
+		}
 
 		vm.getLiveChartData = function() {
 			$http.get('/getmutations/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
@@ -129,6 +154,9 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.servers = [];
 		vm.data = [[],[]];
 		vm.labels = [];
+
+		vm.max = 60000;
+		vm.dynamic = vm.max;
 
 		$http.get('/getcustomermetrics/'+$routeParams.servername)
 				.success(function(data) {
@@ -203,7 +231,18 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 			},
 		};
 
-var interval = $interval(function () {vm.getLiveCustomerChartData()}, 60000);
+
+var interval = $interval(function () {vm.getLiveCustomerChartData()}, vm.max);
+var interval2 = $interval(function () {vm.setcustomerprogressbarvalue()}, 1000);
+
+vm.setcustomerprogressbarvalue = function() {
+	if(vm.dynamic>0){
+		vm.dynamic = (vm.dynamic - 1000);
+	}
+	else {
+		vm.dynamic = 59000;
+	}
+}
 
 vm.getLiveCustomerChartData = function() {
 	$http.get('/getcustomermutations/' + $routeParams.servername + '/' + vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
@@ -235,6 +274,7 @@ vm.getLiveCustomerChartData = function() {
 
 	$scope.$on('$destroy', function() {
 		$interval.cancel(interval);
+		$interval.cancel(interval2);
 	});
 }
 
