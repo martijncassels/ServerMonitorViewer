@@ -30,7 +30,7 @@ module.exports = config;
 
 var config		= require('../config/config.js');
 
-//if(typeof(config.sqlstring.database)!== 'undefined'){
+if(config.sqlstring.database!= ''){
 const sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user, config.sqlstring.password, {
 	host: config.sqlstring.server,
 	port: 1437,
@@ -43,14 +43,14 @@ const sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user
 		idle: 10000
 	}
 });
-//}
+}
 
 exports.index = function(req, res){
 	res.render('index');
 }
 
 exports.listservers = function(req, res) {
-	if(typeof(config.sqlstring.database)!== 'undefined'){
+	if(config.sqlstring.database!= ''){
 	sequelize.query("SELECT rq.[InstanceName],max(rq.[timestamp]) as [timestamp],datediff(MINUTE,max(rq.[timestamp]),getdate()) as [Min_ago]\
 FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq\
 	left join [ServerMonitor].[axerrio].[RegisteredServer] rg on rq.[InstanceName] = rg.[Description]\
@@ -83,7 +83,7 @@ else{
 }
 
 exports.getqueue = function(req, res) {
-	if(typeof(config.sqlstring.database)!== 'undefined'){
+	if(config.sqlstring.database!= ''){
 	sequelize.query("SELECT TOP 100 *\
 	FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
 	WHERE [Metric] NOT IN ('Heartbeat')\
@@ -122,7 +122,7 @@ exports.getmutations = function(req, res) {
 }
 
 exports.getcustomermetrics = function(req, res) {
-	if(typeof(config.sqlstring.database)!== 'undefined'){
+	if(config.sqlstring.database!= ''){
 	sequelize.query("SELECT TOP 100 *\
 	FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
 	WHERE [InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
@@ -138,7 +138,7 @@ else {
 }
 
 exports.getarchivecounters = function(req, res) {
-	if(typeof(config.sqlstring.database)!== 'undefined'){
+	if(config.sqlstring.database!= ''){
 	sequelize.query("select top 10 *\
 	from [" + req.params.customer + "].[" + req.params.db + "].[dbo].[ArchiveCounters]\
 	order by [Archivecounterkey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
@@ -149,12 +149,12 @@ exports.getarchivecounters = function(req, res) {
 	});
 }
 else {
-	res.status(200).send(mockjson);
+	res.status(200).send(null);
 }
 }
 
 exports.getlicenses = function(req, res) {
-	if(typeof(config.sqlstring.database)!== 'undefined'){
+	if(config.sqlstring.database!= ''){
 	sequelize.query("select\
 	count(lt.[ID]) as ActiveLicenses, case when lt.[licenses] = count(lt.[ID]) then 'all used' else convert(nvarchar,lt.[licenses] - count(lt.[ID]))+' left' end as [status]\
 	, lt.[ID], lt. [description], lt.[licenses]\
@@ -213,42 +213,48 @@ else {
 }
 
 exports.gettop10errors = function(req,res) {
-	sequelize.query("select top 10\
-		count(el.loggedfromsub) as [count],el.loggedfromsub,max(el.message) as [lastmessage]\
-		from (select top 10000 * from [" + req.params.customer + "].[" + req.params.db + "].[dbo].errorlog where loggedfromsub not in ('FlowerPower\\DBProcessBoughtVirtualParties.ProcessBoughtVirtualParties')) el\
-		group by el.loggedfromsub\
-		--having count(el.loggedfromsub)\
-		order by count(el.loggedfromsub) desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+	if(config.sqlstring.database!= ''){
+		sequelize.query("select top 10\
+			count(el.loggedfromsub) as [count],el.loggedfromsub,max(el.message) as [lastmessage]\
+			from (select top 10000 * from [" + req.params.customer + "].[" + req.params.db + "].[dbo].errorlog where loggedfromsub not in ('FlowerPower\\DBProcessBoughtVirtualParties.ProcessBoughtVirtualParties')) el\
+			group by el.loggedfromsub\
+			--having count(el.loggedfromsub)\
+			order by count(el.loggedfromsub) desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+	}
+}
+
+exports.getcustomermutations = function(req, res) {
+	if(config.sqlstring.database!= ''){
+		sequelize.query("SELECT *\
+		FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
+		WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey + " AND\
+		[InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
 		.catch(err => {
 			console.log(err);
 		});
-}
-
-exports.getcustomermutations = function(req, res) {
-	sequelize.query("SELECT *\
-	FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
-	WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey + " AND\
-	[InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
-		res.status(200).send(result);
-	})
-	.catch(err => {
-		console.log(err);
-	});
+	}
 }
 
 exports.lastheartbeat = function(req, res) {
-	sequelize.query("select top 1 *\
-	from [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
-	where [InstanceName] = 'HO-SQL01'\
-	and [metric] = 'Heartbeat'\
-	order by [timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
-		res.status(200).send(result);
-	})
-	.catch(err => {
-		console.log(err);
-	});
+	if(config.sqlstring.database!= ''){
+		sequelize.query("select top 1 *\
+		from [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
+		where [InstanceName] = 'HO-SQL01'\
+		and [metric] = 'Heartbeat'\
+		order by [timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+			res.status(200).send(result);
+		})
+		.catch(err => {
+			console.log(err);
+		});
+	}
 }
 
 exports.partial = function (req, res) {

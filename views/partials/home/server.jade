@@ -17,8 +17,8 @@
 					.mb-2 {{license.ActiveLicenses}} of {{license.licenses}} used ({{license.status}})
 br
 //canvas(id='line',chart-data='vm.data',chart-labels='vm.labels',chart-series='vm.series',chart-options='vm.options',height='50').chart.chart-line
-canvas(id='bar',chart-data='vm.data',chart-labels='vm.labels',chart-series='vm.series',chart-options='vm.options',height='50').chart.chart-bar
-//canvas(id='line',chart-data='main.data2',chart-labels='main.labels2',chart-series='main.series',chart-options='main.options2',height='50').chart.chart-line
+//canvas(id='line',chart-data='vm.data',chart-labels='vm.labels',chart-series='vm.series',chart-options='vm.options',height='50').chart.chart-line
+canvas(id='bar',chart-data='vm.metricschartdata',chart-labels='vm.metricschartlabels',chart-series='vm.metricschartseries',chart-options='vm.options',height='150',chart-dataset-override="vm.metricsdatasetOverride" ).chart.chart-bar
 br
 uib-progressbar(max='vm.max', value='vm.dynamic')
 	span(style='color:white; white-space:nowrap;'){{vm.dynamic/1000}} / {{vm.max/1000}}

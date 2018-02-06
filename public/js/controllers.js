@@ -61,6 +61,7 @@ function HomeCtrl($scope,$route,$http,$interval) {
 							vm.labels2.push(vm.mockdata[i].RemoteQueuedMetricKey);
 						}
 						vm.series = ['MetricValue', 'ThresholdValue'];
+
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
@@ -153,17 +154,21 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.licenses = [];
 		vm.archivecounters = [];
 		vm.archivecounterschartdata = [];
-		vm.archivecounterschartdata['ArchiveCounterKey'] = [];
-		vm.archivecounterschartdata['OrderCount'] = [];
-		vm.archivecounterschartdata['OrderRowCount'] = [];
-		vm.archivecounterschartdata['PartyCount'] = [];
-		vm.archivecounterschartdata['PartyVirtualCount'] = [];
-		vm.archivecounterschartdata['PartyMutationCount'] = [];
-		vm.archivecounterschartdata['ExinvoiceCount'] = [];
-		vm.archivecounterschartdata['PricelistCount'] = [];
-		vm.archivecounterschartdata['PricelistRowCount'] = [];
-		vm.archivecounterschartdata['VPSupplylineCount'] = [];
-		vm.archivecounterschartdata['PartyTransactionCount'] = [];
+		vm.metricschartdata = [];
+		vm.metricschartseries = [];
+		vm.metricschartlabels = [];
+		vm.metricsdatasetOverride = [];
+		// vm.archivecounterschartdata['ArchiveCounterKey'] = [];
+		// vm.archivecounterschartdata['OrderCount'] = [];
+		// vm.archivecounterschartdata['OrderRowCount'] = [];
+		// vm.archivecounterschartdata['PartyCount'] = [];
+		// vm.archivecounterschartdata['PartyVirtualCount'] = [];
+		// vm.archivecounterschartdata['PartyMutationCount'] = [];
+		// vm.archivecounterschartdata['ExinvoiceCount'] = [];
+		// vm.archivecounterschartdata['PricelistCount'] = [];
+		// vm.archivecounterschartdata['PricelistRowCount'] = [];
+		// vm.archivecounterschartdata['VPSupplylineCount'] = [];
+		// vm.archivecounterschartdata['PartyTransactionCount'] = [];
 		vm.archivecounterschartlabels = [];
 		vm.archivecounterschartseries = ["OrderCount","OrderRowCount","PartyCount","PartyVirtualCount","PartyMutationCount","ExinvoiceCount","PricelistCount","PricelistRowCount","VPSupplylineCount","PartyTransactionCount"];
 		vm.servers = [];
@@ -172,6 +177,15 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 
 		vm.max = 60000;
 		vm.dynamic = vm.max;
+		/*
+		[index
+			{ "RemoteQueuedMetricKey": 1,
+			  "Timestamp": "2018-01-04 18:00:56"...}, obj
+			{ "RemoteQueuedMetricKey": 2,
+			  "Timestamp": "2017-04-10 18:01:23"...}
+				key 					value
+		]
+		*/
 
 		$http.get('/getcustomermetrics/'+$routeParams.servername)
 				.success(function(data) {
@@ -182,6 +196,30 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 							vm.data[1].push(vm.mockdata[i].ThresholdValue);
 							vm.labels.push(vm.mockdata[i].RemoteQueuedMetricKey);
 						}
+						_.each(data,function(obj,index){
+							if(_.isMatch(obj,{Metric:"'Lots_Real'"})){
+								if(typeof(vm.metricschartdata[0]) == 'undefined'){
+									vm.metricschartseries.push('Lots_Real_Value')
+									vm.metricschartseries.push('Lots_Real_Threshold')
+									vm.metricschartdata[0] = [];
+									vm.metricschartdata[1] = [];
+								}
+								vm.metricschartdata[0][index] = obj.MetricValue;
+								vm.metricschartdata[1][index] = obj.ThresholdValue;
+							}
+							if(_.isMatch(obj,{Metric:"'Lots_Virtual'"})){
+								if(typeof(vm.metricschartdata[2]) == 'undefined'){
+									vm.metricschartseries.push('Lots_Virtual_Value')
+									vm.metricschartseries.push('Lots_Virtual_Threshold')
+									vm.metricschartdata[2] = [];
+									vm.metricschartdata[3] = [];
+								}
+								vm.metricschartdata[2][index] = obj.MetricValue;
+								vm.metricschartdata[3][index] = obj.ThresholdValue;
+							}
+							vm.metricschartlabels[index] = obj.Timestamp;
+						});
+						vm.metricsdatasetOverride = [{label: "Lots_Real_Value",type:'bar'},{label: "Lots_Real_Threshold",type:'line', fill: true},{label: "Lots_Virtual_Value",type:'bar'},{label: "Lots_Virtual_Threshold",type:'line', fill:true}];
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
@@ -218,51 +256,64 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		$http.get('/getarchivecounters/'+vm.customer+'/'+vm.db)
 				.success(function(data) {
 						vm.archivecounters = data;
-						for (var i=0 ; i<data.length; i++){
-							for (var key in data[i]) {
-								if(key=='ArchiveCounterKey'){
-									vm.archivecounterschartdata['ArchiveCounterKey'][i] = data[i][key];
+						// for (var i=0 ; i<data.length; i++){
+						// 	for (var key in data[i]) {
+						// 		if(key=='ArchiveCounterKey'){
+						// 			vm.archivecounterschartdata['ArchiveCounterKey'][i] = data[i][key];
+						// 		}
+						// 		else if(key=='OrderCount'){
+						// 			vm.archivecounterschartdata['OrderCount'].push(data[i][key]);
+						// 		}
+						// 		else if(key=='OrderRowCount'){
+						// 			vm.archivecounterschartdata['OrderRowCount'][i] = data[i][key];
+						// 		}
+						// 		else if(key=='PartyCount'){
+						// 			vm.archivecounterschartdata['PartyCount'][i] = data[i][key];
+						// 		}
+						// 		else if(key=='PartyMutationCount'){
+						// 			vm.archivecounterschartdata['PartyMutationCount'][i] = data[i][key];
+						// 		}
+						// 		else if(key=='ExinvoiceCount'){
+						// 			vm.archivecounterschartdata['ExinvoiceCount'][i] = data[i][key];
+						// 		}
+						// 		else if(key=='PricelistCount'){
+						// 			vm.archivecounterschartdata['PricelistCount'][i] = data[i][key];
+						// 		}
+						// 		else if(key=='PricelistRowCount'){
+						// 			vm.archivecounterschartdata['PricelistRowCount'][i] = data[i][key];
+						// 		}
+						// 		else if(key=='VPSupplylineCount'){
+						// 			vm.archivecounterschartdata['VPSupplylineCount'][i] = data[i][key];
+						// 		}
+						// 		else if(key=='PartyTransactionCount'){
+						// 			vm.archivecounterschartdata['PartyTransactionCount'][i] = data[i][key];
+						// 		}
+						// 	}
+						// }
+						// vm.archivecounterschartdata['ArchiveCounterKey'].reverse();
+						// vm.archivecounterschartdata['OrderCount'].reverse();
+						// vm.archivecounterschartdata['OrderRowCount'].reverse();
+						// vm.archivecounterschartdata['PartyCount'].reverse();
+						// vm.archivecounterschartdata['PartyVirtualCount'].reverse();
+						// vm.archivecounterschartdata['PartyMutationCount'].reverse();
+						// vm.archivecounterschartdata['ExinvoiceCount'].reverse();
+						// vm.archivecounterschartdata['PricelistCount'].reverse();
+						// vm.archivecounterschartdata['PricelistRowCount'].reverse();
+						// vm.archivecounterschartdata['VPSupplylineCount'].reverse();
+						// vm.archivecounterschartdata['PartyTransactionCount'].reverse();_.each(data,function(value1,index){
+
+						_.each(data,function(value1,index){
+							_.each(value1,function(value2,key){
+								if(typeof(vm.archivecounterschartdata1[Object.keys(value1).indexOf(key)]) == 'undefined'){
+									vm.archivecounterschartdata1[Object.keys(value1).indexOf(key)] = [];
 								}
-								else if(key=='OrderCount'){
-									vm.archivecounterschartdata['OrderCount'].push(data[i][key]);
+								if(typeof(vm.archivecounterschartdata1[Object.keys(value1).indexOf(key)][index]) == 'undefined'){
+									vm.archivecounterschartdata1[Object.keys(value1).indexOf(key)][index] = [];
 								}
-								else if(key=='OrderRowCount'){
-									vm.archivecounterschartdata['OrderRowCount'][i] = data[i][key];
-								}
-								else if(key=='PartyCount'){
-									vm.archivecounterschartdata['PartyCount'][i] = data[i][key];
-								}
-								else if(key=='PartyMutationCount'){
-									vm.archivecounterschartdata['PartyMutationCount'][i] = data[i][key];
-								}
-								else if(key=='ExinvoiceCount'){
-									vm.archivecounterschartdata['ExinvoiceCount'][i] = data[i][key];
-								}
-								else if(key=='PricelistCount'){
-									vm.archivecounterschartdata['PricelistCount'][i] = data[i][key];
-								}
-								else if(key=='PricelistRowCount'){
-									vm.archivecounterschartdata['PricelistRowCount'][i] = data[i][key];
-								}
-								else if(key=='VPSupplylineCount'){
-									vm.archivecounterschartdata['VPSupplylineCount'][i] = data[i][key];
-								}
-								else if(key=='PartyTransactionCount'){
-									vm.archivecounterschartdata['PartyTransactionCount'][i] = data[i][key];
-								}
-							}
-						}
-						vm.archivecounterschartdata['ArchiveCounterKey'].reverse();
-						vm.archivecounterschartdata['OrderCount'].reverse();
-						vm.archivecounterschartdata['OrderRowCount'].reverse();
-						vm.archivecounterschartdata['PartyCount'].reverse();
-						vm.archivecounterschartdata['PartyVirtualCount'].reverse();
-						vm.archivecounterschartdata['PartyMutationCount'].reverse();
-						vm.archivecounterschartdata['ExinvoiceCount'].reverse();
-						vm.archivecounterschartdata['PricelistCount'].reverse();
-						vm.archivecounterschartdata['PricelistRowCount'].reverse();
-						vm.archivecounterschartdata['VPSupplylineCount'].reverse();
-						vm.archivecounterschartdata['PartyTransactionCount'].reverse();
+								vm.archivecounterschartdata1[Object.keys(value1).indexOf(key)][index] = value2;
+							});
+						});
+
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
