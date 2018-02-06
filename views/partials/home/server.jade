@@ -14,10 +14,10 @@
 			.list-group
 				div(ng-repeat='license in vm.licenses', style='padding:5px;').list-group-item.d-flex.w-100.justify-content-between
 					.mb-2 {{license.description}}
-					.mb-2 {{license.ActiveLicenses}} of {{license.licenses}} used ({{license.status}}) 
+					.mb-2 {{license.ActiveLicenses}} of {{license.licenses}} used ({{license.status}})
 br
 //canvas(id='line',chart-data='vm.data',chart-labels='vm.labels',chart-series='vm.series',chart-options='vm.options',height='50').chart.chart-line
-canvas(id='line',chart-data='vm.data',chart-labels='vm.labels',chart-series='vm.series',chart-options='vm.options',height='50').chart.chart-line
+canvas(id='bar',chart-data='vm.data',chart-labels='vm.labels',chart-series='vm.series',chart-options='vm.options',height='50').chart.chart-bar
 //canvas(id='line',chart-data='main.data2',chart-labels='main.labels2',chart-series='main.series',chart-options='main.options2',height='50').chart.chart-line
 br
 uib-progressbar(max='vm.max', value='vm.dynamic')
@@ -40,14 +40,48 @@ h2 Events
 				th Message
 		tbody
 			tr(ng-repeat='records in vm.mockdata | orderBy:"-RemoteQueuedMetricKey"')
-				th {{records.RemoteQueuedMetricKey}}
-				th {{records.Timestamp}}
-				th {{records.InstanceName}}
-				th {{records.DatabaseName}}
-				th {{records.Metric}}
-				th {{records.MetricValue}}
-				th {{records.MetricThreshold}}
-				th {{records.ThresholdValue}}
-				th {{records.LastQueuedMetricKey}}
-				th {{records.Message}}
+				td {{records.RemoteQueuedMetricKey}}
+				td {{records.Timestamp}}
+				td {{records.InstanceName}}
+				td {{records.DatabaseName}}
+				td {{records.Metric}}
+				td {{records.MetricValue}}
+				td {{records.MetricThreshold}}
+				td {{records.ThresholdValue}}
+				td {{records.LastQueuedMetricKey}}
+				td {{records.Message}}
+br 
+canvas(id='line',chart-data='[vm.archivecounterschartdata["OrderCount"],vm.archivecounterschartdata["OrderRowCount"],vm.archivecounterschartdata["PartyCount"],vm.archivecounterschartdata["PartyVirtualCount"],vm.archivecounterschartdata["PartyMutationCount"],vm.archivecounterschartdata["ExinvoiceCount"],vm.archivecounterschartdata["PricelistCount"],vm.archivecounterschartdata["PricelistRowCount"],vm.archivecounterschartdata["VPSupplylineCount"],vm.archivecounterschartdata["PartyTransactionCount"]]',chart-labels='vm.archivecounterschartdata["ArchiveCounterKey"]',chart-series='vm.archivecounterschartseries',chart-options='vm.options',height='150').chart.chart-line
+br
+.row
+	.col-md-12
+		.table-responsive
+			table.table.table-striped.table-sm
+				thead
+					//th ArchiveCounterKey
+					th CounterTimestamp
+					th OrderCount
+					th OrderRowCount
+					th PartyCount
+					th PartyVirtualCount
+					th PartyMutationCount
+					th ExinvoiceCount
+					th PricelistCount
+					th PricelistRowCount
+					th VPSupplylineCount
+					th PartyTransactionCount
+				tbody
+					tr(ng-repeat='counter in vm.archivecounters | orderBy:"-ArchiveCounterKey"')
+						//td {{counter.ArchiveCounterKey}}
+						td {{counter.CounterTimestamp}}
+						td {{counter.OrderCount}}
+						td {{counter.OrderRowCount}}
+						td {{counter.PartyCount}}
+						td {{counter.PartyVirtualCount}}
+						td {{counter.PartyMutationCount}}
+						td {{counter.ExinvoiceCount}}
+						td {{counter.PricelistCount}}
+						td {{counter.PricelistRowCount}}
+						td {{counter.VPSupplylineCount}}
+						td {{counter.PartyTransactionCount}}
 //- End Content

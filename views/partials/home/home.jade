@@ -30,7 +30,8 @@ h2 Events
 			tr(ng-repeat='records in vm.mockdata | orderBy:"-RemoteQueuedMetricKey"')
 				th {{records.RemoteQueuedMetricKey}}
 				th {{records.Timestamp}}
-				th {{records.InstanceName}}
+				th 
+					a(href='/server/{{records.InstanceName}}') {{records.InstanceName}}
 				th {{records.DatabaseName}}
 				th {{records.Metric}}
 				th {{records.MetricValue}}

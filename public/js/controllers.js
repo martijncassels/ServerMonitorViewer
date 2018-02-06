@@ -151,6 +151,21 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.title = '';
 		vm.mockdata = [];
 		vm.licenses = [];
+		vm.archivecounters = [];
+		vm.archivecounterschartdata = [];
+		vm.archivecounterschartdata['ArchiveCounterKey'] = [];
+		vm.archivecounterschartdata['OrderCount'] = [];
+		vm.archivecounterschartdata['OrderRowCount'] = [];
+		vm.archivecounterschartdata['PartyCount'] = [];
+		vm.archivecounterschartdata['PartyVirtualCount'] = [];
+		vm.archivecounterschartdata['PartyMutationCount'] = [];
+		vm.archivecounterschartdata['ExinvoiceCount'] = [];
+		vm.archivecounterschartdata['PricelistCount'] = [];
+		vm.archivecounterschartdata['PricelistRowCount'] = [];
+		vm.archivecounterschartdata['VPSupplylineCount'] = [];
+		vm.archivecounterschartdata['PartyTransactionCount'] = [];
+		vm.archivecounterschartlabels = [];
+		vm.archivecounterschartseries = ["OrderCount","OrderRowCount","PartyCount","PartyVirtualCount","PartyMutationCount","ExinvoiceCount","PricelistCount","PricelistRowCount","VPSupplylineCount","PartyTransactionCount"];
 		vm.servers = [];
 		vm.data = [[],[]];
 		vm.labels = [];
@@ -194,6 +209,60 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		$http.get('/getlicenses/'+vm.customer+'/'+vm.db)
 				.success(function(data) {
 						vm.licenses = data;
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+
+		$http.get('/getarchivecounters/'+vm.customer+'/'+vm.db)
+				.success(function(data) {
+						vm.archivecounters = data;
+						for (var i=0 ; i<data.length; i++){
+							for (var key in data[i]) {
+								if(key=='ArchiveCounterKey'){
+									vm.archivecounterschartdata['ArchiveCounterKey'][i] = data[i][key];
+								}
+								else if(key=='OrderCount'){
+									vm.archivecounterschartdata['OrderCount'].push(data[i][key]);
+								}
+								else if(key=='OrderRowCount'){
+									vm.archivecounterschartdata['OrderRowCount'][i] = data[i][key];
+								}
+								else if(key=='PartyCount'){
+									vm.archivecounterschartdata['PartyCount'][i] = data[i][key];
+								}
+								else if(key=='PartyMutationCount'){
+									vm.archivecounterschartdata['PartyMutationCount'][i] = data[i][key];
+								}
+								else if(key=='ExinvoiceCount'){
+									vm.archivecounterschartdata['ExinvoiceCount'][i] = data[i][key];
+								}
+								else if(key=='PricelistCount'){
+									vm.archivecounterschartdata['PricelistCount'][i] = data[i][key];
+								}
+								else if(key=='PricelistRowCount'){
+									vm.archivecounterschartdata['PricelistRowCount'][i] = data[i][key];
+								}
+								else if(key=='VPSupplylineCount'){
+									vm.archivecounterschartdata['VPSupplylineCount'][i] = data[i][key];
+								}
+								else if(key=='PartyTransactionCount'){
+									vm.archivecounterschartdata['PartyTransactionCount'][i] = data[i][key];
+								}
+							}
+						}
+						vm.archivecounterschartdata['ArchiveCounterKey'].reverse();
+						vm.archivecounterschartdata['OrderCount'].reverse();
+						vm.archivecounterschartdata['OrderRowCount'].reverse();
+						vm.archivecounterschartdata['PartyCount'].reverse();
+						vm.archivecounterschartdata['PartyVirtualCount'].reverse();
+						vm.archivecounterschartdata['PartyMutationCount'].reverse();
+						vm.archivecounterschartdata['ExinvoiceCount'].reverse();
+						vm.archivecounterschartdata['PricelistCount'].reverse();
+						vm.archivecounterschartdata['PricelistRowCount'].reverse();
+						vm.archivecounterschartdata['VPSupplylineCount'].reverse();
+						vm.archivecounterschartdata['PartyTransactionCount'].reverse();
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
