@@ -229,6 +229,26 @@ exports.gettop10errors = function(req,res) {
 	}
 }
 
+exports.getvmptransactions = function(req,res) {
+	if(config.sqlstring.database!= ''){
+		sequelize.query("select d.[Key], d.[Description], d.CalculationImportance,\
+			COUNT(1) as ToCalculate\
+			from partycalculationcontextprice pccp with (readuncommitted)\
+			join Party p with (readuncommitted) on pccp.PartyKey = p.[Key]\
+			join Department d with (readuncommitted) on p.DepartmentKey = d.[Key]\
+			left join PartyVirtual pv with (readuncommitted) on p.[Key] = pv.PartyKey\
+			where pccp.Calculate = 1 and isnull (pv.Deleted,0) = 0\
+			group by d.[Key], d.CalculationImportance, d.[Description]\
+			order by d.CalculationImportance, d.[Key]", {raw: true,type: sequelize.QueryTypes.SELECT})
+		.then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+	}
+}
+
 exports.getcustomermutations = function(req, res) {
 	if(config.sqlstring.database!= ''){
 		sequelize.query("SELECT *\

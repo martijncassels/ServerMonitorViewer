@@ -11,10 +11,19 @@
 				h5 
 					i.fas.fa-address-card
 					|                   Licenses
-			.list-group
-				div(ng-repeat='license in vm.licenses track by $index', style='padding:5px;').list-group-item.d-flex.w-100.justify-content-between
-					.mb-2 {{license.description}}
-					.mb-2 {{license.ActiveLicenses}} of {{license.licenses}} used ({{license.status}})
+			div(ng-repeat='license in vm.licenses track by $index', style='padding:5px;')
+				.row
+					.col-md-6
+						{{license.description}}
+					.col-md-6
+						uib-progressbar(max='license.licenses', value='license.ActiveLicenses')
+							span(style='color:white; white-space:nowrap;') {{license.ActiveLicenses}} / {{license.licenses}}
+	.col-md-6
+		.card
+			.card-header 
+				h5 
+					i.fas.fa-address-card
+					|                   VMP Transactions
 br
 canvas(id='bar',chart-data='vm.data',chart-labels='vm.labels',chart-series='vm.series',chart-options='vm.options',height='50').chart.chart-bar
 //canvas(id='bar',chart-data='vm.metricschartdata',chart-labels='vm.metricschartlabels',chart-series='vm.metricschartseries',chart-options='vm.options',height='150',chart-dataset-override="vm.metricsdatasetOverride" ).chart.chart-bar

@@ -176,6 +176,9 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.servers = [];
 		vm.data = [[],[]];
 		vm.labels = [];
+		vm.vmptransactions = [];
+		vm.vmptransactionsdata = [];
+		vm.vmptransactionslabels = [];
 
 		vm.max = 60000;
 		vm.dynamic = vm.max;
@@ -253,6 +256,20 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		$http.get('/getlicenses/'+vm.customer+'/'+vm.db)
 				.success(function(data) {
 						vm.licenses = data;
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+
+		$http.get('/getvmptransactions/'+vm.customer+'/'+vm.db)
+				.success(function(data) {
+						vm.vmptransactions = data;
+
+						for(var i=0;i<data.length;i++){
+							vm.vmptransactionsdata.push(data[i].ToCalculate);
+							vm.vmptransactionslabels.push(data[i].Description);
+						}
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
