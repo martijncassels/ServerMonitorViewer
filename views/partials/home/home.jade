@@ -12,7 +12,7 @@ uib-progressbar(max='vm.max', value='vm.dynamic')
 	span(style='color:white; white-space:nowrap;'){{vm.dynamic/1000}} / {{vm.max/1000}}
 br
 h2 Events
-.table-responsive
+div(ng-show='vm.mockdata.length>0').table-responsive
 	table.table.table-striped.table-sm
 		thead
 			tr
@@ -39,4 +39,5 @@ h2 Events
 				th {{records.ThresholdValue}}
 				th {{records.LastQueuedMetricKey}}
 				th {{records.Message}}
+div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
 //- End Content

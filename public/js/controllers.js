@@ -61,7 +61,7 @@ function HomeCtrl($scope,$route,$http,$interval) {
 							vm.labels2.push(vm.mockdata[i].RemoteQueuedMetricKey);
 						}
 						vm.series = ['MetricValue', 'ThresholdValue'];
-
+						//console.log(vm.mockdata[vm.mockdata.length-1]);
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
@@ -115,32 +115,34 @@ function HomeCtrl($scope,$route,$http,$interval) {
 		}
 
 		vm.getLiveChartData = function() {
-			$http.get('/getmutations/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
-				.success(function(data) {
-					console.log('updating '+data.length+' records...');
-					var tmplength = 0;
-					if (vm.data2[0].length) {
-						tmplength = vm.data2[0].length;
+			if(vm.mockdata[vm.mockdata.length-1]!=undefined) {
+				$http.get('/getmutations/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
+					.success(function(data) {
+						console.log('updating '+data.length+' records...');
+						var tmplength = 0;
+						if (vm.data2[0].length) {
+							tmplength = vm.data2[0].length;
 
-						vm.labels2 = vm.labels2.slice(data.length);
-						vm.data2[0] = vm.data2[0].slice(data.length);
-						vm.data2[1] = vm.data2[1].slice(data.length);
-						vm.mockdata = vm.mockdata.slice(data.length);
-					}
+							vm.labels2 = vm.labels2.slice(data.length);
+							vm.data2[0] = vm.data2[0].slice(data.length);
+							vm.data2[1] = vm.data2[1].slice(data.length);
+							vm.mockdata = vm.mockdata.slice(data.length);
+						}
 
-					for (var i=0;vm.data2[0].length < tmplength;i++) {
-						vm.labels2.push(data[i].RemoteQueuedMetricKey);
-						vm.mockdata.push(data[i])
+						for (var i=0;vm.data2[0].length < tmplength;i++) {
+							vm.labels2.push(data[i].RemoteQueuedMetricKey);
+							vm.mockdata.push(data[i])
 
-						vm.data2[0].push(data[i].MetricValue);
-						vm.data2[1].push(data[i].ThresholdValue);
-					}
-				})
-				.error(function(data) {
-						console.log('Error: ' + data);
-						vm.error = data;
-				});
-			}
+							vm.data2[0].push(data[i].MetricValue);
+							vm.data2[1].push(data[i].ThresholdValue);
+						}
+					})
+					.error(function(data) {
+							console.log('Error: ' + data);
+							vm.error = data;
+					});
+				} // end $http
+			} // end if
 
 		$scope.$on('$destroy', function() {
 			$interval.cancel(interval);
@@ -170,7 +172,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		// vm.archivecounterschartdata['VPSupplylineCount'] = [];
 		// vm.archivecounterschartdata['PartyTransactionCount'] = [];
 		vm.archivecounterschartlabels = [];
-		vm.archivecounterschartseries = ["OrderCount","OrderRowCount","PartyCount","PartyVirtualCount","PartyMutationCount","ExinvoiceCount","PricelistCount","PricelistRowCount","VPSupplylineCount","PartyTransactionCount"];
+		vm.archivecounterschartseries = ["ArchiveCounterKey","CounterTimestamp","OrderCount","OrderRowCount","PartyCount","PartyVirtualCount","PartyMutationCount","ExinvoiceCount","PricelistCount","PricelistRowCount","VPSupplylineCount","PartyTransactionCount"];
 		vm.servers = [];
 		vm.data = [[],[]];
 		vm.labels = [];
@@ -197,20 +199,20 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 							vm.labels.push(vm.mockdata[i].RemoteQueuedMetricKey);
 						}
 						_.each(data,function(obj,index){
-							if(_.isMatch(obj,{Metric:"'Lots_Real'"})){
+							if(_.isMatch(obj,{Metric:'Lots_Real'})){
 								if(typeof(vm.metricschartdata[0]) == 'undefined'){
-									vm.metricschartseries.push('Lots_Real_Value')
-									vm.metricschartseries.push('Lots_Real_Threshold')
+									vm.metricschartseries.push('Lots_Real_Value');
+									vm.metricschartseries.push('Lots_Real_Threshold');
 									vm.metricschartdata[0] = [];
 									vm.metricschartdata[1] = [];
 								}
 								vm.metricschartdata[0][index] = obj.MetricValue;
 								vm.metricschartdata[1][index] = obj.ThresholdValue;
 							}
-							if(_.isMatch(obj,{Metric:"'Lots_Virtual'"})){
+							if(_.isMatch(obj,{Metric:'Lots_Virtual'})){
 								if(typeof(vm.metricschartdata[2]) == 'undefined'){
-									vm.metricschartseries.push('Lots_Virtual_Value')
-									vm.metricschartseries.push('Lots_Virtual_Threshold')
+									vm.metricschartseries.push('Lots_Virtual_Value');
+									vm.metricschartseries.push('Lots_Virtual_Threshold');
 									vm.metricschartdata[2] = [];
 									vm.metricschartdata[3] = [];
 								}
@@ -238,6 +240,10 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		case 'VVB-SQL03':
 				vm.customer = 'VVB';
 				vm.db = 'ABSBloemen';
+				break;
+		case 'VVP-SQL01':
+				vm.customer = 'VVP';
+				vm.db = 'FCPotplants';
 				break;
 		default:
 				vm.customer = '';
@@ -304,13 +310,13 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 
 						_.each(data,function(value1,index){
 							_.each(value1,function(value2,key){
-								if(typeof(vm.archivecounterschartdata1[Object.keys(value1).indexOf(key)]) == 'undefined'){
-									vm.archivecounterschartdata1[Object.keys(value1).indexOf(key)] = [];
+								if(typeof(vm.archivecounterschartdata[Object.keys(value1).indexOf(key)]) == 'undefined'){
+									vm.archivecounterschartdata[Object.keys(value1).indexOf(key)] = [];
 								}
-								if(typeof(vm.archivecounterschartdata1[Object.keys(value1).indexOf(key)][index]) == 'undefined'){
-									vm.archivecounterschartdata1[Object.keys(value1).indexOf(key)][index] = [];
+								if(typeof(vm.archivecounterschartdata[Object.keys(value1).indexOf(key)][index]) == 'undefined'){
+									vm.archivecounterschartdata[Object.keys(value1).indexOf(key)][index] = [];
 								}
-								vm.archivecounterschartdata1[Object.keys(value1).indexOf(key)][index] = value2;
+								vm.archivecounterschartdata[Object.keys(value1).indexOf(key)][index] = value2;
 							});
 						});
 
@@ -365,32 +371,65 @@ vm.setcustomerprogressbarvalue = function() {
 }
 
 vm.getLiveCustomerChartData = function() {
-	$http.get('/getcustomermutations/' + $routeParams.servername + '/' + vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
-		.success(function(data) {
-			console.log('updating '+data.length+' records...');
-			var tmplength = 0;
-			if (vm.data[0].length) {
-				tmplength = vm.data[0].length;
+	if(vm.mockdata[vm.mockdata.length-1]!=undefined) {
+		$http.get('/getcustomermutations/' + $routeParams.servername + '/' + vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
+			.success(function(data) {
+				console.log('updating '+data.length+' records...');
+				var tmplength = 0;
+				if (vm.data[0].length) {
+					tmplength = vm.data[0].length;
 
-				vm.labels = vm.labels.slice(data.length);
-				vm.data[0] = vm.data[0].slice(data.length);
-				vm.data[1] = vm.data[1].slice(data.length);
-				vm.mockdata = vm.mockdata.slice(data.length);
-			}
+					vm.labels = vm.labels.slice(data.length);
+					vm.data[0] = vm.data[0].slice(data.length);
+					vm.data[1] = vm.data[1].slice(data.length);
+					vm.mockdata = vm.mockdata.slice(data.length);
 
-			for (var i=0;vm.data[0].length < tmplength;i++) {
-				vm.labels.push(data[i].RemoteQueuedMetricKey);
-				vm.mockdata.push(data[i])
+					_.each(vm.metricschartdata,function(value,index){
+						if(typeof(vm.metricschartdata[index]) == 'object'){
+							vm.metricschartdata[index].slice(data.length);
+						}
+					});
+				}
 
-				vm.data[0].push(data[i].MetricValue);
-				vm.data[1].push(data[i].ThresholdValue);
-			}
-		})
-		.error(function(data) {
-				console.log('Error: ' + data);
-				vm.error = data;
-		});
-	}
+				for (var i=0;vm.data[0].length < tmplength;i++) {
+					vm.labels.push(data[i].RemoteQueuedMetricKey);
+					vm.mockdata.push(data[i])
+
+					vm.data[0].push(data[i].MetricValue);
+					vm.data[1].push(data[i].ThresholdValue);
+
+
+					_.each(data[i],function(obj,index){
+						if(_.isMatch(data[i],{Metric:'Lots_Real'})){
+							if(typeof(vm.metricschartdata[0]) == 'undefined'){
+								vm.metricschartseries.push('Lots_Real_Value');
+								vm.metricschartseries.push('Lots_Real_Threshold');
+								vm.metricschartdata[0] = [];
+								vm.metricschartdata[1] = [];
+							}
+							vm.metricschartdata[0][index] = data[i].MetricValue;
+							vm.metricschartdata[1][index] = data[i].ThresholdValue;
+						}
+						if(_.isMatch(data[i],{Metric:'Lots_Virtual'})){
+							if(typeof(vm.metricschartdata[2]) == 'undefined'){
+								vm.metricschartseries.push('Lots_Virtual_Value');
+								vm.metricschartseries.push('Lots_Virtual_Threshold');
+								vm.metricschartdata[2] = [];
+								vm.metricschartdata[3] = [];
+							}
+							vm.metricschartdata[2][index] = data[i].MetricValue;
+							vm.metricschartdata[3][index] = data[i].ThresholdValue;
+						}
+						vm.metricschartlabels[index] = data[i].Timestamp;
+					});
+				}
+			})
+			.error(function(data) {
+					console.log('Error: ' + data);
+					vm.error = data;
+			});
+		} // end $http
+	} // end if
 
 	$scope.$on('$destroy', function() {
 		$interval.cancel(interval);

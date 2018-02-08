@@ -30,7 +30,7 @@ module.exports = config;
 
 var config		= require('../config/config.js');
 
-if(config.sqlstring.database!= ''){
+//if(config.sqlstring.database!= ''){
 const sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user, config.sqlstring.password, {
 	host: config.sqlstring.server,
 	port: 1437,
@@ -43,7 +43,7 @@ const sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user
 		idle: 10000
 	}
 });
-}
+//}
 
 exports.index = function(req, res){
 	res.render('index');
@@ -139,7 +139,7 @@ else {
 
 exports.getarchivecounters = function(req, res) {
 	if(config.sqlstring.database!= ''){
-	sequelize.query("select top 10 *\
+	sequelize.query("select top 10 [ArchiveCounterKey],[CounterTimestamp],[OrderCount],[OrderRowCount],[PartyCount],[PartyVirtualCount],[PartyMutationCount],[ExinvoiceCount],[PricelistCount],[VPSupplylineCount],[PartyTransactionCount]\
 	from [" + req.params.customer + "].[" + req.params.db + "].[dbo].[ArchiveCounters]\
 	order by [Archivecounterkey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
@@ -155,18 +155,19 @@ else {
 
 exports.getlicenses = function(req, res) {
 	if(config.sqlstring.database!= ''){
-	sequelize.query("select\
-	count(lt.[ID]) as ActiveLicenses, case when lt.[licenses] = count(lt.[ID]) then 'all used' else convert(nvarchar,lt.[licenses] - count(lt.[ID]))+' left' end as [status]\
-	, lt.[ID], lt. [description], lt.[licenses]\
-from [" + req.params.customer + "].[" + req.params.db + "].[dbo].[fpprocess] fp\
-	join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[licensetype] lt on lt.[key] = fp.[licensetypekey]\
-	join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[user] u on u.[key] = fp.[userkey]\
-group by lt.[ID], lt. [description], lt.[licenses]", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
-		res.status(200).send(result);
-	})
-	.catch(err => {
-		console.log(err);
-	});
+		sequelize.query("select\
+		count(lt.[ID]) as ActiveLicenses, case when lt.[licenses] = count(lt.[ID]) then 'all used' else convert(nvarchar,lt.[licenses] - count(lt.[ID]))+' left' end as [status]\
+		, lt.[ID], lt. [description], lt.[licenses]\
+		from [" + req.params.customer + "].[" + req.params.db + "].[dbo].[fpprocess] fp\
+			join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[licensetype] lt on lt.[key] = fp.[licensetypekey]\
+			join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[user] u on u.[key] = fp.[userkey]\
+		group by lt.[ID], lt. [description], lt.[licenses]", {raw: true,type: sequelize.QueryTypes.SELECT})
+		.then(result => {
+			res.status(200).send(result);
+		})
+		.catch(err => {
+			console.log(err);
+		});
 }
 else {
 	res.status(200).send([{
