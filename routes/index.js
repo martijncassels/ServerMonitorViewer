@@ -113,7 +113,8 @@ else {
 exports.getmutations = function(req, res) {
 	sequelize.query("SELECT *\
 	FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
-	WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey, {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+	WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey+ " \
+	AND [Metric] NOT IN ('Heartbeat')", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
 	})
 	.catch(err => {
@@ -233,10 +234,10 @@ exports.getvmptransactions = function(req,res) {
 	if(config.sqlstring.database!= ''){
 		sequelize.query("select d.[Key], d.[Description], d.CalculationImportance,\
 			COUNT(1) as ToCalculate\
-			from partycalculationcontextprice pccp with (readuncommitted)\
-			join Party p with (readuncommitted) on pccp.PartyKey = p.[Key]\
-			join Department d with (readuncommitted) on p.DepartmentKey = d.[Key]\
-			left join PartyVirtual pv with (readuncommitted) on p.[Key] = pv.PartyKey\
+			from [" + req.params.customer + "].[" + req.params.db + "].dbo.partycalculationcontextprice pccp with (readuncommitted)\
+			join [" + req.params.customer + "].[" + req.params.db + "].dbo.Party p with (readuncommitted) on pccp.PartyKey = p.[Key]\
+			join [" + req.params.customer + "].[" + req.params.db + "].dbo.Department d with (readuncommitted) on p.DepartmentKey = d.[Key]\
+			left join [" + req.params.customer + "].[" + req.params.db + "].dbo.PartyVirtual pv with (readuncommitted) on p.[Key] = pv.PartyKey\
 			where pccp.Calculate = 1 and isnull (pv.Deleted,0) = 0\
 			group by d.[Key], d.CalculationImportance, d.[Description]\
 			order by d.CalculationImportance, d.[Key]", {raw: true,type: sequelize.QueryTypes.SELECT})
@@ -255,6 +256,49 @@ exports.getcustomermutations = function(req, res) {
 		FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric]\
 		WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey + " AND\
 		[InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+			res.status(200).send(result);
+		})
+		.catch(err => {
+			console.log(err);
+		});
+	}
+}
+//PCCPTotal removed
+exports.getcustomerentitycounts = function(req, res) {
+	if(config.sqlstring.database!= ''){
+		sequelize.query("select top 10\
+		ID,\
+		Timestamp,\
+		TotalLots,\
+		RealLots,\
+		VirtualLots,\
+		VirtualLotsToBeDeleted,\
+		TotalOrders,\
+		TotalOrderRows,\
+		ABSOrders,\
+		ABSOrderRows,\
+		WebShopOrders,\
+		WebShopOrderRows,\
+		ProductionOrders,\
+		ProductionOrderRows,\
+		PCCPTotal,\
+		PCCPToBeCalculated,\
+		VPSupplyLineTotal,\
+		TotalPricelists,\
+		TotalPricelistRows from [" + req.params.customer + "].ServerMonitor.dbo.EntityCounts order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+			res.status(200).send(result);
+		})
+		.catch(err => {
+			console.log(err);
+		});
+	}
+}
+
+exports.getetradeservercounter = function(req, res) {
+	if(config.sqlstring.database!= ''){
+		sequelize.query("select top 500 \
+		ETradeServerCounterkey,EtradeUserKey,LoggedTimeStamp,NumberOfSuccesfullPurchases,NumberOfFailedPurchases,AvgResponseTimeMS,MinResponseTimeMS,MaxResponseTimeMS\
+		from [" + req.params.customer + "].[" + req.params.db + "].axerrio.ETradeServerCounter order by ETradeServerCounterkey desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
 		.catch(err => {

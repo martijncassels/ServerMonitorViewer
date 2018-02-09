@@ -160,18 +160,6 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.metricschartseries = [];
 		vm.metricschartlabels = [];
 		vm.metricsdatasetOverride = [];
-		// vm.archivecounterschartdata['ArchiveCounterKey'] = [];
-		// vm.archivecounterschartdata['OrderCount'] = [];
-		// vm.archivecounterschartdata['OrderRowCount'] = [];
-		// vm.archivecounterschartdata['PartyCount'] = [];
-		// vm.archivecounterschartdata['PartyVirtualCount'] = [];
-		// vm.archivecounterschartdata['PartyMutationCount'] = [];
-		// vm.archivecounterschartdata['ExinvoiceCount'] = [];
-		// vm.archivecounterschartdata['PricelistCount'] = [];
-		// vm.archivecounterschartdata['PricelistRowCount'] = [];
-		// vm.archivecounterschartdata['VPSupplylineCount'] = [];
-		// vm.archivecounterschartdata['PartyTransactionCount'] = [];
-		vm.archivecounterschartlabels = [];
 		vm.archivecounterschartseries = ["ArchiveCounterKey","CounterTimestamp","OrderCount","OrderRowCount","PartyCount","PartyVirtualCount","PartyMutationCount","ExinvoiceCount","PricelistCount","PricelistRowCount","VPSupplylineCount","PartyTransactionCount"];
 		vm.servers = [];
 		vm.data = [[],[]];
@@ -179,6 +167,16 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.vmptransactions = [];
 		vm.vmptransactionsdata = [];
 		vm.vmptransactionslabels = [];
+		vm.etradeservercounters = [];
+		vm.etradeservercounterdata = [[],[]];
+		vm.etradeservercounterlabels = [];
+		vm.customerentitycounts = [];
+		vm.customerentitycountdata = [];
+		vm.customerentitycountdata2 = [];
+		vm.customerentitycountdataselection = [];
+		vm.customerentitycountdataselection2 = [];
+		//vm.customerentitycountlabels = [];
+		vm.customerentitycountseries = ["ID","Timestamp","TotalLots","RealLots","VirtualLots","VirtualLotsToBeDeleted","TotalOrders","TotalOrderRows","ABSOrders","ABSOrderRows","WebShopOrders","WebShopOrderRows","ProductionOrders","ProductionOrderRows","PCCPTotal","PCCPToBeCalculated","VPSupplyLineTotal","TotalPricelists","TotalPricelistRows"];
 
 		vm.max = 60000;
 		vm.dynamic = vm.max;
@@ -276,55 +274,27 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 						vm.error = data;
 				});
 
+		$http.get('/getetradeservercounter/'+vm.customer+'/'+vm.db)
+				.success(function(data) {
+						vm.etradeservercounters = data;
+
+						for(var i=0;i<data.length;i++){
+							vm.etradeservercounterdata[0].push(data[i].NumberOfSuccesfullPurchases);
+							vm.etradeservercounterdata[1].push(data[i].NumberOfFailedPurchases);
+							vm.etradeservercounterlabels.push(data[i].LoggedTimeStamp);
+						}
+						vm.etradeservercounterdata[0].reverse();
+						vm.etradeservercounterdata[1].reverse();
+						vm.etradeservercounterlabels.reverse();
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+
 		$http.get('/getarchivecounters/'+vm.customer+'/'+vm.db)
 				.success(function(data) {
 						vm.archivecounters = data;
-						// for (var i=0 ; i<data.length; i++){
-						// 	for (var key in data[i]) {
-						// 		if(key=='ArchiveCounterKey'){
-						// 			vm.archivecounterschartdata['ArchiveCounterKey'][i] = data[i][key];
-						// 		}
-						// 		else if(key=='OrderCount'){
-						// 			vm.archivecounterschartdata['OrderCount'].push(data[i][key]);
-						// 		}
-						// 		else if(key=='OrderRowCount'){
-						// 			vm.archivecounterschartdata['OrderRowCount'][i] = data[i][key];
-						// 		}
-						// 		else if(key=='PartyCount'){
-						// 			vm.archivecounterschartdata['PartyCount'][i] = data[i][key];
-						// 		}
-						// 		else if(key=='PartyMutationCount'){
-						// 			vm.archivecounterschartdata['PartyMutationCount'][i] = data[i][key];
-						// 		}
-						// 		else if(key=='ExinvoiceCount'){
-						// 			vm.archivecounterschartdata['ExinvoiceCount'][i] = data[i][key];
-						// 		}
-						// 		else if(key=='PricelistCount'){
-						// 			vm.archivecounterschartdata['PricelistCount'][i] = data[i][key];
-						// 		}
-						// 		else if(key=='PricelistRowCount'){
-						// 			vm.archivecounterschartdata['PricelistRowCount'][i] = data[i][key];
-						// 		}
-						// 		else if(key=='VPSupplylineCount'){
-						// 			vm.archivecounterschartdata['VPSupplylineCount'][i] = data[i][key];
-						// 		}
-						// 		else if(key=='PartyTransactionCount'){
-						// 			vm.archivecounterschartdata['PartyTransactionCount'][i] = data[i][key];
-						// 		}
-						// 	}
-						// }
-						// vm.archivecounterschartdata['ArchiveCounterKey'].reverse();
-						// vm.archivecounterschartdata['OrderCount'].reverse();
-						// vm.archivecounterschartdata['OrderRowCount'].reverse();
-						// vm.archivecounterschartdata['PartyCount'].reverse();
-						// vm.archivecounterschartdata['PartyVirtualCount'].reverse();
-						// vm.archivecounterschartdata['PartyMutationCount'].reverse();
-						// vm.archivecounterschartdata['ExinvoiceCount'].reverse();
-						// vm.archivecounterschartdata['PricelistCount'].reverse();
-						// vm.archivecounterschartdata['PricelistRowCount'].reverse();
-						// vm.archivecounterschartdata['VPSupplylineCount'].reverse();
-						// vm.archivecounterschartdata['PartyTransactionCount'].reverse();_.each(data,function(value1,index){
-
 						_.each(data,function(value1,index){
 							_.each(value1,function(value2,key){
 								if(typeof(vm.archivecounterschartdata[Object.keys(value1).indexOf(key)]) == 'undefined'){
@@ -336,12 +306,55 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 								vm.archivecounterschartdata[Object.keys(value1).indexOf(key)][index] = value2;
 							});
 						});
-
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
 						vm.error = data;
 				});
+
+		$http.get('/getcustomerentitycounts/'+vm.customer+'/'+vm.db)
+				.success(function(data) {
+						vm.customerentitycounts = data;
+						_.each(data,function(value1,index){
+							_.each(value1,function(value2,key){
+								if(typeof(vm.customerentitycountdata[Object.keys(value1).indexOf(key)]) == 'undefined'){
+									vm.customerentitycountdata[Object.keys(value1).indexOf(key)] = [];
+								}
+								if(typeof(vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index]) == 'undefined'){
+									vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = [];
+								}
+								vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = value2;
+							});
+						});
+						for(var i=0;i<vm.customerentitycountdata.length;i++){
+							vm.customerentitycountdata2.push({data:vm.customerentitycounts[i],selected:true})
+						}
+						vm.customerentitycountdataselection = vm.customerentitycountdata;
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+
+		vm.togglecustomerentitycountdataselection = function(serie) {
+			var idx = vm.customerentitycountdataselection.indexOf(serie);
+	    if (idx > -1) {
+	      vm.customerentitycountdataselection.splice(idx, 1);
+	    }
+	    else {
+	      vm.customerentitycountdataselection.push(serie);
+	    }
+		}
+		vm.togglecustomerentitycountdataselection2 = function selectedSeries() {
+    return filterFilter(vm.customerentitycountdata2, { selected: true });
+  	};
+
+	  // Watch fruits for changes
+	  $scope.$watch('vm.customerentitycountdata2|filter:{selected:true}', function (nv) {
+	    vm.customerentitycountdataselection2 = nv.map(function (serie) {
+	      return serie.data;
+	    });
+	  }, true);
 
 		vm.onClick = function (points, evt) {
 		};
@@ -371,7 +384,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 			},
 			animation: {
 				duration: 0
-			},
+			}
 		};
 
 

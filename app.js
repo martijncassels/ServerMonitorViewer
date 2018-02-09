@@ -191,6 +191,8 @@ app.get('/getcustomermetrics/:server', routes.getcustomermetrics);
 app.get('/getcustomermutations/:server/:lastkey', routes.getcustomermutations);
 app.get('/gettop10errors/:customer/:db', routes.gettop10errors);
 app.get('/getvmptransactions/:customer/:db', routes.getvmptransactions);
+app.get('/getetradeservercounter/:customer/:db', routes.getetradeservercounter);
+app.get('/getcustomerentitycounts/:customer/:db', routes.getcustomerentitycounts);
 app.get('/getarchivecounters/:customer/:db', routes.getarchivecounters);
 app.get('/getlicenses/:customer/:db', routes.getlicenses);
 app.get('/listservers', routes.listservers);
