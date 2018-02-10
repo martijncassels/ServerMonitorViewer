@@ -158,7 +158,7 @@ exports.getlicenses = function(req, res) {
 	if(config.sqlstring.database!= ''){
 		sequelize.query("select\
 		count(lt.[ID]) as ActiveLicenses, case when lt.[licenses] = count(lt.[ID]) then 'all used' else convert(nvarchar,lt.[licenses] - count(lt.[ID]))+' left' end as [status]\
-		, lt.[ID], lt. [description], lt.[licenses]\
+		, lt.[ID], lt. [description], lt.[licenses],case when (lt.id < 500 or lt.id > 599) then 'Multiple' else max(fp.HostName) end as [hostname]\
 		from [" + req.params.customer + "].[" + req.params.db + "].[dbo].[fpprocess] fp\
 			join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[licensetype] lt on lt.[key] = fp.[licensetypekey]\
 			join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[user] u on u.[key] = fp.[userkey]\

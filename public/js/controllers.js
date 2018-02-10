@@ -156,11 +156,13 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.licenses = [];
 		vm.archivecounters = [];
 		vm.archivecounterschartdata = [];
+		vm.archivecounterschartdataselection = [];
+		vm.archivecounterschartseries = ["ArchiveCounterKey","CounterTimestamp","OrderCount","OrderRowCount","PartyCount","PartyVirtualCount","PartyMutationCount","ExinvoiceCount","PricelistCount","PricelistRowCount","VPSupplylineCount","PartyTransactionCount"];
+		vm.archivecounterschartseriesselection = ["ArchiveCounterKey","CounterTimestamp","OrderCount","OrderRowCount","PartyCount","PartyVirtualCount","PartyMutationCount","ExinvoiceCount","PricelistCount","PricelistRowCount","VPSupplylineCount","PartyTransactionCount"];
 		vm.metricschartdata = [];
 		vm.metricschartseries = [];
 		vm.metricschartlabels = [];
 		vm.metricsdatasetOverride = [];
-		vm.archivecounterschartseries = ["ArchiveCounterKey","CounterTimestamp","OrderCount","OrderRowCount","PartyCount","PartyVirtualCount","PartyMutationCount","ExinvoiceCount","PricelistCount","PricelistRowCount","VPSupplylineCount","PartyTransactionCount"];
 		vm.servers = [];
 		vm.data = [[],[]];
 		vm.labels = [];
@@ -173,11 +175,9 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.customerentitycounts = [];
 		vm.customerentitycountdata = [];
 		vm.customerentitycountdata2 = [];
-		vm.customerentitycountdataselection = [];
-		vm.customerentitycountdataselection2 = [];
 		//vm.customerentitycountlabels = [];
 		vm.customerentitycountseries = ["ID","Timestamp","TotalLots","RealLots","VirtualLots","VirtualLotsToBeDeleted","TotalOrders","TotalOrderRows","ABSOrders","ABSOrderRows","WebShopOrders","WebShopOrderRows","ProductionOrders","ProductionOrderRows","PCCPTotal","PCCPToBeCalculated","VPSupplyLineTotal","TotalPricelists","TotalPricelistRows"];
-
+		vm.customerentitycountseriesselection = ["ID","Timestamp","TotalLots","RealLots","VirtualLots","VirtualLotsToBeDeleted","TotalOrders","TotalOrderRows","ABSOrders","ABSOrderRows","WebShopOrders","WebShopOrderRows","ProductionOrders","ProductionOrderRows","PCCPTotal","PCCPToBeCalculated","VPSupplyLineTotal","TotalPricelists","TotalPricelistRows"];
 		vm.max = 60000;
 		vm.dynamic = vm.max;
 		/*
@@ -306,14 +306,29 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 								vm.archivecounterschartdata[Object.keys(value1).indexOf(key)][index] = value2;
 							});
 						});
+						for(var i=0;i<vm.archivecounterschartdata.length;i++){
+							vm.archivecounterschartdataselection.push(vm.archivecounterschartdata[i]);
+						}
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
 						vm.error = data;
 				});
+		vm.toggleArchiveSelection = function toggleArchiveSelection(serie,name) {
+			var idx = vm.archivecounterschartdataselection.indexOf(serie);
+	    if (idx > -1) {
+				vm.archivecounterschartdataselection.splice(idx, 1);
+				vm.archivecounterschartseriesselection.splice(idx, 1);
+	    }
+	    else {
+				vm.archivecounterschartdataselection.push(serie);
+				vm.archivecounterschartseriesselection.push(name);
+	    }
+	  };
 
 		$http.get('/getcustomerentitycounts/'+vm.customer+'/'+vm.db)
 				.success(function(data) {
+						vm.customerentitycountdataselection = [];
 						vm.customerentitycounts = data;
 						_.each(data,function(value1,index){
 							_.each(value1,function(value2,key){
@@ -323,38 +338,34 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 								if(typeof(vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index]) == 'undefined'){
 									vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = [];
 								}
-								vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = value2;
+								if(value2!=null){
+									vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = value2;
+								}
+								else {
+									vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = 0;
+								}
 							});
 						});
 						for(var i=0;i<vm.customerentitycountdata.length;i++){
-							vm.customerentitycountdata2.push({data:vm.customerentitycounts[i],selected:true})
+							vm.customerentitycountdataselection.push(vm.customerentitycountdata[i]);
 						}
-						vm.customerentitycountdataselection = vm.customerentitycountdata;
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
 						vm.error = data;
 				});
 
-		vm.togglecustomerentitycountdataselection = function(serie) {
+	  vm.toggleEntitySelection = function toggleEntitySelection(serie,name) {
 			var idx = vm.customerentitycountdataselection.indexOf(serie);
 	    if (idx > -1) {
-	      vm.customerentitycountdataselection.splice(idx, 1);
+				vm.customerentitycountdataselection.splice(idx, 1);
+				vm.customerentitycountseriesselection.splice(idx, 1);
 	    }
 	    else {
-	      vm.customerentitycountdataselection.push(serie);
+				vm.customerentitycountdataselection.push(serie);
+				vm.customerentitycountseriesselection.push(name);
 	    }
-		}
-		vm.togglecustomerentitycountdataselection2 = function selectedSeries() {
-    return filterFilter(vm.customerentitycountdata2, { selected: true });
-  	};
-
-	  // Watch fruits for changes
-	  $scope.$watch('vm.customerentitycountdata2|filter:{selected:true}', function (nv) {
-	    vm.customerentitycountdataselection2 = nv.map(function (serie) {
-	      return serie.data;
-	    });
-	  }, true);
+	  };
 
 		vm.onClick = function (points, evt) {
 		};

@@ -14,7 +14,7 @@
 			div(ng-repeat='license in vm.licenses track by $index', style='padding:5px;')
 				.row
 					.col-md-6
-						{{license.description}}
+						{{license.description}} ({{license.hostname}})
 					.col-md-6
 						uib-progressbar(max='license.licenses', value='license.ActiveLicenses')
 							span(style='color:white; white-space:nowrap;') {{license.ActiveLicenses}} / {{license.licenses}}
@@ -24,6 +24,12 @@
 				h5 
 					i.fas.fa-address-card
 					|                   VMP Transactions
+			div
+				.row
+					.col-md-6
+						|	Department
+					.col-md-6
+						| To Calculate
 			div(ng-repeat='vmptransaction in vm.vmptransactions track by $index', style='padding:5px;')
 				.row
 					.col-md-6
@@ -76,7 +82,12 @@ div(ng-show='vm.mockdata.length>0').table-responsive
 div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
 br 
 //canvas(id='line',chart-data='[vm.archivecounterschartdata["OrderCount"],vm.archivecounterschartdata["OrderRowCount"],vm.archivecounterschartdata["PartyCount"],vm.archivecounterschartdata["PartyVirtualCount"],vm.archivecounterschartdata["PartyMutationCount"],vm.archivecounterschartdata["ExinvoiceCount"],vm.archivecounterschartdata["PricelistCount"],vm.archivecounterschartdata["PricelistRowCount"],vm.archivecounterschartdata["VPSupplylineCount"],vm.archivecounterschartdata["PartyTransactionCount"]]',chart-labels='vm.archivecounterschartdata["ArchiveCounterKey"]',chart-series='vm.archivecounterschartseries',chart-options='vm.options',height='150').chart.chart-line
-canvas(id='line',chart-data='vm.archivecounterschartdata',chart-labels='vm.archivecounterschartdata[1]',chart-series='vm.archivecounterschartseries',chart-options='vm.options',height='100').chart.chart-line
+//canvas(id='line',chart-data='vm.archivecounterschartdata',chart-labels='vm.archivecounterschartdata[1]',chart-series='vm.archivecounterschartseries',chart-options='vm.options',height='100').chart.chart-line
+canvas(id='line',chart-data='vm.archivecounterschartdataselection',chart-labels='vm.archivecounterschartdata[1]',chart-series='vm.archivecounterschartseriesselection',chart-options='vm.options',height='100').chart.chart-line
+br
+label(ng-repeat='serie in vm.archivecounterschartdata') 
+	input(type='checkbox', name='selectedFruits[]', value='{{serie}}', ng-checked='vm.archivecounterschartdataselection.indexOf(serie) > -1', ng-click='vm.toggleArchiveSelection(serie,vm.archivecounterschartseries[$index])')
+	|  {{vm.archivecounterschartseries[$index]}}
 br
 .row
 	.col-md-12
@@ -110,11 +121,12 @@ br
 						td {{counter.VPSupplylineCount}}
 						td {{counter.PartyTransactionCount}}
 br
-canvas(id='line',chart-data='vm.customerentitycountdataselection2',chart-labels='vm.customerentitycountdata[1]',chart-series='vm.customerentitycountseries',chart-options='vm.options',height='100',chart-dataset-override="[{pointRadius:0}]").chart.chart-line
+canvas(id='line',chart-data='vm.customerentitycountdataselection',chart-labels='vm.customerentitycountdata[1]',chart-series='vm.customerentitycountseriesselection',chart-options='vm.options',height='100',chart-dataset-override="[{pointRadius:0}]").chart.chart-line
 br
-label(ng-repeat='serie in vm.customerentitycountdata2')
-	input(type='checkbox', name='selectedSeries[]', value='{{serie.name}}', ng-model='serie.selected')
-	|  {{serie.name}}
+label(ng-repeat='serie in vm.customerentitycountdata') 
+	input(type='checkbox', name='selectedFruits[]', value='{{serie}}', ng-checked='vm.customerentitycountdataselection.indexOf(serie) > -1', ng-click='vm.toggleEntitySelection(serie,vm.customerentitycountseries[$index])')
+	|  {{vm.customerentitycountseries[$index]}}
+br
 .row
 	.col-md-12
 		.table-responsive
@@ -130,15 +142,15 @@ label(ng-repeat='serie in vm.customerentitycountdata2')
 					th TotalOrderRows
 					th ABSOrders
 					th ABSOrderRows
-					th WebShopOrders
-					th WebShopOrderRows
-					th ProductionOrders
-					th ProductionOrderRows
-					th PCCPTotal
-					th PCCPToBeCalculated
-					th VPSupplyLineTotal
-					th TotalPricelists
-					th TotalPricelistRows
+					th WebShopOrders 
+					th WebShopOrderRows 
+					th ProductionOrders 
+					th ProductionOrderRows 
+					th PCCPTotal 
+					th PCCPToBeCalculated 
+					th VPSupplyLineTotal 
+					th TotalPricelists 
+					th TotalPricelistRows 
 				tbody
 					tr(ng-repeat='entitycount in vm.customerentitycounts | orderBy:"-ID"')
 						th {{entitycount.ID}}
