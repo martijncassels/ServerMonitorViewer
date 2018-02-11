@@ -17,6 +17,8 @@ function MainCtrl($scope,$http) {
 	var vm = this;
 	vm.title = '';
 
+	//- Get a list of all active servers in [axerrio].[registeredservers]
+	//- for use in the side menu
 	$http.get('/listservers')
 			.success(function(data) {
 					vm.servers = data;
@@ -39,18 +41,7 @@ function HomeCtrl($scope,$route,$http,$interval) {
 		vm.max = 60000;
 		vm.dynamic = vm.max;
 
-		// vm.max = (60000/1000);
-		// vm.dynamic = vm.max;
-		// var i = vm.max;
-		// var counterBack = setInterval(function () {
-		// 	i--;
-		// 	if (i > 0) {
-		// 		vm.dynamic = (i/1000);
-		// 	} else {
-		// 		clearInterval(counterBack);
-		// 	}
-		// }, 1000)
-
+		//- Get the initial RemoteQueuedMetrics from [axerrio].[RemoteQueuedMetric]
 		$http.get('/getqueue')
 				.success(function(data) {
 						vm.mockdata = data.reverse();
@@ -123,16 +114,17 @@ function HomeCtrl($scope,$route,$http,$interval) {
 						if (vm.data2[0].length) {
 							tmplength = vm.data2[0].length;
 
+							//- remove data in array if there is data to insert
 							vm.labels2 = vm.labels2.slice(data.length);
 							vm.data2[0] = vm.data2[0].slice(data.length);
 							vm.data2[1] = vm.data2[1].slice(data.length);
 							vm.mockdata = vm.mockdata.slice(data.length);
 						}
 
+						//- push new data into array
 						for (var i=0;vm.data2[0].length < tmplength;i++) {
 							vm.labels2.push(data[i].RemoteQueuedMetricKey);
-							vm.mockdata.push(data[i])
-
+							vm.mockdata.push(data[i]);
 							vm.data2[0].push(data[i].MetricValue);
 							vm.data2[1].push(data[i].ThresholdValue);
 						}
@@ -174,32 +166,24 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.etradeservercounterlabels = [];
 		vm.customerentitycounts = [];
 		vm.customerentitycountdata = [];
-		vm.customerentitycountdata2 = [];
-		//vm.customerentitycountlabels = [];
 		vm.customerentitycountseries = ["ID","Timestamp","TotalLots","RealLots","VirtualLots","VirtualLotsToBeDeleted","TotalOrders","TotalOrderRows","ABSOrders","ABSOrderRows","WebShopOrders","WebShopOrderRows","ProductionOrders","ProductionOrderRows","PCCPTotal","PCCPToBeCalculated","VPSupplyLineTotal","TotalPricelists","TotalPricelistRows"];
 		vm.customerentitycountseriesselection = ["ID","Timestamp","TotalLots","RealLots","VirtualLots","VirtualLotsToBeDeleted","TotalOrders","TotalOrderRows","ABSOrders","ABSOrderRows","WebShopOrders","WebShopOrderRows","ProductionOrders","ProductionOrderRows","PCCPTotal","PCCPToBeCalculated","VPSupplyLineTotal","TotalPricelists","TotalPricelistRows"];
 		vm.max = 60000;
 		vm.dynamic = vm.max;
-		/*
-		[index
-			{ "RemoteQueuedMetricKey": 1,
-			  "Timestamp": "2018-01-04 18:00:56"...}, obj
-			{ "RemoteQueuedMetricKey": 2,
-			  "Timestamp": "2017-04-10 18:01:23"...}
-				key 					value
-		]
-		*/
 
 		$http.get('/getcustomermetrics/'+$routeParams.servername)
 				.success(function(data) {
-						vm.mockdata = data;
+						//vm.mockdata = data;
 						vm.mockdata = data.reverse();
 						for(var i=0;i<vm.mockdata.length;i++){
 							vm.data[0].push(vm.mockdata[i].MetricValue);
 							vm.data[1].push(vm.mockdata[i].ThresholdValue);
 							vm.labels.push(vm.mockdata[i].RemoteQueuedMetricKey);
 						}
+						//- iterate over all metrics
 						_.each(data,function(obj,index){
+							//- check kind of metric and push into array
+							//- repeat this for a new metric
 							if(_.isMatch(obj,{Metric:'Lots_Real'})){
 								if(typeof(vm.metricschartdata[0]) == 'undefined'){
 									vm.metricschartseries.push('Lots_Real_Value');
@@ -229,6 +213,8 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 						vm.error = data;
 				});
 
+		//- temporary switch to set db name and linkedserver name,
+		//- need to figure this out, maybe via [axerrio].[RegisteredServer]?
 		switch($routeParams.servername) {
 		case 'BA-SQL12':
 				vm.customer = 'BAR';
@@ -251,6 +237,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 					vm.db = '';
 		}
 
+		//- Get active license useage
 		$http.get('/getlicenses/'+vm.customer+'/'+vm.db)
 				.success(function(data) {
 						vm.licenses = data;
@@ -260,6 +247,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 						vm.error = data;
 				});
 
+		//- get vmp calculations
 		$http.get('/getvmptransactions/'+vm.customer+'/'+vm.db)
 				.success(function(data) {
 						vm.vmptransactions = data;
@@ -274,6 +262,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 						vm.error = data;
 				});
 
+		//- get etrade server counters
 		$http.get('/getetradeservercounter/'+vm.customer+'/'+vm.db)
 				.success(function(data) {
 						vm.etradeservercounters = data;
@@ -292,6 +281,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 						vm.error = data;
 				});
 
+		//- get archivecounters
 		$http.get('/getarchivecounters/'+vm.customer+'/'+vm.db)
 				.success(function(data) {
 						vm.archivecounters = data;
@@ -314,6 +304,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 						console.log('Error: ' + data);
 						vm.error = data;
 				});
+		//- function to select/view data in chart
 		vm.toggleArchiveSelection = function toggleArchiveSelection(serie,name) {
 			var idx = vm.archivecounterschartdataselection.indexOf(serie);
 	    if (idx > -1) {
@@ -326,6 +317,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 	    }
 	  };
 
+		//- get entitycounters
 		$http.get('/getcustomerentitycounts/'+vm.customer+'/'+vm.db)
 				.success(function(data) {
 						vm.customerentitycountdataselection = [];
@@ -355,6 +347,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 						vm.error = data;
 				});
 
+		//- function to select/view data in chart
 	  vm.toggleEntitySelection = function toggleEntitySelection(serie,name) {
 			var idx = vm.customerentitycountdataselection.indexOf(serie);
 	    if (idx > -1) {

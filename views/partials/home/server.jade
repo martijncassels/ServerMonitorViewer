@@ -57,32 +57,12 @@ div(ng-show='vm.mockdata.length>0').table-responsive
 	table.table.table-striped.table-sm
 		thead
 			tr
-				th RemoteQueuedMetricKey
-				th Timestamp
-				th InstanceName
-				th DatabaseName
-				th Metric
-				th MetricValue
-				th MetricThreshold
-				th ThresholdValue
-				th LastQueuedMetricKey
-				th Message
+				th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
 		tbody
 			tr(ng-repeat='records in vm.mockdata | orderBy:"-RemoteQueuedMetricKey"')
-				td {{records.RemoteQueuedMetricKey}}
-				td {{records.Timestamp}}
-				td {{records.InstanceName}}
-				td {{records.DatabaseName}}
-				td {{records.Metric}}
-				td {{records.MetricValue}}
-				td {{records.MetricThreshold}}
-				td {{records.ThresholdValue}}
-				td {{records.LastQueuedMetricKey}}
-				td {{records.Message}}
+				td(ng-repeat='(key,value) in records') {{value}}
 div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
 br 
-//canvas(id='line',chart-data='[vm.archivecounterschartdata["OrderCount"],vm.archivecounterschartdata["OrderRowCount"],vm.archivecounterschartdata["PartyCount"],vm.archivecounterschartdata["PartyVirtualCount"],vm.archivecounterschartdata["PartyMutationCount"],vm.archivecounterschartdata["ExinvoiceCount"],vm.archivecounterschartdata["PricelistCount"],vm.archivecounterschartdata["PricelistRowCount"],vm.archivecounterschartdata["VPSupplylineCount"],vm.archivecounterschartdata["PartyTransactionCount"]]',chart-labels='vm.archivecounterschartdata["ArchiveCounterKey"]',chart-series='vm.archivecounterschartseries',chart-options='vm.options',height='150').chart.chart-line
-//canvas(id='line',chart-data='vm.archivecounterschartdata',chart-labels='vm.archivecounterschartdata[1]',chart-series='vm.archivecounterschartseries',chart-options='vm.options',height='100').chart.chart-line
 canvas(id='line',chart-data='vm.archivecounterschartdataselection',chart-labels='vm.archivecounterschartdata[1]',chart-series='vm.archivecounterschartseriesselection',chart-options='vm.options',height='100').chart.chart-line
 br
 label(ng-repeat='serie in vm.archivecounterschartdata') 
@@ -94,32 +74,10 @@ br
 		.table-responsive
 			table.table.table-striped.table-sm
 				thead
-					//th ArchiveCounterKey
-					th CounterTimestamp
-					th OrderCount
-					th OrderRowCount
-					th PartyCount
-					th PartyVirtualCount
-					th PartyMutationCount
-					th ExinvoiceCount
-					th PricelistCount
-					th PricelistRowCount
-					th VPSupplylineCount
-					th PartyTransactionCount
+					th(ng-repeat='(key,value) in vm.archivecounters[0]') {{key}}
 				tbody
 					tr(ng-repeat='counter in vm.archivecounters | orderBy:"-ArchiveCounterKey"')
-						//td {{counter.ArchiveCounterKey}}
-						td {{counter.CounterTimestamp}}
-						td {{counter.OrderCount}}
-						td {{counter.OrderRowCount}}
-						td {{counter.PartyCount}}
-						td {{counter.PartyVirtualCount}}
-						td {{counter.PartyMutationCount}}
-						td {{counter.ExinvoiceCount}}
-						td {{counter.PricelistCount}}
-						td {{counter.PricelistRowCount}}
-						td {{counter.VPSupplylineCount}}
-						td {{counter.PartyTransactionCount}}
+						td(ng-repeat='(key,value) in counter') {{value}}
 br
 canvas(id='line',chart-data='vm.customerentitycountdataselection',chart-labels='vm.customerentitycountdata[1]',chart-series='vm.customerentitycountseriesselection',chart-options='vm.options',height='100',chart-dataset-override="[{pointRadius:0}]").chart.chart-line
 br
@@ -132,44 +90,8 @@ br
 		.table-responsive
 			table.table.table-striped.table-sm
 				thead
-					th ID
-					th Timestamp
-					th TotalLots
-					th RealLots
-					th VirtualLots
-					th VirtualLotsToBeDeleted
-					th TotalOrders
-					th TotalOrderRows
-					th ABSOrders
-					th ABSOrderRows
-					th WebShopOrders 
-					th WebShopOrderRows 
-					th ProductionOrders 
-					th ProductionOrderRows 
-					th PCCPTotal 
-					th PCCPToBeCalculated 
-					th VPSupplyLineTotal 
-					th TotalPricelists 
-					th TotalPricelistRows 
+					th(ng-repeat='(key,value) in vm.customerentitycounts[0]') {{key}}
 				tbody
 					tr(ng-repeat='entitycount in vm.customerentitycounts | orderBy:"-ID"')
-						th {{entitycount.ID}}
-						th {{entitycount.Timestamp}}
-						th {{entitycount.TotalLots}}
-						th {{entitycount.RealLots}}
-						th {{entitycount.VirtualLots}}
-						th {{entitycount.VirtualLotsToBeDeleted}}
-						th {{entitycount.TotalOrders}}
-						th {{entitycount.TotalOrderRows}}
-						th {{entitycount.ABSOrders}}
-						th {{entitycount.ABSOrderRows}}
-						th {{entitycount.WebShopOrders}}
-						th {{entitycount.WebShopOrderRows}}
-						th {{entitycount.ProductionOrders}}
-						th {{entitycount.ProductionOrderRows}}
-						th {{entitycount.PCCPTotal}}
-						th {{entitycount.PCCPToBeCalculated}}
-						th {{entitycount.VPSupplyLineTotal}}
-						th {{entitycount.TotalPricelists}}
-						th {{entitycount.TotalPricelistRows}}
+						td(ng-repeat='(key,value) in entitycount') {{value}}
 //- End Content
