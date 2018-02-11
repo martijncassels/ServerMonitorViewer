@@ -155,6 +155,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.metricschartseries = [];
 		vm.metricschartlabels = [];
 		vm.metricsdatasetOverride = [];
+		vm.getvirtualmarketplacemutations = [];
 		vm.servers = [];
 		vm.data = [[],[]];
 		vm.labels = [];
@@ -270,11 +271,38 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 						for(var i=0;i<data.length;i++){
 							vm.etradeservercounterdata[0].push(data[i].NumberOfSuccesfullPurchases);
 							vm.etradeservercounterdata[1].push(data[i].NumberOfFailedPurchases);
-							vm.etradeservercounterlabels.push(data[i].LoggedTimeStamp);
+							vm.etradeservercounterlabels.push(data[i].Remark+", Timestamp: "+data[i].LoggedTimeStamp);
 						}
 						vm.etradeservercounterdata[0].reverse();
 						vm.etradeservercounterdata[1].reverse();
 						vm.etradeservercounterlabels.reverse();
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+
+		//- get vmp mutation counters
+		$http.get('/getvirtualmarketplacemutations/'+vm.customer+'/'+vm.db)
+				.success(function(data) {
+						vm.getvirtualmarketplacemutations = data;
+						vm.getvirtualmarketplacemutationsdata = [[],[],[],[],[]];
+						vm.getvirtualmarketplacemutationslabels = [];
+
+						for(var i=0;i<data.length;i++){
+							vm.getvirtualmarketplacemutationsdata[0].push(data[i].NewOrMutatedSupplylines);
+							vm.getvirtualmarketplacemutationsdata[1].push(data[i].DeletedSupplylines);
+							vm.getvirtualmarketplacemutationsdata[2].push(data[i].InsertedParties);
+							vm.getvirtualmarketplacemutationsdata[3].push(data[i].InsertedPCCPs);
+							vm.getvirtualmarketplacemutationsdata[4].push(data[i].PurchaseAttempts);
+							vm.getvirtualmarketplacemutationslabels.push(data[i].Description+" "+data[i].Timestamp);
+						}
+						vm.getvirtualmarketplacemutationsdata[0].reverse();
+						vm.getvirtualmarketplacemutationsdata[1].reverse();
+						vm.getvirtualmarketplacemutationsdata[2].reverse();
+						vm.getvirtualmarketplacemutationsdata[3].reverse();
+						vm.getvirtualmarketplacemutationsdata[4].reverse();
+						vm.getvirtualmarketplacemutationslabels.reverse();
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);

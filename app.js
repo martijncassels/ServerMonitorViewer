@@ -194,6 +194,7 @@ app.get('/getvmptransactions/:customer/:db', routes.getvmptransactions);
 app.get('/getetradeservercounter/:customer/:db', routes.getetradeservercounter);
 app.get('/getcustomerentitycounts/:customer/:db', routes.getcustomerentitycounts);
 app.get('/getarchivecounters/:customer/:db', routes.getarchivecounters);
+app.get('/getvirtualmarketplacemutations/:customer/:db', routes.getvirtualmarketplacemutations);
 app.get('/getlicenses/:customer/:db', routes.getlicenses);
 app.get('/listservers', routes.listservers);
 app.get('/lastheartbeat/:server', routes.lastheartbeat);

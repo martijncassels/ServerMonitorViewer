@@ -296,9 +296,25 @@ exports.getcustomerentitycounts = function(req, res) {
 
 exports.getetradeservercounter = function(req, res) {
 	if(config.sqlstring.database!= ''){
-		sequelize.query("select top 500 \
-		ETradeServerCounterkey,EtradeUserKey,LoggedTimeStamp,NumberOfSuccesfullPurchases,NumberOfFailedPurchases,AvgResponseTimeMS,MinResponseTimeMS,MaxResponseTimeMS\
-		from [" + req.params.customer + "].[" + req.params.db + "].axerrio.ETradeServerCounter order by ETradeServerCounterkey desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		sequelize.query("select top 100 \
+		es.ETradeServerCounterkey,eu.Remark,es.LoggedTimeStamp,es.NumberOfSuccesfullPurchases,es.NumberOfFailedPurchases,es.AvgResponseTimeMS,es.MinResponseTimeMS,es.MaxResponseTimeMS\
+		from [" + req.params.customer + "].[" + req.params.db + "].axerrio.ETradeServerCounter es\
+		join [" + req.params.customer + "].[" + req.params.db + "].etradeserver.EtradeUser eu on eu.[EtradeUserKey] = es.EtradeUserKey\
+		order by ETradeServerCounterkey desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+			res.status(200).send(result);
+		})
+		.catch(err => {
+			console.log(err);
+		});
+	}
+}
+
+exports.getvirtualmarketplacemutations = function(req, res) {
+	if(config.sqlstring.database!= ''){
+		sequelize.query("select vmp.[Description], m.* from [" + req.params.customer + "].ServerMonitor.dbo.VirtualMarketPlaceMutation m\
+		join [" + req.params.customer + "].[" + req.params.db + "].[dbo].virtualmarketplace vmp on m.virtualmarketplacekey = vmp.[key]\
+		where [Timestamp] > dateadd(hour,-1,getdate())\
+		order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
 		.catch(err => {
