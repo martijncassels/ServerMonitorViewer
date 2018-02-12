@@ -1,7 +1,19 @@
 {
-  "name": "whatifv3",
+  "name": "ServerMonitorViewer",
   "version": "0.3.5",
   "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "apps": [
+    {
+      "script": "app.js",
+      "name": "ServerMonitorViewer",
+      "post_update": [
+        "npm install"
+      ]
+    }
+  ],
   "dependencies": {
     "JSONStream": "^1.3.1",
     "angular-recaptcha": "^4.1.0",
