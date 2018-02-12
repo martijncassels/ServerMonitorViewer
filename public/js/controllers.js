@@ -325,6 +325,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 							});
 						});
 						for(var i=0;i<vm.archivecounterschartdata.length;i++){
+							vm.archivecounterschartdata[i].reverse();
 							vm.archivecounterschartdataselection.push(vm.archivecounterschartdata[i]);
 						}
 				})
@@ -367,6 +368,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 							});
 						});
 						for(var i=0;i<vm.customerentitycountdata.length;i++){
+							vm.customerentitycountdata[i].reverse();
 							vm.customerentitycountdataselection.push(vm.customerentitycountdata[i]);
 						}
 				})
