@@ -187,15 +187,15 @@ app.get('/partials/:sub/:name', routes.partial);
 
 app.get('/getqueue', routes.getqueue);
 app.get('/getmutations/:lastkey', routes.getmutations);
-app.get('/getcustomermetrics/:server', routes.getcustomermetrics);
+app.get('/getcustomermetrics/:server/:alias', routes.getcustomermetrics);
 app.get('/getcustomermutations/:server/:lastkey', routes.getcustomermutations);
-app.get('/gettop10errors/:customer/:db', routes.gettop10errors);
-app.get('/getvmptransactions/:customer/:db', routes.getvmptransactions);
-app.get('/getetradeservercounter/:customer/:db', routes.getetradeservercounter);
-app.get('/getcustomerentitycounts/:customer/:db', routes.getcustomerentitycounts);
-app.get('/getarchivecounters/:customer/:db', routes.getarchivecounters);
-app.get('/getvirtualmarketplacemutations/:customer/:db', routes.getvirtualmarketplacemutations);
-app.get('/getlicenses/:customer/:db', routes.getlicenses);
+app.get('/gettop10errors/:alias/:db', routes.gettop10errors);
+app.get('/getvmptransactions/:alias/:db', routes.getvmptransactions);
+app.get('/getetradeservercounter/:alias/:db', routes.getetradeservercounter);
+app.get('/getcustomerentitycounts/:alias/:db', routes.getcustomerentitycounts);
+app.get('/getarchivecounters/:alias/:db', routes.getarchivecounters);
+app.get('/getvirtualmarketplacemutations/:alias/:db', routes.getvirtualmarketplacemutations);
+app.get('/getlicenses/:alias/:db', routes.getlicenses);
 app.get('/listservers', routes.listservers);
 app.get('/lastheartbeat/:server', routes.lastheartbeat);
 

@@ -25,12 +25,37 @@ nav.col-md-2.d-none.d-md-block.bg-light.sidebar
 		//- 			|                   Reports
 		h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
 			span Linked Servers
-			a.d-flex.align-items-center.text-muted(href='#')
+			a(href='#').d-flex.align-items-center.text-muted
 				//- span(data-feather='plus-circle')
 				i.fas.fa-plus-circle.feather
-		ul.nav.flex-column.mb-2
-			li(ng-repeat='server in main.servers').nav-item
-				a.nav-link(href='/server/{{server.InstanceName}}')
+		//- button.btn.btn-lg.btn-danger(type='button', data-toggle='popover', title='Popover title', data-content="And here's some amazing content. It's very engaging. Right?") Click to toggle popover
+		ul.nav.nav-pills.flex-column.mb-2
+			li.nav-item.dropdown
+				a.nav-link.dropdown-toggle(data-toggle='dropdown', href='#', role='button', aria-haspopup='true', aria-expanded='false')
 					span(data-feather='file-text')
-					i(ng-class="{'green' : server.Min_ago<30 , 'red' : server.Min_ago>30}").fas.fa-laptop.feather
-					|                   {{server.InstanceName}}
+					i(ng-class="{'green' : server.Min_ago<30 , 'red' : (server.Min_ago>30) || !server.Min_ago}").fas.fa-laptop.feather
+					|                    test - siblings
+				.dropdown-menu
+					a.dropdown-item(href='#') Action
+					a.dropdown-item(href='#') Another action
+					a.dropdown-item(href='#') Something else here
+					.dropdown-divider
+					a.dropdown-item(href='#') Separated link
+			li.nav-item
+				a.nav-link(href='#', role='button')
+					span(data-feather='file-text')
+					i(ng-class="{'green' : server.Min_ago<30 , 'red' : (server.Min_ago>30) || !server.Min_ago}").fas.fa-laptop.feather
+					|                    test - no siblings
+		ul.nav.flex-column.mb-2
+			li(ng-repeat='server in main.servers | orderBy: "+Alias"').nav-item
+				a(href='/server/{{server.Description}}/{{server.Alias}}',ng-hide='!server.Description').nav-link
+					span(data-feather='file-text')
+					i(ng-class="{'green' : server.Min_ago<30 , 'red' : (server.Min_ago>30) || !server.Min_ago}").fas.fa-laptop.feather
+					|                    {{server.Alias}} - {{server.Description}}
+		//- div(ng-repeat='server in main.servers | orderBy: "+Alias"').btn-group.dropright
+		//- 	button(href='/server/{{server.Description}}/{{server.Alias}}',ng-hide='!server.Description',data-toggle="dropdown",aria-haspopup="true",aria-expanded="false").btn.dropdown-toggle
+		//- 		span(data-feather='file-text')
+		//- 		i(ng-class="{'green' : server.Min_ago<30 , 'red' : (server.Min_ago>30) || !server.Min_ago}").fas.fa-laptop.feather
+		//- 		|                    {{server.Alias}} - {{server.Description}}
+		//- 	.dropdown-menu
+		//- 		a test

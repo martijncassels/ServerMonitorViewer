@@ -16,12 +16,33 @@ ServerCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams','$in
 function MainCtrl($scope,$http) {
 	var vm = this;
 	vm.title = '';
+	vm.servers = [];
 
 	//- Get a list of all active servers in [axerrio].[registeredservers]
 	//- for use in the side menu
 	$http.get('/listservers')
 			.success(function(data) {
 					vm.servers = data;
+					for(var i=0;i<vm.servers.length;i++){
+						if(i<vm.servers.length-1){
+							if(vm.servers[i].Description == vm.servers[i+1].Description){
+								vm.servers[i].hasSiblings = true;
+								vm.servers[i+1].hasSiblings = true;
+							}
+							else {
+								vm.servers[i+1].hasSiblings = false;
+							}
+						}
+						else {
+							if(vm.servers[i].Description == vm.servers[i-1].Description) {
+								vm.servers[i].hasSiblings = true;
+								vm.servers[i-1].hasSiblings = true;
+							}
+							else {
+								vm.servers[i].hasSiblings = false;
+							}
+						}
+					}
 			})
 			.error(function(data) {
 					console.log('Error: ' + data);
@@ -172,10 +193,10 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.max = 60000;
 		vm.dynamic = vm.max;
 
-		$http.get('/getcustomermetrics/'+$routeParams.servername)
+		$http.get('/getcustomermetrics/'+$routeParams.servername+'/'+$routeParams.alias)
 				.success(function(data) {
-						//vm.mockdata = data;
-						vm.mockdata = data.reverse();
+						vm.mockdata = data;
+						//vm.mockdata.reverse();
 						for(var i=0;i<vm.mockdata.length;i++){
 							vm.data[0].push(vm.mockdata[i].MetricValue);
 							vm.data[1].push(vm.mockdata[i].ThresholdValue);
@@ -216,30 +237,25 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 
 		//- temporary switch to set db name and linkedserver name,
 		//- need to figure this out, maybe via [axerrio].[RegisteredServer]?
-		switch($routeParams.servername) {
-		case 'BA-SQL12':
-				vm.customer = 'BAR';
+		switch($routeParams.alias) {
+		case 'BAR':
 				vm.db = 'Axerrio';
 				break;
-		case 'HO-SQL01':
-				vm.customer = 'HOL';
+		case 'HOL':
 				vm.db = 'FlowerCore';
 				break;
-		case 'VVB-SQL03':
-				vm.customer = 'VVB';
+		case 'VVB':
 				vm.db = 'ABSBloemen';
 				break;
-		case 'VVP-SQL01':
-				vm.customer = 'VVP';
+		case 'VVP':
 				vm.db = 'FCPotplants';
 				break;
 		default:
-				vm.customer = '';
 					vm.db = '';
 		}
 
 		//- Get active license useage
-		$http.get('/getlicenses/'+vm.customer+'/'+vm.db)
+		$http.get('/getlicenses/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
 						vm.licenses = data;
 				})
@@ -249,7 +265,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 				});
 
 		//- get vmp calculations
-		$http.get('/getvmptransactions/'+vm.customer+'/'+vm.db)
+		$http.get('/getvmptransactions/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
 						vm.vmptransactions = data;
 
@@ -264,8 +280,13 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 				});
 
 		//- get etrade server counters
-		$http.get('/getetradeservercounter/'+vm.customer+'/'+vm.db)
+		$http.get('/getetradeservercounter/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
+					//console.log(data);
+					// if(data.name=="SequelizeDatabaseError") {
+					// 	vm.etradeservercountererror = true;
+					// }
+					//else {
 						vm.etradeservercounters = data;
 
 						for(var i=0;i<data.length;i++){
@@ -276,6 +297,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 						vm.etradeservercounterdata[0].reverse();
 						vm.etradeservercounterdata[1].reverse();
 						vm.etradeservercounterlabels.reverse();
+					//}
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
@@ -283,7 +305,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 				});
 
 		//- get vmp mutation counters
-		$http.get('/getvirtualmarketplacemutations/'+vm.customer+'/'+vm.db)
+		$http.get('/getvirtualmarketplacemutations/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
 						vm.getvirtualmarketplacemutations = data;
 						vm.getvirtualmarketplacemutationsdata = [[],[],[],[],[]];
@@ -310,7 +332,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 				});
 
 		//- get archivecounters
-		$http.get('/getarchivecounters/'+vm.customer+'/'+vm.db)
+		$http.get('/getarchivecounters/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
 						vm.archivecounters = data;
 						_.each(data,function(value1,index){
@@ -347,7 +369,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 	  };
 
 		//- get entitycounters
-		$http.get('/getcustomerentitycounts/'+vm.customer+'/'+vm.db)
+		$http.get('/getcustomerentitycounts/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
 						vm.customerentitycountdataselection = [];
 						vm.customerentitycounts = data;

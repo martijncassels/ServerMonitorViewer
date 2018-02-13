@@ -11,7 +11,9 @@
 				h5 
 					i.fas.fa-address-card
 					|                   Licenses
-			div(ng-repeat='license in vm.licenses track by $index', style='padding:5px;')
+			div(ng-show="vm.licenses.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+				{{vm.licenses.original.message}}
+			div(ng-repeat='license in vm.licenses track by $index', style='padding:5px;',ng-hide="vm.licenses.name=='SequelizeDatabaseError'")
 				.row
 					.col-md-6
 						{{license.description}} ({{license.hostname}})
@@ -30,7 +32,9 @@
 						|	Department
 					.col-md-6
 						| To Calculate
-			div(ng-repeat='vmptransaction in vm.vmptransactions track by $index', style='padding:5px;')
+			div(ng-show="vm.vmptransactions.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+				{{vm.vmptransactions.original.message}}
+			div(ng-repeat='vmptransaction in vm.vmptransactions track by $index', style='padding:5px;',ng-hide="vm.vmptransactions.name=='SequelizeDatabaseError'")
 				.row
 					.col-md-6
 						{{vmptransaction.Description}}
@@ -44,7 +48,9 @@ br
 				h5 
 					i.fas.fa-address-card
 					|                   VMP Mutations last hour
-			canvas(id='line',chart-data='vm.getvirtualmarketplacemutationsdata',chart-labels='vm.getvirtualmarketplacemutationslabels',chart-series='["NewOrMutatedSupplylines","DeletedSupplylines","InsertedParties","InsertedPCCPs","PurchaseAttempts"]',chart-options='vm.options',height='150').chart.chart-line
+			div(ng-show="vm.getvirtualmarketplacemutations.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+				{{vm.getvirtualmarketplacemutations.original.message}}
+			canvas(ng-hide="vm.getvirtualmarketplacemutations.name=='SequelizeDatabaseError'",id='line',chart-data='vm.getvirtualmarketplacemutationsdata',chart-labels='vm.getvirtualmarketplacemutationslabels',chart-series='["NewOrMutatedSupplylines","DeletedSupplylines","InsertedParties","InsertedPCCPs","PurchaseAttempts"]',chart-options='vm.options',height='150').chart.chart-line
 			//- table.table.table-striped.table-sm
 			//- 	thead
 			//- 		tr
@@ -58,7 +64,9 @@ br
 				h5 
 					i.fas.fa-address-card
 					|                   EtradeCounters
-			canvas(id='bar',chart-data='vm.etradeservercounterdata',chart-labels='vm.etradeservercounterlabels',chart-series='["NumberOfSuccesfullPurchases","NumberOfFailedPurchases"]',chart-options='vm.options',chart-colors='["#5cb85c","#d9534f"]',height='150').chart.chart-bar
+			div(ng-show="vm.etradeservercounters.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+				{{vm.etradeservercounters.original.message}}
+			canvas(ng-hide="vm.etradeservercounters.name=='SequelizeDatabaseError'",id='bar',chart-data='vm.etradeservercounterdata',chart-labels='vm.etradeservercounterlabels',chart-series='["NumberOfSuccesfullPurchases","NumberOfFailedPurchases"]',chart-options='vm.options',chart-colors='["#5cb85c","#d9534f"]',height='150').chart.chart-bar
 br
 canvas(id='bar',chart-data='vm.data',chart-labels='vm.labels',chart-series='vm.series',chart-options='vm.options',height='50').chart.chart-bar
 //canvas(id='bar',chart-data='vm.metricschartdata',chart-labels='vm.metricschartlabels',chart-series='vm.metricschartseries',chart-options='vm.options',height='150',chart-dataset-override="vm.metricsdatasetOverride" ).chart.chart-bar
@@ -73,7 +81,7 @@ div(ng-show='vm.mockdata.length>0').table-responsive
 			tr
 				th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
 		tbody
-			tr(ng-repeat='records in vm.mockdata | orderBy:"-RemoteQueuedMetricKey"')
+			tr(ng-repeat='records in vm.mockdata track by records.RemoteQueuedMetricKey | orderBy:"-RemoteQueuedMetricKey"')
 				td(ng-repeat='(key,value) in records') {{value}}
 div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
 br 
@@ -86,12 +94,14 @@ br
 .row
 	.col-md-12
 		.table-responsive
-			table.table.table-striped.table-sm
+			table(ng-hide="vm.archivecounters.name=='SequelizeDatabaseError'").table.table-striped.table-sm
 				thead
 					th(ng-repeat='(key,value) in vm.archivecounters[0]') {{key}}
 				tbody
 					tr(ng-repeat='counter in vm.archivecounters | orderBy:"-ArchiveCounterKey"')
 						td(ng-repeat='(key,value) in counter') {{value}}
+			div(ng-show="vm.archivecounters.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+				{{vm.archivecounters.original.message}}
 br
 canvas(id='line',chart-data='vm.customerentitycountdataselection',chart-labels='vm.customerentitycountdata[1]',chart-series='vm.customerentitycountseriesselection',chart-options='vm.options',height='100',chart-dataset-override="[{pointRadius:0}]").chart.chart-line
 br
@@ -102,10 +112,12 @@ br
 .row
 	.col-md-12
 		.table-responsive
-			table.table.table-striped.table-sm
+			table(ng-hide="vm.customerentitycounts.name=='SequelizeDatabaseError'").table.table-striped.table-sm
 				thead
 					th(ng-repeat='(key,value) in vm.customerentitycounts[0]') {{key}}
 				tbody
 					tr(ng-repeat='entitycount in vm.customerentitycounts | orderBy:"-ID"')
 						td(ng-repeat='(key,value) in entitycount') {{value}}
+			div(ng-show="vm.customerentitycounts.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+				{{vm.customerentitycounts.original.message}}
 //- End Content

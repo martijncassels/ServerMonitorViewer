@@ -51,12 +51,13 @@ exports.index = function(req, res){
 
 exports.listservers = function(req, res) {
 	if(config.sqlstring.database!= ''){
-	sequelize.query("SELECT rq.[InstanceName],max(rq.[timestamp]) as [timestamp],datediff(MINUTE,max(rq.[timestamp]),getdate()) as [Min_ago]\
-FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq with(readuncommitted)\
-	left join [ServerMonitor].[axerrio].[RegisteredServer] rg with(readuncommitted)\
-	 on rq.[InstanceName] = rg.[Description]\
-WHERE [Metric] = 'Heartbeat'\
-GROUP BY rq.[InstanceName]", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+	sequelize.query("SELECT rg.[Description],rg.[Alias],max(rq.[timestamp]) as [timestamp],datediff(MINUTE,max(rq.[timestamp]),getdate()) as [Min_ago]\
+FROM [ServerMonitor].[axerrio].[RegisteredServer] rg with(readuncommitted)\
+OUTER APPLY	(\
+	SELECT  TOP 1 * FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq with(readuncommitted)\
+	WHERE (rq.[InstanceName] = rg.[Description]) order by [RemoteQueuedMetricKey] desc\
+) rq GROUP BY rg.[Description],rg.[Alias]\
+	ORDER BY rg.[Description]", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
 	})
 	.catch(err => {
@@ -134,15 +135,12 @@ exports.getcustomermetrics = function(req, res) {
 		console.log(err);
 	});
 }
-else {
-	res.status(200).send(mockjson);
-}
 }
 
 exports.getarchivecounters = function(req, res) {
 	if(config.sqlstring.database!= ''){
 	sequelize.query("select top 10 [ArchiveCounterKey],[CounterTimestamp],[OrderCount],[OrderRowCount],[PartyCount],[PartyVirtualCount],[PartyMutationCount],[ExinvoiceCount],[PricelistCount],[VPSupplylineCount],[PartyTransactionCount]\
-	from [" + req.params.customer + "].[" + req.params.db + "].[dbo].[ArchiveCounters] with(readuncommitted)\
+	from [" + req.params.alias + "].[" + req.params.db + "].[dbo].[ArchiveCounters] with(readuncommitted)\
 	order by [Archivecounterkey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
 	})
@@ -160,9 +158,9 @@ exports.getlicenses = function(req, res) {
 		sequelize.query("select\
 		count(lt.[ID]) as ActiveLicenses, case when lt.[licenses] = count(lt.[ID]) then 'all used' else convert(nvarchar,lt.[licenses] - count(lt.[ID]))+' left' end as [status]\
 		, lt.[ID], lt. [description], lt.[licenses],case when (lt.id < 500 or lt.id > 599) then 'Multiple' else max(fp.HostName) end as [hostname]\
-		from [" + req.params.customer + "].[" + req.params.db + "].[dbo].[fpprocess] fp with(readuncommitted)\
-			join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[licensetype] lt with(readuncommitted) on lt.[key] = fp.[licensetypekey]\
-			join [" + req.params.customer + "].[" + req.params.db + "].[dbo].[user] u with(readuncommitted) on u.[key] = fp.[userkey]\
+		from [" + req.params.alias + "].[" + req.params.db + "].[dbo].[fpprocess] fp with(readuncommitted)\
+			join [" + req.params.alias + "].[" + req.params.db + "].[dbo].[licensetype] lt with(readuncommitted) on lt.[key] = fp.[licensetypekey]\
+			join [" + req.params.alias + "].[" + req.params.db + "].[dbo].[user] u with(readuncommitted) on u.[key] = fp.[userkey]\
 		group by lt.[ID], lt. [description], lt.[licenses]", {raw: true,type: sequelize.QueryTypes.SELECT})
 		.then(result => {
 			res.status(200).send(result);
@@ -171,55 +169,13 @@ exports.getlicenses = function(req, res) {
 			console.log(err);
 		});
 }
-else {
-	res.status(200).send([{
-		hostname: 'BA-COM04',
-		ActiveLicenses: 1,
-		status: 'all used',
-		ID: 501,
-		description: 'ABS EKT Message Processing',
-		licenses: 1
-	},
-	{
-		hostname: 'BA-COM04',
-		ActiveLicenses: 1,
-		status: 'all used',
-		ID: 502,
-		description: 'ABS Batch Lot Checkin',
-		licenses: 1
-	},
-	{
-		hostname: 'BA-COM04',
-		ActiveLicenses: 1,
-		status: 'all used',
-		ID: 503,
-		description: 'ABS eTrade Client',
-		licenses: 2
-	},
-	{
-		hostname: 'BA-COM04',
-		ActiveLicenses: 6,
-		status: 'all used',
-		ID: 504,
-		description: 'ABS Calculate Sales Prices',
-		licenses: 6
-	},
-	{
-		hostname: 'BA-COM04',
-		ActiveLicenses: 1,
-		status: '9 left',
-		ID: 800,
-		description: 'ABS Support',
-		licenses: 10
-	}]);
-}
 }
 
 exports.gettop10errors = function(req,res) {
 	if(config.sqlstring.database!= ''){
 		sequelize.query("select top 10\
 			count(el.loggedfromsub) as [count],el.loggedfromsub,max(el.message) as [lastmessage]\
-			from (select top 10000 * from [" + req.params.customer + "].[" + req.params.db + "].[dbo].errorlog with(readuncommitted)\
+			from (select top 10000 * from [" + req.params.alias + "].[" + req.params.db + "].[dbo].errorlog with(readuncommitted)\
 			where loggedfromsub not in ('FlowerPower\\DBProcessBoughtVirtualParties.ProcessBoughtVirtualParties')) el\
 			group by el.loggedfromsub\
 			order by count(el.loggedfromsub) desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
@@ -235,10 +191,10 @@ exports.getvmptransactions = function(req,res) {
 	if(config.sqlstring.database!= ''){
 		sequelize.query("select d.[Key], d.[Description], d.CalculationImportance,\
 			COUNT(1) as ToCalculate\
-			from [" + req.params.customer + "].[" + req.params.db + "].dbo.partycalculationcontextprice pccp with (readuncommitted)\
-			join [" + req.params.customer + "].[" + req.params.db + "].dbo.Party p with (readuncommitted) on pccp.PartyKey = p.[Key]\
-			join [" + req.params.customer + "].[" + req.params.db + "].dbo.Department d with (readuncommitted) on p.DepartmentKey = d.[Key]\
-			left join [" + req.params.customer + "].[" + req.params.db + "].dbo.PartyVirtual pv with (readuncommitted) on p.[Key] = pv.PartyKey\
+			from [" + req.params.alias + "].[" + req.params.db + "].dbo.partycalculationcontextprice pccp with (readuncommitted)\
+			join [" + req.params.alias + "].[" + req.params.db + "].dbo.Party p with (readuncommitted) on pccp.PartyKey = p.[Key]\
+			join [" + req.params.alias + "].[" + req.params.db + "].dbo.Department d with (readuncommitted) on p.DepartmentKey = d.[Key]\
+			left join [" + req.params.alias + "].[" + req.params.db + "].dbo.PartyVirtual pv with (readuncommitted) on p.[Key] = pv.PartyKey\
 			where pccp.Calculate = 1 and isnull (pv.Deleted,0) = 0\
 			group by d.[Key], d.CalculationImportance, d.[Description]\
 			order by d.CalculationImportance, d.[Key]", {raw: true,type: sequelize.QueryTypes.SELECT})
@@ -286,7 +242,7 @@ exports.getcustomerentitycounts = function(req, res) {
 		PCCPToBeCalculated,\
 		VPSupplyLineTotal,\
 		TotalPricelists,\
-		TotalPricelistRows from [" + req.params.customer + "].ServerMonitor.dbo.EntityCounts with(readuncommitted)\
+		TotalPricelistRows from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts with(readuncommitted)\
 		 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
@@ -300,21 +256,22 @@ exports.getetradeservercounter = function(req, res) {
 	if(config.sqlstring.database!= ''){
 		sequelize.query("select top 100 \
 		es.ETradeServerCounterkey,eu.Remark,es.LoggedTimeStamp,es.NumberOfSuccesfullPurchases,es.NumberOfFailedPurchases,es.AvgResponseTimeMS,es.MinResponseTimeMS,es.MaxResponseTimeMS\
-		from [" + req.params.customer + "].[" + req.params.db + "].axerrio.ETradeServerCounter es with(readuncommitted)\
-		join [" + req.params.customer + "].[" + req.params.db + "].etradeserver.EtradeUser eu with(readuncommitted) on eu.[EtradeUserKey] = es.EtradeUserKey\
+		from [" + req.params.alias + "].[" + req.params.db + "].axerrio.ETradeServerCounter es with(readuncommitted)\
+		join [" + req.params.alias + "].[" + req.params.db + "].etradeserver.EtradeUser eu with(readuncommitted) on eu.[EtradeUserKey] = es.EtradeUserKey\
 		order by ETradeServerCounterkey desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
 		.catch(err => {
 			console.log(err);
+			res.status(200).send(err);
 		});
 	}
 }
 
 exports.getvirtualmarketplacemutations = function(req, res) {
 	if(config.sqlstring.database!= ''){
-		sequelize.query("select vmp.[Description], m.* from [" + req.params.customer + "].ServerMonitor.dbo.VirtualMarketPlaceMutation m with(readuncommitted)\
-		join [" + req.params.customer + "].[" + req.params.db + "].[dbo].virtualmarketplace vmp with(readuncommitted) on m.virtualmarketplacekey = vmp.[key]\
+		sequelize.query("select vmp.[Description], m.* from [" + req.params.alias + "].ServerMonitor.dbo.VirtualMarketPlaceMutation m with(readuncommitted)\
+		join [" + req.params.alias + "].[" + req.params.db + "].[dbo].virtualmarketplace vmp with(readuncommitted) on m.virtualmarketplacekey = vmp.[key]\
 		where [Timestamp] > dateadd(hour,-1,getdate())\
 		order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
@@ -329,7 +286,7 @@ exports.lastheartbeat = function(req, res) {
 	if(config.sqlstring.database!= ''){
 		sequelize.query("select top 1 *\
 		from [ServerMonitor].[axerrio].[RemoteQueuedMetric] with(readuncommitted)\
-		where [InstanceName] = 'HO-SQL01'\
+		where [InstanceName] = '" + req.params.server + "'\
 		and [metric] = 'Heartbeat'\
 		order by [timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
