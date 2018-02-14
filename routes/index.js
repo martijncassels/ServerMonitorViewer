@@ -192,8 +192,8 @@ exports.gettop10errors = function(req,res) {
 		res.status(200).send(null);
 	}
 }
-
-exports.getvmptransactions = function(req,res) {
+//getvmptransactions
+exports.getpccpcalcs = function(req,res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select d.[Key], d.[Description], d.CalculationImportance,\
 			COUNT(1) as ToCalculate\

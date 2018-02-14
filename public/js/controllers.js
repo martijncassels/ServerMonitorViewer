@@ -200,9 +200,9 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.servers = [];
 		vm.data = [[],[]];
 		vm.labels = [];
-		vm.vmptransactions = [];
-		vm.vmptransactionsdata = [];
-		vm.vmptransactionslabels = [];
+		vm.pccpcalcss = [];
+		vm.pccpcalcssdata = [];
+		vm.pccpcalcsslabels = [];
 		vm.etradeservercounters = [];
 		vm.etradeservercounterdata = [[],[]];
 		vm.etradeservercounterlabels = [];
@@ -272,6 +272,9 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 						break;
 				case 'VVP':
 						vm.db = 'FCPotplants';
+						break;
+				case 'FCA':
+						vm.db = 'FlowerCore';
 						break;
 				default:
 							vm.db = 'none';
@@ -486,13 +489,13 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 				});
 
 		//- get vmp calculations
-		$http.get('/getvmptransactions/'+$routeParams.alias+'/'+vm.db)
+		$http.get('/getpccpcalcs/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
-						vm.vmptransactions = data;
+						vm.pccpcalcss = data;
 
 						for(var i=0;i<data.length;i++){
-							vm.vmptransactionsdata.push(data[i].ToCalculate);
-							vm.vmptransactionslabels.push(data[i].Description);
+							vm.pccpcalcssdata.push(data[i].ToCalculate);
+							vm.pccpcalcsslabels.push(data[i].Description);
 						}
 				})
 				.error(function(data) {

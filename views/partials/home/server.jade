@@ -32,14 +32,14 @@
 						|	Department
 					.col-md-6
 						| To Calculate
-			div(ng-show="vm.vmptransactions.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+			div(ng-show="vm.pccpcalcss.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
 				{{vm.vmptransactions.original.message}}
-			div(ng-repeat='vmptransaction in vm.vmptransactions track by $index', style='padding:5px;',ng-hide="vm.vmptransactions.name=='SequelizeDatabaseError'")
+			div(ng-repeat='pccpcalc in vm.pccpcalcss track by $index', style='padding:5px;',ng-hide="vm.pccpcalcss.name=='SequelizeDatabaseError'")
 				.row
 					.col-md-6
-						{{vmptransaction.Description}}
+						{{pccpcalc.Description}}
 					.col-md-6
-						{{vmptransaction.ToCalculate}}
+						{{pccpcalc.ToCalculate}}
 br
 .row
 	.col-md-6

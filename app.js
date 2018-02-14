@@ -190,7 +190,7 @@ app.get('/getmutations/:lastkey', routes.getmutations);
 app.get('/getcustomermetrics/:server/:alias', routes.getcustomermetrics);
 app.get('/getcustomermutations/:server/:lastkey', routes.getcustomermutations);
 app.get('/gettop10errors/:alias/:db', routes.gettop10errors);
-app.get('/getvmptransactions/:alias/:db', routes.getvmptransactions);
+app.get('/getpccpcalcs/:alias/:db', routes.getpccpcalcs);
 app.get('/getetradeservercounter/:alias/:db', routes.getetradeservercounter);
 app.get('/getcustomerentitycounts/:alias/:db', routes.getcustomerentitycounts);
 app.get('/getarchivecounters/:alias/:db', routes.getarchivecounters);
