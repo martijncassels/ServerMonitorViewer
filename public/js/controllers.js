@@ -258,21 +258,222 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		//- temporary switch to set db name and linkedserver name,
 		//- need to figure this out, maybe via [axerrio].[RegisteredServer]?
 		switch($routeParams.alias) {
+				case 'BAR':
+						vm.db = 'Axerrio';
+						break;
+				case 'HOL':
+						vm.db = 'FlowerCore';
+						break;
+				case 'HUS':
+						vm.db = 'ABSHUS';
+						break;
+				case 'VVB':
+						vm.db = 'ABSBloemen';
+						break;
+				case 'VVP':
+						vm.db = 'FCPotplants';
+						break;
+				default:
+							vm.db = 'none';
+				}
+		/*
+		switch($routeParams.alias) {
+		case 'UFE':
+			vm.db = 'none';
+			break;
+		case 'AVH':
+			vm.db = 'none';
+			break;
+		case 'BHF':
+			vm.db = 'none';
+			break;
+		case 'DRC':
+			vm.db = 'none';
+			break;
+		case 'FAR':
+			vm.db = 'none';
+			break;
+		case 'PRF':
+			vm.db = 'none';
+			break;
+		case 'CAT':
+			vm.db = 'none';
+			break;
+		case 'ALG':
+			vm.db = 'FlowerCore';
+			break;
+		case 'IPP':
+			vm.db = 'Axerrio';
+			break;
+		case 'B2K':
+			vm.db = 'B2K_ABS';
+			break;
+		case 'BUS':
+			vm.db = 'BUS_ABS';
+			break;
+		case 'HBM':
+			vm.db = 'HBM_ABS';
+			break;
+		case 'FGG':
+			vm.db = 'FGG_ABS';
+			break;
+		case 'A4Y':
+			vm.db = 'A4Y_ABS';
+			break;
+		case 'BYF':
+			vm.db = 'BYF_ABS';
+			break;
+		case 'DHC':
+			vm.db = 'none';
+			break;
+		case 'DUD':
+			vm.db = 'ABSDutchDirect';
+			break;
+		case 'GTX':
+			vm.db = 'FloraBoxGermany';
+			break;
+		case 'BRU':
+			vm.db = 'BRU_ABS';
+			break;
+		case 'LIN':
+			vm.db = 'none';
+			break;
+		case 'PFC':
+			vm.db = 'none';
+			break;
+		case 'PJO':
+			vm.db = 'none';
+			break;
+		case 'PKF':
+			vm.db = 'none';
+			break;
+		case 'SMA':
+			vm.db = 'ABSSmalbil';
+			break;
+		case 'UNI':
+			vm.db = 'none';
+			break;
+		case 'PHY':
+			vm.db = 'ABSPHY';
+			break;
+		case 'EZF':
+			vm.db = 'EZF_ABS';
+			break;
 		case 'BAR':
-				vm.db = 'Axerrio';
-				break;
+			vm.db = 'Axerrio';
+			break;
+		case 'BEA':
+			vm.db = 'none';
+			break;
+		case 'FCA':
+			vm.db = 'FlowerCore';
+			break;
+		case 'BLO':
+			vm.db = 'BLO_ABS';
+			break;
+		case 'CEL':
+			vm.db = 'Axerrio';
+			break;
+		case 'GRA':
+			vm.db = 'Axerrio';
+			break;
+		case 'HUS':
+			vm.db = 'ABSHUS';
+			break;
 		case 'HOL':
-				vm.db = 'FlowerCore';
-				break;
+			vm.db = 'FlowerCore';
+			break;
+		case 'VIL':
+			vm.db = 'VIL_ABS';
+			break;
+		case 'VPR':
+			vm.db = 'VPR_ABS';
+			break;
+		case 'VKL':
+			vm.db = 'VKL_ABS';
+			break;
+		case 'VKA':
+			vm.db = 'VKA_ABS';
+			break;
+		case 'KEM':
+			vm.db = 'Axerrio';
+			break;
+		case 'TUN':
+			vm.db = 'Axerrio';
+			break;
+		case 'VAB':
+			vm.db = 'Axerrio';
+			break;
+		case 'VAS':
+			vm.db = 'Axerrio';
+			break;
+		case 'VAT':
+			vm.db = 'Axerrio';
+			break;
+		case 'VBI':
+			vm.db = 'Axerrio';
+			break;
+		case 'VGA':
+			vm.db = 'Axerrio';
+			break;
+		case 'VIN':
+			vm.db = 'Axerrio';
+			break;
+		case 'VIS':
+			vm.db = 'Axerrio';
+			break;
+		case 'VNO':
+			vm.db = 'Axerrio';
+			break;
+		case 'VRI':
+			vm.db = 'Axerrio';
+			break;
+		case 'VSO':
+			vm.db = 'Axerrio';
+			break;
+		case 'VST':
+			vm.db = 'Axerrio';
+			break;
 		case 'VVB':
-				vm.db = 'ABSBloemen';
-				break;
+			vm.db = 'ABSBloemen';
+			break;
+		case 'VNY':
+			vm.db = 'Axerrio';
+			break;
+		case 'VVD':
+			vm.db = 'Axerrio';
+			break;
+		case 'VVE':
+			vm.db = 'Axerrio';
+			break;
+		case 'VVS':
+			vm.db = 'VVSA';
+			break;
+		case 'VVG':
+			vm.db = 'Axerrio';
+			break;
+		case 'VVH':
+			vm.db = 'Axerrio';
+			break;
+		case 'VVL':
+			vm.db = 'AXERRIO';
+			break;
+		case 'VVM':
+			vm.db = 'Axerrio';
+			break;
+		case 'VVN':
+			vm.db = 'Axerrio';
+			break;
 		case 'VVP':
-				vm.db = 'FCPotplants';
-				break;
+			vm.db = 'FCPotplants';
+			break;
+		case 'VVZ':
+			vm.db = 'Axerrio';
+			break;
 		default:
-					vm.db = 'none';
+			vm.db = 'none';
 		}
+		*/
 
 		//- Get active license useage
 		$http.get('/getlicenses/'+$routeParams.alias+'/'+vm.db)
