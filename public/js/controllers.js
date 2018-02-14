@@ -271,7 +271,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 				vm.db = 'FCPotplants';
 				break;
 		default:
-					vm.db = '';
+					vm.db = 'none';
 		}
 
 		//- Get active license useage

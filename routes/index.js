@@ -138,7 +138,7 @@ exports.getcustomermetrics = function(req, res) {
 }
 
 exports.getarchivecounters = function(req, res) {
-	if(config.sqlstring.database!= ''){
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
 	sequelize.query("select top 10 [ArchiveCounterKey],[CounterTimestamp],[OrderCount],[OrderRowCount],[PartyCount],[PartyVirtualCount],[PartyMutationCount],[ExinvoiceCount],[PricelistCount],[VPSupplylineCount],[PartyTransactionCount]\
 	from [" + req.params.alias + "].[" + req.params.db + "].[dbo].[ArchiveCounters] with(readuncommitted)\
 	order by [Archivecounterkey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
@@ -154,7 +154,7 @@ else {
 }
 
 exports.getlicenses = function(req, res) {
-	if(config.sqlstring.database!= ''){
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select\
 		count(lt.[ID]) as ActiveLicenses, case when lt.[licenses] = count(lt.[ID]) then 'all used' else convert(nvarchar,lt.[licenses] - count(lt.[ID]))+' left' end as [status]\
 		, lt.[ID], lt. [description], lt.[licenses],case when (lt.id < 500 or lt.id > 599) then 'Multiple' else max(fp.HostName) end as [hostname]\
@@ -169,10 +169,13 @@ exports.getlicenses = function(req, res) {
 			console.log(err);
 		});
 }
+else {
+	res.status(200).send(null);
+}
 }
 
 exports.gettop10errors = function(req,res) {
-	if(config.sqlstring.database!= ''){
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select top 10\
 			count(el.loggedfromsub) as [count],el.loggedfromsub,max(el.message) as [lastmessage]\
 			from (select top 10000 * from [" + req.params.alias + "].[" + req.params.db + "].[dbo].errorlog with(readuncommitted)\
@@ -185,10 +188,13 @@ exports.gettop10errors = function(req,res) {
 				console.log(err);
 			});
 	}
+	else {
+		res.status(200).send(null);
+	}
 }
 
 exports.getvmptransactions = function(req,res) {
-	if(config.sqlstring.database!= ''){
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select d.[Key], d.[Description], d.CalculationImportance,\
 			COUNT(1) as ToCalculate\
 			from [" + req.params.alias + "].[" + req.params.db + "].dbo.partycalculationcontextprice pccp with (readuncommitted)\
@@ -205,10 +211,13 @@ exports.getvmptransactions = function(req,res) {
 				console.log(err);
 			});
 	}
+	else {
+		res.status(200).send(null);
+	}
 }
 
 exports.getcustomermutations = function(req, res) {
-	if(config.sqlstring.database!= ''){
+	if(config.sqlstring.database!= '' && req.params.lastkey){
 		sequelize.query("SELECT *\
 		FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] with(readuncommitted)\
 		WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey + " AND\
@@ -219,10 +228,13 @@ exports.getcustomermutations = function(req, res) {
 			console.log(err);
 		});
 	}
+	else {
+		res.status(200).send(null);
+	}
 }
 //PCCPTotal removed
 exports.getcustomerentitycounts = function(req, res) {
-	if(config.sqlstring.database!= ''){
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select top 10\
 		ID,\
 		Timestamp,\
@@ -250,10 +262,13 @@ exports.getcustomerentitycounts = function(req, res) {
 			console.log(err);
 		});
 	}
+	else {
+		res.status(200).send(null);
+	}
 }
 
 exports.getetradeservercounter = function(req, res) {
-	if(config.sqlstring.database!= ''){
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select top 100 \
 		es.ETradeServerCounterkey,eu.Remark,es.LoggedTimeStamp,es.NumberOfSuccesfullPurchases,es.NumberOfFailedPurchases,es.AvgResponseTimeMS,es.MinResponseTimeMS,es.MaxResponseTimeMS\
 		from [" + req.params.alias + "].[" + req.params.db + "].axerrio.ETradeServerCounter es with(readuncommitted)\
@@ -266,10 +281,13 @@ exports.getetradeservercounter = function(req, res) {
 			res.status(200).send(err);
 		});
 	}
+	else {
+		res.status(200).send(null);
+	}
 }
 
 exports.getvirtualmarketplacemutations = function(req, res) {
-	if(config.sqlstring.database!= ''){
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select vmp.[Description], m.* from [" + req.params.alias + "].ServerMonitor.dbo.VirtualMarketPlaceMutation m with(readuncommitted)\
 		join [" + req.params.alias + "].[" + req.params.db + "].[dbo].virtualmarketplace vmp with(readuncommitted) on m.virtualmarketplacekey = vmp.[key]\
 		where [Timestamp] > dateadd(hour,-1,getdate())\
@@ -280,10 +298,13 @@ exports.getvirtualmarketplacemutations = function(req, res) {
 			console.log(err);
 		});
 	}
+	else {
+		res.status(200).send(null);
+	}
 }
 
 exports.lastheartbeat = function(req, res) {
-	if(config.sqlstring.database!= ''){
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select top 1 *\
 		from [ServerMonitor].[axerrio].[RemoteQueuedMetric] with(readuncommitted)\
 		where [InstanceName] = '" + req.params.server + "'\
@@ -294,6 +315,9 @@ exports.lastheartbeat = function(req, res) {
 		.catch(err => {
 			console.log(err);
 		});
+	}
+	else {
+		res.status(200).send(null);
 	}
 }
 
