@@ -51,7 +51,7 @@ exports.index = function(req, res){
 
 exports.listservers = function(req, res) {
 	if(config.sqlstring.database!= ''){
-	sequelize.query("SELECT rg.[Description],rg.[Alias],max(rq.[timestamp]) as [timestamp],datediff(MINUTE,max(rq.[timestamp]),getdate()) as [Min_ago]\
+	sequelize.query("SELECT isnull(rg.[Description],'none') as [Description],rg.[Alias],max(rq.[timestamp]) as [timestamp],datediff(MINUTE,max(rq.[timestamp]),getdate()) as [Min_ago]\
 FROM [ServerMonitor].[axerrio].[RegisteredServer] rg with(readuncommitted)\
 OUTER APPLY	(\
 	SELECT  TOP 1 * FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq with(readuncommitted)\

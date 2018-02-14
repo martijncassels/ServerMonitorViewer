@@ -9,11 +9,11 @@ angular
 .controller('HomeCtrl', HomeCtrl)
 .controller('ServerCtrl', ServerCtrl);
 
-MainCtrl.$inject = ['$scope','$http'];
+MainCtrl.$inject = ['$scope','$http','_'];
 HomeCtrl.$inject = ['$scope', '$route','$http','$interval'];
 ServerCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams','$interval'];
 
-function MainCtrl($scope,$http) {
+function MainCtrl($scope,$http,_) {
 	var vm = this;
 	vm.title = '';
 	vm.servers = [];
@@ -23,9 +23,14 @@ function MainCtrl($scope,$http) {
 	$http.get('/listservers')
 			.success(function(data) {
 					vm.servers = data;
+					vm.servers2 = data;
+					vm.orphans = [];
+					vm.children = [];
+					vm.new = [];
+					//- Set siblings for all entries, common parent = Description (servername)
 					for(var i=0;i<vm.servers.length;i++){
 						if(i<vm.servers.length-1){
-							if(vm.servers[i].Description == vm.servers[i+1].Description){
+							if(vm.servers[i].Description == vm.servers[i+1].Description && vm.servers[i].Description!='none'){
 								vm.servers[i].hasSiblings = true;
 								vm.servers[i+1].hasSiblings = true;
 							}
@@ -34,7 +39,7 @@ function MainCtrl($scope,$http) {
 							}
 						}
 						else {
-							if(vm.servers[i].Description == vm.servers[i-1].Description) {
+							if(vm.servers[i].Description == vm.servers[i-1].Description && vm.servers[i].Description!='none') {
 								vm.servers[i].hasSiblings = true;
 								vm.servers[i-1].hasSiblings = true;
 							}
@@ -43,6 +48,21 @@ function MainCtrl($scope,$http) {
 							}
 						}
 					}
+					angular.forEach(vm.servers, function(value,index){
+						if(value.hasSiblings){
+							//- New entry
+							if(typeof(vm.new[value.Description]) == 'undefined'){
+								vm.new[value.Description] = [];
+							}
+							vm.new[value.Description].push(value);
+							vm.children.push(value);
+						}
+						else if(!value.hasSiblings){
+							vm.orphans.push(value);
+						}
+					});
+					//_.indexBy(vm.children,'Description');
+					vm.sorted = _.groupBy(vm.children,'Description');
 			})
 			.error(function(data) {
 					console.log('Error: ' + data);
