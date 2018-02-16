@@ -8,6 +8,9 @@
 					th(ng-repeat='(key,value) in vm.blocking[0]') {{key}}
 				tbody
 					tr(ng-repeat='block in vm.blocking track by $index | orderBy:"-MeasureTime"')
-						td(ng-repeat='(key,value) in block') {{value | cut:true:100}}
+						td(ng-repeat='(key,value) in block')
+							div(ng-show='value.length>=100')
+								a(data-toggle="tooltip",data-placement="top",title="{{value}}") {{value | cut:true:100}}
+							div(ng-show='value.length<100') {{value}}
 			div(ng-show="vm.blocking.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
 				{{vm.blocking.original.message}}

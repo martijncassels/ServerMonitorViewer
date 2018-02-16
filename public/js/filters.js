@@ -31,6 +31,7 @@ function highlight($sce) {
 
 function cut() {
 	return function (value, wordwise, max, tail) {
+			value = String(value);
 			if (!value) return '';
 
 			max = parseInt(max, 10);
@@ -48,6 +49,7 @@ function cut() {
 						value = value.substr(0, lastspace);
 					}
 			}
+			//return value + (tail || ' …');
 			return value + (tail || ' …');
 	};
 }
