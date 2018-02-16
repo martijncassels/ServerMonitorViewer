@@ -3,7 +3,8 @@ var Promise 	= require('bluebird');
 var Profile		= require('../models/profiles');
 
 var Sequelize = require('sequelize');
-var mockjson = require('./mockmetrics.json')
+var mockjson = require('./mockmetrics.json');
+var SequelizeAuto = require('sequelize-auto');
 
 //The following file isn't included and needs to be created
 //Example below
@@ -31,7 +32,7 @@ module.exports = config;
 var config		= require('../config/config.js');
 
 //if(config.sqlstring.database!= ''){
-const sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user, config.sqlstring.password, {
+var sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user, config.sqlstring.password, {
 	host: config.sqlstring.server,
 	port: 1437,
 	dialect: 'mssql',
@@ -41,9 +42,30 @@ const sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user
 		min: 0,
 		acquire: 30000,
 		idle: 10000
-	}
+	},
+	define: {
+        timestamps: false
+    }
 });
 //}
+
+var auto = new SequelizeAuto(config.sqlstring.database, config.sqlstring.user, config.sqlstring.password, {
+	host: config.sqlstring.server,
+	port: 1437,
+	dialect: 'mssql',
+	tables: ['RegisteredServer','RemoteQueuedMetric'],
+	schema: ['axerrio','dbo'],
+	directory: './models',
+	pool: {
+		max: 10,
+		min: 0,
+		acquire: 30000,
+		idle: 10000
+	},
+	additional: {
+		timestamps: false
+	}
+})
 
 exports.index = function(req, res){
 	res.render('index');
@@ -82,6 +104,27 @@ else{
 		Min_ago: 3
 	}]);
 }
+}
+
+exports.listserversv2 = function(req, res) {
+	var RegisteredServer = sequelize.import("../models/RegisteredServer");
+	//var RemoteQueuedMetric = sequelize.import("../models/RemoteQueuedMetric");
+	RegisteredServer.findAll()
+	.then(function(result){
+		res.status(200).send(result);
+	})
+	.catch(function(err){
+		res.status(200).send(err);
+	});
+}
+
+exports.getmodels = function(req, res) {
+	auto.run(function (err) {
+  if (err) throw err;
+
+  res.status(200).send(auto.tables); // table list
+  //res.status(200).send(auto.foreignKeys); // foreign key list
+});
 }
 
 exports.getqueue = function(req, res) {
@@ -310,6 +353,22 @@ exports.lastheartbeat = function(req, res) {
 		where [InstanceName] = '" + req.params.server + "'\
 		and [metric] = 'Heartbeat'\
 		order by [timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+			res.status(200).send(result);
+		})
+		.catch(err => {
+			console.log(err);
+		});
+	}
+	else {
+		res.status(200).send(null);
+	}
+}
+
+exports.getblocking = function(req, res) {
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
+		sequelize.query("select top 100 *\
+		from [" + req.params.alias + "].ServerMonitor.dbo.Blocking\
+		order by MeasureTime desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
 		.catch(err => {

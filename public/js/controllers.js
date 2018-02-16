@@ -479,8 +479,10 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		*/
 
 		//- Get active license useage
+		vm.licensesstarting = true;
 		$http.get('/getlicenses/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
+						vm.licensesstarting = false;
 						vm.licenses = data;
 				})
 				.error(function(data) {
@@ -489,8 +491,10 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 				});
 
 		//- get vmp calculations
+		vm.pccpcalcssdatastarting = true;
 		$http.get('/getpccpcalcs/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
+						vm.pccpcalcssdatastarting = false;
 						vm.pccpcalcss = data;
 
 						for(var i=0;i<data.length;i++){
@@ -504,6 +508,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 				});
 
 		//- get etrade server counters
+		vm.etradeservercountersstarting = true;
 		$http.get('/getetradeservercounter/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
 					//console.log(data);
@@ -511,6 +516,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 					// 	vm.etradeservercountererror = true;
 					// }
 					//else {
+						vm.etradeservercountersstarting = false;
 						vm.etradeservercounters = data;
 
 						for(var i=0;i<data.length;i++){
@@ -529,8 +535,10 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 				});
 
 		//- get vmp mutation counters
+		vm.getvirtualmarketplacemutationsstarting = true;
 		$http.get('/getvirtualmarketplacemutations/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
+						vm.getvirtualmarketplacemutationsstarting = false;
 						vm.getvirtualmarketplacemutations = data;
 						vm.getvirtualmarketplacemutationsdata = [[],[],[],[],[]];
 						vm.getvirtualmarketplacemutationslabels = [];
@@ -556,8 +564,10 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 				});
 
 		//- get archivecounters
+		vm.archivecountersstarting = true;
 		$http.get('/getarchivecounters/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
+						vm.archivecountersstarting = false;
 						vm.archivecounters = data;
 						_.each(data,function(value1,index){
 							_.each(value1,function(value2,key){
@@ -593,8 +603,10 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 	  };
 
 		//- get entitycounters
+		vm.customerentitycountsstarting = true;
 		$http.get('/getcustomerentitycounts/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
+					vm.customerentitycountsstarting = true;
 						vm.customerentitycountdataselection = [];
 						vm.customerentitycounts = data;
 						_.each(data,function(value1,index){
