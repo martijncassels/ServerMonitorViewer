@@ -13,38 +13,19 @@ function ServerSingleCtrl($scope,$route,$http,$interval,$routeParams) {
 		var vm = this;
 		vm.title = '';
     vm.blocking = [];
+		vm.alias = '';
 
 		vm.max = 60000;
 		vm.dynamic = vm.max;
 
-    //- temporary switch to set db name and linkedserver name,
-    //- need to figure this out, maybe via [axerrio].[RegisteredServer]?
-    switch($routeParams.alias) {
-        case 'BAR':
-            vm.db = 'Axerrio';
-            break;
-        case 'HOL':
-            vm.db = 'FlowerCore';
-            break;
-        case 'HUS':
-            vm.db = 'ABSHUS';
-            break;
-        case 'VVB':
-            vm.db = 'ABSBloemen';
-            break;
-        case 'VVP':
-            vm.db = 'FCPotplants';
-            break;
-        case 'FCA':
-            vm.db = 'FlowerCore';
-            break;
-        default:
-              vm.db = 'none';
-        }
+  	if($routeParams.servername=='HO-SQL01' && $routeParams.db=='FlowerCore') {
+			vm.alias = 'HOL';
+		}
+
 
 		//- Get active license useage
 		vm.blockingstarting = true;
-		$http.get('/getblocking/'+$routeParams.alias+'/'+vm.db)
+		$http.get('/getblocking/'+vm.alias+'/'+$routeParams.db)
 				.success(function(data) {
 						vm.blockingstarting = false;
 						vm.blocking = data;

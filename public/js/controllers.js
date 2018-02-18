@@ -74,7 +74,7 @@ function HomeCtrl($scope,$route,$http,$interval) {
 		var vm = this;
 		vm.title = '';
 		vm.mockdata = [];
-		vm.servers = [];
+		//vm.servers = [];
 		vm.series = [];
 		vm.data2 = [[],[]];
 		vm.labels2 = [];
