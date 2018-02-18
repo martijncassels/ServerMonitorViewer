@@ -1,0 +1,37 @@
+'use strict';
+
+/* Controllers */
+angular
+
+.module('ServerMonitorViewer.ServerSingleCtrl',[])
+
+.controller('ServerSingleCtrl', ServerSingleCtrl);
+
+ServerSingleCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams','$interval'];
+
+function ServerSingleCtrl($scope,$route,$http,$interval,$routeParams) {
+		var vm = this;
+		vm.title = '';
+    vm.blocking = [];
+		vm.alias = '';
+
+		vm.max = 60000;
+		vm.dynamic = vm.max;
+
+  	if($routeParams.servername=='HO-SQL01' && $routeParams.db=='FlowerCore') {
+			vm.alias = 'HOL';
+		}
+
+
+		//- Get active license useage
+		vm.blockingstarting = true;
+		$http.get('/getblocking/'+vm.alias+'/'+$routeParams.db)
+				.success(function(data) {
+						vm.blockingstarting = false;
+						vm.blocking = data;
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+}

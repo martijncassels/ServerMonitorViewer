@@ -9,7 +9,7 @@ To do:
 - [x] Create dynamic side menu items based on customers
 - [x] Create timers for real-time charts + Database
 - [x] Create additional block for used ABS licenses
-- [ ] Create additional block for other customer-specific data (services)
-- [ ] Clean up side menu bar
+- [x] Create additional block for other customer-specific data (services)
+- [x] Clean up side menu bar
 - [ ] Use sequelize built-in model-usage instead of RAW SQL queries
 - [ ] Move git branch/repo from public to Axerrio private enviroment

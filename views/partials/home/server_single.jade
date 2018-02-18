@@ -1,0 +1,16 @@
+.row
+	.col-md-12
+		div(ng-if='vm.blockingstarting',align='center').loading
+			i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
+		.table-responsive
+			table(ng-hide="vm.blocking.name=='SequelizeDatabaseError'").table.table-striped.table-sm
+				thead
+					th(ng-repeat='(key,value) in vm.blocking[0]') {{key}}
+				tbody
+					tr(ng-repeat='block in vm.blocking track by $index | orderBy:"-MeasureTime"')
+						td(ng-repeat='(key,value) in block')
+							div(ng-show='value.length>=100')
+								a(data-toggle="tooltip",data-placement="top",title="{{value}}") {{value | cut:true:100}}
+							div(ng-show='value.length<100') {{value}}
+			div(ng-show="vm.blocking.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+				{{vm.blocking.original.message}}

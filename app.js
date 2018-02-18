@@ -197,7 +197,10 @@ app.get('/getarchivecounters/:alias/:db', routes.getarchivecounters);
 app.get('/getvirtualmarketplacemutations/:alias/:db', routes.getvirtualmarketplacemutations);
 app.get('/getlicenses/:alias/:db', routes.getlicenses);
 app.get('/listservers', routes.listservers);
+app.get('/listserversv2', routes.listserversv2);
+app.get('/getmodels', routes.getmodels);
 app.get('/lastheartbeat/:server', routes.lastheartbeat);
+app.get('/getblocking/:alias/:db', routes.getblocking);
 
 app.post('/register', routes.register);
 app.post('/login', routes.login);
