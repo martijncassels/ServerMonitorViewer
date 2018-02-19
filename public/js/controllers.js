@@ -200,6 +200,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		var vm = this;
 		vm.title = '';
 		vm.mockdata = [];
+		vm.series = ['MetricValue','ThresholdValue']
 		vm.licenses = [];
 		vm.archivecounters = [];
 		vm.archivecounterschartdata = [];
@@ -721,7 +722,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 				]
 			},
 			legend: {
-				display: false
+				display: true
 			},
 			animation: {
 				duration: 0
