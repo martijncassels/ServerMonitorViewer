@@ -30,7 +30,7 @@ function BlockingCtrl($scope,$route,$http,$interval,$routeParams) {
 						_.each(data,function(value1,index){
 							_.each(value1,function(value2,key){
 								if(["MeasureTime"].indexOf(key) != -1){
-									data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+									data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
 								}
 							});
 						});

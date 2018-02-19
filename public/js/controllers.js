@@ -85,7 +85,7 @@ function HomeCtrl($scope,$route,$http,$interval) {
 						_.each(data,function(value1,index){
 							_.each(value1,function(value2,key){
 								if(["Timestamp"].indexOf(key) != -1){
-									data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+									data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
 								}
 							});
 						});
@@ -159,7 +159,7 @@ function HomeCtrl($scope,$route,$http,$interval) {
 						_.each(data,function(value1,index){
 							_.each(value1,function(value2,key){
 								if(["Timestamp"].indexOf(key) != -1){
-									data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+									data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
 								}
 							});
 						});
