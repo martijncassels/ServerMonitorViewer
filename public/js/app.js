@@ -5,6 +5,7 @@ var ServerMonitorViewer = angular.module('ServerMonitorViewer',[
 		'ngTouch',
 		'ServerMonitorViewer.controllers',
 		'ServerMonitorViewer.BlockingCtrl',
+		'ServerMonitorViewer.ServerCtrl',
 		'ServerMonitorViewer.filters',
 		'ServerMonitorViewer.services',
 		'ServerMonitorViewer.directives',
