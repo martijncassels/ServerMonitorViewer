@@ -157,6 +157,7 @@ function HomeCtrl($scope,$route,$http,$interval) {
 			if(vm.mockdata[vm.mockdata.length-1]!=undefined) {
 				$http.get('/getmutations/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
 					.success(function(data) {
+						data.reverse();
 						_.each(data,function(value1,index){
 							_.each(value1,function(value2,key){
 								if(["Timestamp"].indexOf(key) != -1){
@@ -746,6 +747,7 @@ vm.getLiveCustomerChartData = function() {
 	if(vm.mockdata[vm.mockdata.length-1]!=undefined) {
 		$http.get('/getcustomermutations/' + $routeParams.servername + '/' + vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
 			.success(function(data) {
+				data.reverse();
 				_.each(data,function(value1,index){
 					_.each(value1,function(value2,key){
 						if(["Timestamp"].indexOf(key) != -1){
@@ -753,7 +755,7 @@ vm.getLiveCustomerChartData = function() {
 						}
 					});
 				});
-				console.log('updating '+data.length+' records...');
+				console.log('updating '+data.length+' record(s)...');
 				var tmplength = 0;
 				if (vm.data[0].length) {
 					tmplength = vm.data[0].length;
