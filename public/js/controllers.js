@@ -85,6 +85,13 @@ function HomeCtrl($scope,$route,$http,$interval) {
 		//- Get the initial RemoteQueuedMetrics from [axerrio].[RemoteQueuedMetric]
 		$http.get('/getqueue')
 				.success(function(data) {
+						_.each(data,function(value1,index){
+							_.each(value1,function(value2,key){
+								if(["Timestamp"].indexOf(key) != -1){
+									data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+								}
+							});
+						});
 						vm.mockdata = data.reverse();
 						for(var i=0;i<vm.mockdata.length;i++){
 
@@ -150,6 +157,13 @@ function HomeCtrl($scope,$route,$http,$interval) {
 			if(vm.mockdata[vm.mockdata.length-1]!=undefined) {
 				$http.get('/getmutations/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
 					.success(function(data) {
+						_.each(data,function(value1,index){
+							_.each(value1,function(value2,key){
+								if(["Timestamp"].indexOf(key) != -1){
+									data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+								}
+							});
+						});
 						console.log('updating '+data.length+' records...');
 						var tmplength = 0;
 						if (vm.data2[0].length) {
@@ -215,8 +229,15 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 
 		$http.get('/getcustomermetrics/'+$routeParams.servername+'/'+$routeParams.alias)
 				.success(function(data) {
+						_.each(data,function(value1,index){
+							_.each(value1,function(value2,key){
+								if(["Timestamp"].indexOf(key) != -1){
+									data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+								}
+							});
+						});
 						vm.mockdata = data;
-						//vm.mockdata.reverse();
+						vm.mockdata.reverse();
 						for(var i=0;i<vm.mockdata.length;i++){
 							vm.data[0].push(vm.mockdata[i].MetricValue);
 							vm.data[1].push(vm.mockdata[i].ThresholdValue);
@@ -511,6 +532,13 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.etradeservercountersstarting = true;
 		$http.get('/getetradeservercounter/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
+					_.each(data,function(value1,index){
+						_.each(value1,function(value2,key){
+							if(["LoggedTimestamp"].indexOf(key) != -1){
+								data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+							}
+						});
+					});
 					//console.log(data);
 					// if(data.name=="SequelizeDatabaseError") {
 					// 	vm.etradeservercountererror = true;
@@ -538,6 +566,13 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.getvirtualmarketplacemutationsstarting = true;
 		$http.get('/getvirtualmarketplacemutations/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
+					_.each(data,function(value1,index){
+						_.each(value1,function(value2,key){
+							if(["Timestamp"].indexOf(key) != -1){
+								data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+							}
+						});
+					});
 						vm.getvirtualmarketplacemutationsstarting = false;
 						vm.getvirtualmarketplacemutations = data;
 						vm.getvirtualmarketplacemutationsdata = [[],[],[],[],[]];
@@ -566,7 +601,14 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		//- get archivecounters
 		vm.archivecountersstarting = true;
 		$http.get('/getarchivecounters/'+$routeParams.alias+'/'+vm.db)
-				.success(function(data) {
+					.success(function(data) {
+						_.each(data,function(value1,index){
+							_.each(value1,function(value2,key){
+								if(["CounterTimestamp"].indexOf(key) != -1){
+									data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+								}
+							});
+						});
 						vm.archivecountersstarting = false;
 						vm.archivecounters = data;
 						_.each(data,function(value1,index){
@@ -606,6 +648,13 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.customerentitycountsstarting = true;
 		$http.get('/getcustomerentitycounts/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
+					_.each(data,function(value1,index){
+						_.each(value1,function(value2,key){
+							if(["Timestamp"].indexOf(key) != -1){
+								data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+							}
+						});
+					});
 					vm.customerentitycountsstarting = true;
 						vm.customerentitycountdataselection = [];
 						vm.customerentitycounts = data;
@@ -696,6 +745,13 @@ vm.getLiveCustomerChartData = function() {
 	if(vm.mockdata[vm.mockdata.length-1]!=undefined) {
 		$http.get('/getcustomermutations/' + $routeParams.servername + '/' + vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
 			.success(function(data) {
+				_.each(data,function(value1,index){
+					_.each(value1,function(value2,key){
+						if(["Timestamp"].indexOf(key) != -1){
+							data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+						}
+					});
+				});
 				console.log('updating '+data.length+' records...');
 				var tmplength = 0;
 				if (vm.data[0].length) {

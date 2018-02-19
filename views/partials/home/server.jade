@@ -89,7 +89,7 @@ div(ng-show='vm.mockdata.length>0').table-responsive
 			tr
 				th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
 		tbody
-			tr(ng-repeat='records in vm.mockdata track by records.RemoteQueuedMetricKey | orderBy:"-RemoteQueuedMetricKey"')
+			tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
 				td(ng-repeat='(key,value) in records') {{value}}
 div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
 br 

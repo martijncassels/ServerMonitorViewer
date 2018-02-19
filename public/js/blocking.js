@@ -3,13 +3,13 @@
 /* Controllers */
 angular
 
-.module('ServerMonitorViewer.ServerSingleCtrl',[])
+.module('ServerMonitorViewer.BlockingCtrl',[])
 
-.controller('ServerSingleCtrl', ServerSingleCtrl);
+.controller('BlockingCtrl', BlockingCtrl);
 
-ServerSingleCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams','$interval'];
+BlockingCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams'];
 
-function ServerSingleCtrl($scope,$route,$http,$interval,$routeParams) {
+function BlockingCtrl($scope,$route,$http,$interval,$routeParams) {
 		var vm = this;
 		vm.title = '';
     vm.blocking = [];
@@ -27,6 +27,13 @@ function ServerSingleCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.blockingstarting = true;
 		$http.get('/getblocking/'+vm.alias+'/'+$routeParams.db)
 				.success(function(data) {
+						_.each(data,function(value1,index){
+							_.each(value1,function(value2,key){
+								if(["MeasureTime"].indexOf(key) != -1){
+									data[index][key] = moment(value2).format('DD-MM-YYYY hh:mm:ss');
+								}
+							});
+						});
 						vm.blockingstarting = false;
 						vm.blocking = data;
 				})
