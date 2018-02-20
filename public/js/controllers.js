@@ -163,7 +163,11 @@ function HomeCtrl($scope,$route,$http,$interval) {
 								}
 							});
 						});
+<<<<<<< HEAD
 						console.log('updating '+tmpdata.length+' records...');
+=======
+						console.log('updating '+tmpdata.length+' record(s)...');
+>>>>>>> 85026b78956d56e7258a53361a4bf72d33107850
 						var tmplength = 0;
 						if (vm.data2[0].length) {
 							tmplength = vm.data2[0].length;
