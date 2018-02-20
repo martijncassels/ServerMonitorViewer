@@ -559,61 +559,61 @@ vm.getLiveCustomerChartData = function() {
 	if(vm.mockdata[vm.mockdata.length-1]!=undefined) {
 		$http.get('/getcustomermutations/' + $routeParams.servername + '/' + vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
 			.success(function(data) {
-				data.reverse();
-				_.each(data,function(value1,index){
+				var tmpdata = data.reverse();
+				_.each(tmpdata,function(value1,index){
 					_.each(value1,function(value2,key){
 						if(["Timestamp"].indexOf(key) != -1){
-							data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
+							tmpdata[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
 						}
 					});
 				});
-				console.log('updating '+data.length+' record(s)...');
+				console.log('updating '+tmpdata.length+' record(s)...');
 				var tmplength = 0;
 				if (vm.data[0].length) {
 					tmplength = vm.data[0].length;
 
-					vm.labels = vm.labels.slice(data.length);
-					vm.data[0] = vm.data[0].slice(data.length);
-					vm.data[1] = vm.data[1].slice(data.length);
-					vm.mockdata = vm.mockdata.slice(data.length);
+					vm.labels = vm.labels.slice(tmpdata.length);
+					vm.data[0] = vm.data[0].slice(tmpdata.length);
+					vm.data[1] = vm.data[1].slice(tmpdata.length);
+					vm.mockdata = vm.mockdata.slice(tmpdata.length);
 
 					_.each(vm.metricschartdata,function(value,index){
 						if(typeof(vm.metricschartdata[index]) == 'object'){
-							vm.metricschartdata[index].slice(data.length);
+							vm.metricschartdata[index].slice(tmpdata.length);
 						}
 					});
 				}
 
 				for (var i=0;vm.data[0].length < tmplength;i++) {
-					vm.labels.push(data[i].RemoteQueuedMetricKey);
-					vm.mockdata.push(data[i])
+					vm.labels.push(tmpdata[i].RemoteQueuedMetricKey);
+					vm.mockdata.push(tmpdata[i])
 
-					vm.data[0].push(data[i].MetricValue);
-					vm.data[1].push(data[i].ThresholdValue);
+					vm.data[0].push(tmpdata[i].MetricValue);
+					vm.data[1].push(tmpdata[i].ThresholdValue);
 
 
-					_.each(data[i],function(obj,index){
-						if(_.isMatch(data[i],{Metric:'Lots_Real'})){
+					_.each(tmpdata[i],function(obj,index){
+						if(_.isMatch(tmpdata[i],{Metric:'Lots_Real'})){
 							if(typeof(vm.metricschartdata[0]) == 'undefined'){
 								vm.metricschartseries.push('Lots_Real_Value');
 								vm.metricschartseries.push('Lots_Real_Threshold');
 								vm.metricschartdata[0] = [];
 								vm.metricschartdata[1] = [];
 							}
-							vm.metricschartdata[0][index] = data[i].MetricValue;
-							vm.metricschartdata[1][index] = data[i].ThresholdValue;
+							vm.metricschartdata[0][index] = tmpdata[i].MetricValue;
+							vm.metricschartdata[1][index] = tmpdata[i].ThresholdValue;
 						}
-						if(_.isMatch(data[i],{Metric:'Lots_Virtual'})){
+						if(_.isMatch(tmpdata[i],{Metric:'Lots_Virtual'})){
 							if(typeof(vm.metricschartdata[2]) == 'undefined'){
 								vm.metricschartseries.push('Lots_Virtual_Value');
 								vm.metricschartseries.push('Lots_Virtual_Threshold');
 								vm.metricschartdata[2] = [];
 								vm.metricschartdata[3] = [];
 							}
-							vm.metricschartdata[2][index] = data[i].MetricValue;
-							vm.metricschartdata[3][index] = data[i].ThresholdValue;
+							vm.metricschartdata[2][index] = tmpdata[i].MetricValue;
+							vm.metricschartdata[3][index] = tmpdata[i].ThresholdValue;
 						}
-						vm.metricschartlabels[index] = data[i].Timestamp;
+						vm.metricschartlabels[index] = tmpdata[i].Timestamp;
 					});
 				}
 			})

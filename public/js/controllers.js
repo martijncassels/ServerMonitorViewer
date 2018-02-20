@@ -155,32 +155,32 @@ function HomeCtrl($scope,$route,$http,$interval) {
 			if(vm.mockdata[vm.mockdata.length-1]!=undefined) {
 				$http.get('/getmutations/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
 					.success(function(data) {
-						data.reverse();
-						_.each(data,function(value1,index){
+						var tmpdata = data.reverse();
+						_.each(tmpdata,function(value1,index){
 							_.each(value1,function(value2,key){
 								if(["Timestamp"].indexOf(key) != -1){
-									data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
+									tmpdata[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
 								}
 							});
 						});
-						console.log('updating '+data.length+' records...');
+						console.log('updating '+tmpdata.length+' records...');
 						var tmplength = 0;
 						if (vm.data2[0].length) {
 							tmplength = vm.data2[0].length;
 
 							//- remove data in array if there is data to insert
-							vm.labels2 = vm.labels2.slice(data.length);
-							vm.data2[0] = vm.data2[0].slice(data.length);
-							vm.data2[1] = vm.data2[1].slice(data.length);
-							vm.mockdata = vm.mockdata.slice(data.length);
+							vm.labels2 = vm.labels2.slice(tmpdata.length);
+							vm.data2[0] = vm.data2[0].slice(tmpdata.length);
+							vm.data2[1] = vm.data2[1].slice(tmpdata.length);
+							vm.mockdata = vm.mockdata.slice(tmpdata.length);
 						}
 
 						//- push new data into array
 						for (var i=0;vm.data2[0].length < tmplength;i++) {
-							vm.labels2.push(data[i].RemoteQueuedMetricKey);
-							vm.mockdata.push(data[i]);
-							vm.data2[0].push(data[i].MetricValue);
-							vm.data2[1].push(data[i].ThresholdValue);
+							vm.labels2.push(tmpdata[i].RemoteQueuedMetricKey);
+							vm.mockdata.push(tmpdata[i]);
+							vm.data2[0].push(tmpdata[i].MetricValue);
+							vm.data2[1].push(tmpdata[i].ThresholdValue);
 						}
 					})
 					.error(function(data) {

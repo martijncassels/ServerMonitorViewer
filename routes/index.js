@@ -159,7 +159,7 @@ exports.getmutations = function(req, res) {
 	sequelize.query("SELECT *\
 	FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] with(readuncommitted)\
 	WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey+ " \
-	AND [Metric] NOT IN ('Heartbeat')", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+	AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
 	})
 	.catch(err => {
