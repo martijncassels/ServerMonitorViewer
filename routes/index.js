@@ -362,6 +362,42 @@ exports.getblocking = function(req, res) {
 	}
 }
 
+exports.getthresholds = function(req, res) {
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
+		sequelize.query("select *\
+		from [" + req.params.alias + "].[ServerMonitor].[monitor].[MetricThreshold]", {
+			raw: true,
+			type: sequelize.QueryTypes.SELECT
+		}).then(result => {
+			res.status(200).send(result);
+		})
+		.catch(err => {
+			console.log(err);
+		});
+	}
+	else {
+		res.status(200).send(null);
+	}
+}
+
+exports.updatethreshold = function(req, res) {
+	if(config.sqlstring.database!= ''){
+		console.log("update [" + req.params.alias + "].[ServerMonitor].[monitor].[MetricThreshold] set Value = " + req.params.value + " where [MetricThresholdKey] = " + req.params.key);
+		// sequelize.query("update \
+		// [" + req.params.alias + "].[ServerMonitor].[monitor].[MetricThreshold]\
+		// set Value = " + req.body.value + " where [key] = " + req.params.key, {raw: true,type: sequelize.QueryTypes.UPDATE}).then(result => {
+		// 	res.status(200).send(result);
+		// })
+		// .catch(err => {
+		// 	console.log(err);
+		// });
+		res.status(200).send('ok!');
+	}
+	else {
+		res.status(200).send(null);
+	}
+}
+
 exports.partial = function (req, res) {
 	var name = req.params.name;
 	var sub = req.params.sub

@@ -15,6 +15,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		vm.mockdata = [];
 		vm.series = ['MetricValue','ThresholdValue']
 		vm.licenses = [];
+		vm.thresholds = [];
 		vm.archivecounters = [];
 		vm.archivecounterschartdata = [];
 		//vm.archivecounterschartdataselection = [];
@@ -324,6 +325,28 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 						console.log('Error: ' + data);
 						vm.error = data;
 				});
+
+		//- Get active license useage
+		vm.thresholdsstarting = true;
+		$http.get('/getthresholds/'+$routeParams.alias+'/'+vm.db)
+				.success(function(data) {
+						vm.thresholdsstarting = false;
+						vm.thresholds = data;
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+		vm.updateThreshold = function(key,value) {
+			$http.put('/updatethreshold/' + $routeParams.alias + '/' + key + '/' + value)
+				.success(function(data) {
+					vm.success = true;
+				})
+				.error(function(data) {
+						vm.error = 'error updating message!';
+						console.log('Error: ' + data);
+				});
+		}
 
 		//- get vmp calculations
 		vm.pccpcalcssdatastarting = true;

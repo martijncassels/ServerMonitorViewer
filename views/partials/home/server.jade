@@ -15,7 +15,28 @@ script(id='pagination.html',type='text/ng-template')
 	h1.h2 Dashboard {{vm.customer}}
 	.btn-toolbar.mb-2.mb-md-0
 		.btn-group.mr-2
+			button(type='button',data-toggle='modal',data-target='#ThresholdsModal').btn.btn-sm.btn-outline-secondary Metric Thresholds
 			button(ng-click='vm.getLiveCustomerChartData()').btn.btn-sm.btn-outline-secondary Update
+	//- Modal goes here
+	div(id='ThresholdsModal',tabindex='-1',role='dialog',aria-labelledby='ThresholdsModalLabel',aria-hidden='true').modal.fade
+		div(role='document').modal-dialog
+			.modal-content
+				.modal-header
+					h5.modal-title header
+					button(type='button',data-dismiss='modal',aria-label='Close').close
+						span(aria-hidden='true') &times;
+				.modal-body
+					ul
+						label Description | Value | Timespan
+						div(ng-repeat='threshold in vm.thresholds').input-group.mb-2
+							.input-group-prepend
+								span#basic-addon3.input-group-text {{threshold.Description}}
+							input#threshold1.form-control(type='text',ng-model='threshold.Value',aria-describedby='basic-addon3')
+							.input-group-append
+								button(type="button",ng-click='vm.updateThreshold(threshold.MetricThresholdKey,threshold.Value)').btn.btn-outline-secondary Update
+				.modal-footer
+					button(type='button',data-dismiss='modal').btn.btn-secondary Close
+	//- end of modal
 .row
 	.col-md-6
 		.card
