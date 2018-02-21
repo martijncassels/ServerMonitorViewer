@@ -26,9 +26,9 @@ script(id='pagination.html',type='text/ng-template')
 					button(type='button',data-dismiss='modal',aria-label='Close').close
 						span(aria-hidden='true') &times;
 				.modal-body
-					ul
-						label Description | Value | Timespan
-						div(ng-repeat='threshold in vm.thresholds').input-group.mb-2
+					div(ng-repeat='threshold in vm.thresholds')
+						label {{threshold.ColumnName}}
+						div.input-group.mb-2
 							.input-group-prepend
 								span#basic-addon3.input-group-text {{threshold.Description}}
 							input#threshold1.form-control(type='text',ng-model='threshold.Value',aria-describedby='basic-addon3')

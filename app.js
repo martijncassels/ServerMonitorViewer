@@ -202,7 +202,7 @@ app.get('/getmodels', routes.getmodels);
 app.get('/lastheartbeat/:server', routes.lastheartbeat);
 app.get('/getblocking/:alias/:db', routes.getblocking);
 app.get('/getthresholds/:alias/:db', routes.getthresholds);
-app.put('/updatethreshold/:alias/:key/:value', routes.updatethreshold);
+app.put('/updatethreshold/:alias/:db/:key/:value', routes.updatethreshold);
 
 app.post('/register', routes.register);
 app.post('/login', routes.login);

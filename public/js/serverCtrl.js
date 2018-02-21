@@ -338,7 +338,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 						vm.error = data;
 				});
 		vm.updateThreshold = function(key,value) {
-			$http.put('/updatethreshold/' + $routeParams.alias + '/' + key + '/' + value)
+			$http.put('/updatethreshold/' + $routeParams.alias + '/' + vm.db + '/' + key + '/' + value)
 				.success(function(data) {
 					vm.success = true;
 				})
