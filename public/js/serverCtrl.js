@@ -17,9 +17,9 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		vm.licenses = [];
 		vm.archivecounters = [];
 		vm.archivecounterschartdata = [];
-		vm.archivecounterschartdataselection = [];
+		//vm.archivecounterschartdataselection = [];
 		vm.archivecounterschartseries = ["ArchiveCounterKey","CounterTimestamp","OrderCount","OrderRowCount","PartyCount","PartyVirtualCount","PartyMutationCount","ExinvoiceCount","PricelistCount","PricelistRowCount","VPSupplylineCount","PartyTransactionCount"];
-		vm.archivecounterschartseriesselection = ["ArchiveCounterKey","CounterTimestamp","OrderCount","OrderRowCount","PartyCount","PartyVirtualCount","PartyMutationCount","ExinvoiceCount","PricelistCount","PricelistRowCount","VPSupplylineCount","PartyTransactionCount"];
+		//vm.archivecounterschartseriesselection = ["ArchiveCounterKey","CounterTimestamp","OrderCount","OrderRowCount","PartyCount","PartyVirtualCount","PartyMutationCount","ExinvoiceCount","PricelistCount","PricelistRowCount","VPSupplylineCount","PartyTransactionCount"];
 		vm.metricschartdata = [];
 		vm.metricschartseries = [];
 		vm.metricschartlabels = [];
@@ -37,7 +37,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		vm.customerentitycounts = [];
 		vm.customerentitycountdata = [];
 		vm.customerentitycountseries = ["ID","Timestamp","TotalLots","RealLots","VirtualLots","VirtualLotsToBeDeleted","TotalOrders","TotalOrderRows","ABSOrders","ABSOrderRows","WebShopOrders","WebShopOrderRows","ProductionOrders","ProductionOrderRows","PCCPTotal","PCCPToBeCalculated","VPSupplyLineTotal","TotalPricelists","TotalPricelistRows"];
-		vm.customerentitycountseriesselection = ["ID","Timestamp","TotalLots","RealLots","VirtualLots","VirtualLotsToBeDeleted","TotalOrders","TotalOrderRows","ABSOrders","ABSOrderRows","WebShopOrders","WebShopOrderRows","ProductionOrders","ProductionOrderRows","PCCPTotal","PCCPToBeCalculated","VPSupplyLineTotal","TotalPricelists","TotalPricelistRows"];
+		//vm.customerentitycountseriesselection = ["ID","Timestamp","TotalLots","RealLots","VirtualLots","VirtualLotsToBeDeleted","TotalOrders","TotalOrderRows","ABSOrders","ABSOrderRows","WebShopOrders","WebShopOrderRows","ProductionOrders","ProductionOrderRows","PCCPTotal","PCCPToBeCalculated","VPSupplyLineTotal","TotalPricelists","TotalPricelistRows"];
 		vm.max = 60000;
 		vm.dynamic = vm.max;
 
@@ -438,7 +438,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 						});
 						for(var i=0;i<vm.archivecounterschartdata.length;i++){
 							vm.archivecounterschartdata[i].reverse();
-							vm.archivecounterschartdataselection.push(vm.archivecounterschartdata[i]);
+							//vm.archivecounterschartdataselection.push(vm.archivecounterschartdata[i]);
 						}
 				})
 				.error(function(data) {
@@ -446,17 +446,17 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 						vm.error = data;
 				});
 		//- function to select/view data in chart
-		vm.toggleArchiveSelection = function toggleArchiveSelection(serie,name) {
-			var idx = vm.archivecounterschartdataselection.indexOf(serie);
-	    if (idx > -1) {
-				vm.archivecounterschartdataselection.splice(idx, 1);
-				vm.archivecounterschartseriesselection.splice(idx, 1);
-	    }
-	    else {
-				vm.archivecounterschartdataselection.push(serie);
-				vm.archivecounterschartseriesselection.push(name);
-	    }
-	  };
+		// vm.toggleArchiveSelection = function toggleArchiveSelection(serie,name) {
+		// 	var idx = vm.archivecounterschartdataselection.indexOf(serie);
+		// 	if (idx > -1) {
+		// 		vm.archivecounterschartdataselection.splice(idx, 1);
+		// 		vm.archivecounterschartseriesselection.splice(idx, 1);
+		// 	}
+		// 	else {
+		// 		vm.archivecounterschartdataselection.push(serie);
+		// 		vm.archivecounterschartseriesselection.push(name);
+		// 	}
+		// };
 
 		//- get entitycounters
 		vm.customerentitycountsstarting = true;
@@ -469,29 +469,41 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 							}
 						});
 					});
+					// vm.customerentitycounts_setPage = function (pageNo) {
+					// 	vm.customerentitycounts_currentPage = pageNo;
+					// };
 					vm.customerentitycountsstarting = true;
-						vm.customerentitycountdataselection = [];
-						vm.customerentitycounts = data;
-						_.each(data,function(value1,index){
-							_.each(value1,function(value2,key){
-								if(typeof(vm.customerentitycountdata[Object.keys(value1).indexOf(key)]) == 'undefined'){
-									vm.customerentitycountdata[Object.keys(value1).indexOf(key)] = [];
-								}
-								if(typeof(vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index]) == 'undefined'){
-									vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = [];
-								}
-								if(value2!=null){
-									vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = value2;
-								}
-								else {
-									vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = 0;
-								}
-							});
+					//vm.customerentitycountdataselection = [];
+					vm.customerentitycounts = data;
+					vm.customerentitycounts_totalItems = vm.customerentitycounts.length;
+					vm.customerentitycounts_currentPage = 1;
+					vm.customerentitycounts_viewby = 10;
+					vm.customerentitycounts_itemsPerPage = vm.customerentitycounts_viewby;
+					vm.customerentitycounts_maxSize = 5;
+					vm.setcustomerentitycounts_ItemsPerPage = function(num) {
+						vm.customerentitycounts_itemsPerPage = num;
+						vm.customerentitycounts_currentPage = 1; //reset to first page
+					}
+					_.each(data,function(value1,index){
+						_.each(value1,function(value2,key){
+							if(typeof(vm.customerentitycountdata[Object.keys(value1).indexOf(key)]) == 'undefined'){
+								vm.customerentitycountdata[Object.keys(value1).indexOf(key)] = [];
+							}
+							if(typeof(vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index]) == 'undefined'){
+								vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = [];
+							}
+							if(value2!=null){
+								vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = value2;
+							}
+							else {
+								vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = 0;
+							}
 						});
-						for(var i=0;i<vm.customerentitycountdata.length;i++){
-							vm.customerentitycountdata[i].reverse();
-							vm.customerentitycountdataselection.push(vm.customerentitycountdata[i]);
-						}
+					});
+					for(var i=0;i<vm.customerentitycountdata.length;i++){
+						vm.customerentitycountdata[i].reverse();
+						//vm.customerentitycountdataselection.push(vm.customerentitycountdata[i]);
+					}
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
@@ -499,17 +511,17 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 				});
 
 		//- function to select/view data in chart
-	  vm.toggleEntitySelection = function toggleEntitySelection(serie,name) {
-			var idx = vm.customerentitycountdataselection.indexOf(serie);
-	    if (idx > -1) {
-				vm.customerentitycountdataselection.splice(idx, 1);
-				vm.customerentitycountseriesselection.splice(idx, 1);
-	    }
-	    else {
-				vm.customerentitycountdataselection.push(serie);
-				vm.customerentitycountseriesselection.push(name);
-	    }
-	  };
+		// vm.toggleEntitySelection = function toggleEntitySelection(serie,name) {
+		// 	var idx = vm.customerentitycountdataselection.indexOf(serie);
+		// 	if (idx > -1) {
+		// 		vm.customerentitycountdataselection.splice(idx, 1);
+		// 		vm.customerentitycountseriesselection.splice(idx, 1);
+		// 	}
+		// 	else {
+		// 		vm.customerentitycountdataselection.push(serie);
+		// 		vm.customerentitycountseriesselection.push(name);
+		// 	}
+		// };
 
 		vm.onClick = function (points, evt) {
 		};

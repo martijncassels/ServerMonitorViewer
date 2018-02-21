@@ -278,26 +278,8 @@ exports.getcustomermutations = function(req, res) {
 //PCCPTotal removed
 exports.getcustomerentitycounts = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		sequelize.query("select top 10\
-		ID,\
-		Timestamp,\
-		TotalLots,\
-		RealLots,\
-		VirtualLots,\
-		VirtualLotsToBeDeleted,\
-		TotalOrders,\
-		TotalOrderRows,\
-		ABSOrders,\
-		ABSOrderRows,\
-		WebShopOrders,\
-		WebShopOrderRows,\
-		ProductionOrders,\
-		ProductionOrderRows,\
-		PCCPTotal,\
-		PCCPToBeCalculated,\
-		VPSupplyLineTotal,\
-		TotalPricelists,\
-		TotalPricelistRows from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts with(readuncommitted)\
+		sequelize.query("select top 100 * from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts with(readuncommitted)\
+		where datepart(mi,timestamp) between 0 and 5\
 		 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
