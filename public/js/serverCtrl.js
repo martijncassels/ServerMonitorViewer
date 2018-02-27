@@ -559,7 +559,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 					ticks: {
 						beginAtZero: true,
 						autoSkip: true,
-						autoSkipPadding: 10,
+						autoSkipPadding: 15,
 						fontSize: 10
 					}
 				}],

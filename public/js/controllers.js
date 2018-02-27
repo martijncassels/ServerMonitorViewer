@@ -181,7 +181,7 @@ function HomeCtrl($scope,$route,$http,$interval) {
 
 						//- push new data into array
 						for (var i=0;vm.data2[0].length < tmplength;i++) {
-							vm.labels2.push(tmpdata[i].RemoteQueuedMetricKey);
+							vm.labels2.push(tmpdata[i].RemoteQueuedMetricKey + ' ' + vm.mockdata[i].InstanceName);
 							vm.mockdata.push(tmpdata[i]);
 							vm.data2[0].push(tmpdata[i].MetricValue);
 							vm.data2[1].push(tmpdata[i].ThresholdValue);
