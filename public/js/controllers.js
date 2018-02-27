@@ -113,9 +113,12 @@ function HomeCtrl($scope,$route,$http,$interval) {
 				gridLines: {
 					display: false
 				},
-				xAxes: [{
-					display: false
-				}],
+				xAxes: [
+					{
+					display: true,
+
+					}
+				],
 				yAxes: [
 					{
 						id: 'y-axis-1',
@@ -123,7 +126,8 @@ function HomeCtrl($scope,$route,$http,$interval) {
 						display: true,
 						position: 'left',
 						ticks: {
-							beginAtZero: true
+							beginAtZero: true,
+							autoSkip: true
 						}
 					}
 				]

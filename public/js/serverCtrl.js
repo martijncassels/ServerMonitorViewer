@@ -555,6 +555,40 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 					display: false
 				},
 				xAxes: [{
+					display: true,
+					ticks: {
+						beginAtZero: true,
+						autoSkip: true,
+						autoSkipPadding: 10,
+						fontSize: 10
+					}
+				}],
+				yAxes: [
+					{
+						id: 'y-axis-1',
+						type: 'linear',
+						display: true,
+						position: 'left',
+						ticks: {
+							beginAtZero: true,
+							autoSkip: true
+						}
+					}
+				]
+			},
+			legend: {
+				display: true
+			},
+			animation: {
+				duration: 0
+			}
+		};
+		vm.options2 = {
+			scales: {
+				gridLines: {
+					display: false
+				},
+				xAxes: [{
 					display: false
 				}],
 				yAxes: [
@@ -564,7 +598,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 						display: true,
 						position: 'left',
 						ticks: {
-							beginAtZero: true
+							beginAtZero: true,
 						}
 					}
 				]

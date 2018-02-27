@@ -182,7 +182,7 @@ exports.getcustomermetrics = function(req, res) {
 
 exports.getarchivecounters = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-	sequelize.query("select top 10 [ArchiveCounterKey],[CounterTimestamp],[OrderCount],[OrderRowCount],[PartyCount],[PartyVirtualCount],[PartyMutationCount],[ExinvoiceCount],[PricelistCount],[VPSupplylineCount],[PartyTransactionCount]\
+	sequelize.query("select top 10 *\
 	from [" + req.params.alias + "].[" + req.params.db + "].[dbo].[ArchiveCounters] with(readuncommitted)\
 	order by [Archivecounterkey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
