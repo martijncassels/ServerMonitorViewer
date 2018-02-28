@@ -16,7 +16,8 @@ script(id='pagination.html',type='text/ng-template')
 	.btn-toolbar.mb-2.mb-md-0
 		.btn-group.mr-2
 			button(type='button',data-toggle='modal',data-target='#ThresholdsModal').btn.btn-sm.btn-outline-secondary Metric Thresholds
-			button(ng-click='vm.getLiveCustomerChartData()').btn.btn-sm.btn-outline-secondary Update
+			button(ng-click='vm.getLiveCustomerChartData()').btn.btn-sm.btn-outline-secondary Update events
+			button(ng-click='vm.getlivecustomerentitycountmutations()').btn.btn-sm.btn-outline-secondary Update entitycounts
 	//- Modal goes here
 	div(id='ThresholdsModal',tabindex='-1',role='dialog',aria-labelledby='ThresholdsModalLabel',aria-hidden='true').modal.fade
 		div(role='document').modal-dialog

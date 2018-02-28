@@ -275,12 +275,27 @@ exports.getcustomermutations = function(req, res) {
 		res.status(200).send(null);
 	}
 }
-//PCCPTotal removed
+
 exports.getcustomerentitycounts = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select top 100 * from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts with(readuncommitted)\
 		where datepart(mi,timestamp) between 0 and 5\
 		 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+			res.status(200).send(result);
+		})
+		.catch(err => {
+			console.log(err);
+		});
+	}
+	else {
+		res.status(200).send(null);
+	}
+}
+//where datepart(mi,timestamp) between 0 and 5\
+exports.getcustomerentitycountmutations = function(req, res) {
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
+		sequelize.query("select * from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts with(readuncommitted)\
+		 where ID > " + req.params.lastkey + "", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
 		.catch(err => {

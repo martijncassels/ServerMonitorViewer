@@ -614,6 +614,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 
 var interval = $interval(function () {
 	vm.getLiveCustomerChartData()
+	vm.getlivecustomerentitycountmutations();
 }, vm.max);
 var interval2 = $interval(function () {
 	vm.setcustomerprogressbarvalue()
@@ -696,6 +697,44 @@ vm.getLiveCustomerChartData = function() {
 			});
 		} // end $http
 	} // end if
+
+	vm.getlivecustomerentitycountmutations = function() {
+		if(vm.customerentitycounts[0]!=undefined) {
+			$http.get('/getcustomerentitycountmutations/' + $routeParams.alias + '/' + vm.db + '/' + vm.customerentitycounts[0].ID)
+				.success(function(data) {
+					var tmpdata = data;
+					vm.customerentitycounts.reverse();
+					_.each(tmpdata,function(value1,index){
+						_.each(value1,function(value2,key){
+							if(["Timestamp"].indexOf(key) != -1){
+								tmpdata[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
+							}
+						});
+					});
+					console.log('updating '+tmpdata.length+' entitycount(s)...');
+						for(var i=0;i<vm.customerentitycountdata.length;i++){
+							vm.customerentitycountdata[i].slice(tmpdata.length);
+						}
+						_.each(tmpdata,function(value1,index){
+							vm.customerentitycounts.slice(1);
+							vm.customerentitycounts.push(value1);
+							_.each(value1,function(value2,key){
+								if(value2!=null){
+									vm.customerentitycountdata[Object.keys(value1).indexOf(key)].push(value2);
+								}
+								else {
+									vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = 0;
+								}
+							});
+						});
+					vm.customerentitycounts.reverse();
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+			} // end $http
+		} // end if
 
 	$scope.$on('$destroy', function() {
 		$interval.cancel(interval);
