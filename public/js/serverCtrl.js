@@ -612,8 +612,12 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		};
 
 
-var interval = $interval(function () {vm.getLiveCustomerChartData()}, vm.max);
-var interval2 = $interval(function () {vm.setcustomerprogressbarvalue()}, 1000);
+var interval = $interval(function () {
+	vm.getLiveCustomerChartData()
+}, vm.max);
+var interval2 = $interval(function () {
+	vm.setcustomerprogressbarvalue()
+}, 1000);
 
 vm.setcustomerprogressbarvalue = function() {
 	if(vm.dynamic>0){

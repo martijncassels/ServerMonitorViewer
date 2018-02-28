@@ -166,7 +166,7 @@ br
 			//- 			option 30
 			//- 			option 40
 			//- 			option 50
-			ul(uib-pagination,total-items="vm.customerentitycounts_totalItems",ng-model="vm.customerentitycounts_currentPage",ng-change="vm.pageChanged()",class="pagination-sm",items-per-page="vm.customerentitycounts_itemsPerPage",template-url="pagination.html").pagination
+			ul(uib-pagination,total-items="vm.customerentitycounts_totalItems",ng-model="vm.customerentitycounts_currentPage",ng-change="vm.pageChanged()",class="pagination-sm",items-per-page="vm.customerentitycounts_itemsPerPage",template-url="pagination.html",max-size="5",boundary-links="true",boundary-link-number="true",rotate="true",force-ellipses="true").pagination
 			table(ng-hide="vm.customerentitycounts.name=='SequelizeDatabaseError'").table.table-striped.table-sm
 				thead
 					th(ng-repeat='(key,value) in vm.customerentitycounts[0]') {{key}}
