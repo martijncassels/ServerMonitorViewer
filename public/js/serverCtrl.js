@@ -614,11 +614,13 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 
 var interval = $interval(function () {
 	vm.getLiveCustomerChartData()
-	vm.getlivecustomerentitycountmutations();
 }, vm.max);
 var interval2 = $interval(function () {
 	vm.setcustomerprogressbarvalue()
 }, 1000);
+var interval3 = $interval(function () {
+	vm.getlivecustomerentitycountmutations();
+}, (15*60000));
 
 vm.setcustomerprogressbarvalue = function() {
 	if(vm.dynamic>0){
@@ -739,5 +741,6 @@ vm.getLiveCustomerChartData = function() {
 	$scope.$on('$destroy', function() {
 		$interval.cancel(interval);
 		$interval.cancel(interval2);
+		$interval.cancel(interval3);
 	});
 }
