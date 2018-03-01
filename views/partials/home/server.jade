@@ -23,7 +23,7 @@ script(id='pagination.html',type='text/ng-template')
 		div(role='document').modal-dialog
 			.modal-content
 				.modal-header
-					h5.modal-title header
+					h5.modal-title Metric Thresholds
 					button(type='button',data-dismiss='modal',aria-label='Close').close
 						span(aria-hidden='true') &times;
 				.modal-body
@@ -124,7 +124,36 @@ div(ng-show='vm.mockdata.length>0').table-responsive
 				th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
 		tbody
 			tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
-				td(ng-repeat='(key,value) in records') {{value}}
+				td(ng-repeat='(key,value) in records') 
+					div(ng-if='key=="Message" && records.Metric=="Blocking occurred, job was started"')
+						a(href='/serverblocking/{{vm.alias}}/{{records.DatabaseName}}') {{value}}
+					div(ng-if='key=="Message" && records.Metric!="Blocking occurred, job was started"') {{value}}
+		//- thead
+		//- 	tr
+		//- 		th RemoteQueuedMetricKey
+		//- 		th Timestamp
+		//- 		th InstanceName
+		//- 		th DatabaseName
+		//- 		th Metric
+		//- 		th MetricValue
+		//- 		th MetricThreshold
+		//- 		th ThresholdValue
+		//- 		th LastQueuedMetricKey
+		//- 		th Message
+		//- tbody
+		//- 	tr(ng-repeat='records in vm.mockdata | orderBy:"-RemoteQueuedMetricKey"')
+		//- 		td {{records.RemoteQueuedMetricKey}}
+		//- 		td {{records.Timestamp}}
+		//- 		td {{records.InstanceName}}
+		//- 		td {{records.DatabaseName}}
+		//- 		td {{records.Metric}}
+		//- 		td {{records.MetricValue}}
+		//- 		td {{records.MetricThreshold}}
+		//- 		td {{records.ThresholdValue}}
+		//- 		td {{records.LastQueuedMetricKey}}
+		//- 		td(ng-if='records.Metric=="Blocking occurred, job was started"') 
+		//- 			a(href='/serverblocking/{{vm.alias}}/{{records.DatabaseName}}') {{records.Message}}
+		//- 		td(ng-if='records.Metric!="Blocking occurred, job was started"') {{records.Message}}
 div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
 br 
 //-canvas(id='line',chart-data='vm.archivecounterschartdataselection',chart-labels='vm.archivecounterschartdata[1]',chart-series='vm.archivecounterschartseriesselection',chart-options='vm.options',height='100').chart.chart-line

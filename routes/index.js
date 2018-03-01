@@ -364,7 +364,7 @@ exports.lastheartbeat = function(req, res) {
 exports.getblocking = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select top 100 *\
-		from [" + req.params.server + "].ServerMonitor.dbo.Blocking\
+		from [" + req.params.alias + "].ServerMonitor.dbo.Blocking\
 		order by MeasureTime desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})

@@ -16,30 +16,9 @@ div(ng-show='vm.mockdata.length>0').table-responsive
 	table.table.table-striped.table-sm
 		thead
 			tr
-				th RemoteQueuedMetricKey
-				th Timestamp
-				th InstanceName
-				th DatabaseName
-				th Metric
-				th MetricValue
-				th MetricThreshold
-				th ThresholdValue
-				th LastQueuedMetricKey
-				th Message
+				th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
 		tbody
-			tr(ng-repeat='records in vm.mockdata | orderBy:"-RemoteQueuedMetricKey"')
-				th {{records.RemoteQueuedMetricKey}}
-				th {{records.Timestamp}}
-				th {{records.InstanceName}}
-					//- a(href='/server/{{records.InstanceName}}/{{records.DatabaseName}}') {{records.InstanceName}}
-				th {{records.DatabaseName}}
-				th {{records.Metric}}
-				th {{records.MetricValue}}
-				th {{records.MetricThreshold}}
-				th {{records.ThresholdValue}}
-				th {{records.LastQueuedMetricKey}}
-				th(ng-if='records.Metric=="Blocking occurred, job was started"') 
-					a(href='/serverblocking/{{records.InstanceName}}/{{records.DatabaseName}}') {{records.Message}}
-				th(ng-if='records.Metric!="Blocking occurred, job was started"') {{records.Message}}
+			tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
+				td(ng-repeat='(key,value) in records') {{value}}
 div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
 //- End Content

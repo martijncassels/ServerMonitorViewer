@@ -12,6 +12,7 @@ ServerCtrl.$inject = ['$scope','$route','$http','$interval','$routeParams','_'];
 function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		var vm = this;
 		vm.title = '';
+		vm.alias = $routeParams.alias;
 		vm.mockdata = [];
 		vm.series = ['MetricValue','ThresholdValue']
 		vm.licenses = [];
