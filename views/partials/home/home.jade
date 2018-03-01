@@ -38,8 +38,8 @@ div(ng-show='vm.mockdata.length>0').table-responsive
 				th {{records.MetricThreshold}}
 				th {{records.ThresholdValue}}
 				th {{records.LastQueuedMetricKey}}
-				th(ng-if='records.Metric=="Blocking"') 
-					a(href='/serversingle/{{records.InstanceName}}/{{records.DatabaseName}}') {{records.Message}}
-				th(ng-if='records.Metric!="Blocking"') {{records.Message}}
+				th(ng-if='records.Metric=="Blocking occurred, job was started"') 
+					a(href='/serverblocking/{{records.InstanceName}}/{{records.DatabaseName}}') {{records.Message}}
+				th(ng-if='records.Metric!="Blocking occurred, job was started"') {{records.Message}}
 div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
 //- End Content
