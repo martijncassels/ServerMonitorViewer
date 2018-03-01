@@ -201,7 +201,7 @@ app.get('/listservers', routes.listservers);
 app.get('/listserversv2', routes.listserversv2);
 app.get('/getmodels', routes.getmodels);
 app.get('/lastheartbeat/:server', routes.lastheartbeat);
-app.get('/getblocking/:server/:db', routes.getblocking);
+app.get('/getblocking/:alias/:db', routes.getblocking);
 app.get('/getthresholds/:alias/:db', routes.getthresholds);
 app.put('/updatethreshold/:alias/:db/:key/:value', routes.updatethreshold);
 
