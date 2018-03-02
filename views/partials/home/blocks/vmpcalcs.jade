@@ -1,0 +1,21 @@
+.card
+	.card-header 
+		h5 
+			i.fas.fa-address-card
+			|                   VMP Calculations
+	div(ng-if='!vm.pccpcalcssdatastarting')
+		.row
+			.col-md-6
+				|	Department
+			.col-md-6
+				| To Calculate
+	div(ng-if='vm.pccpcalcssdatastarting',align='center').loading
+			i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
+	div(ng-show="vm.pccpcalcss.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+		{{vm.vmptransactions.original.message}}
+	div(ng-repeat='pccpcalc in vm.pccpcalcss track by $index', style='padding:5px;',ng-hide="vm.pccpcalcss.name=='SequelizeDatabaseError'")
+		.row
+			.col-md-6
+				{{pccpcalc.Description}}
+			.col-md-6
+				{{pccpcalc.ToCalculate}}
