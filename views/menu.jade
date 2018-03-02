@@ -6,17 +6,18 @@ nav.col-md-2.d-none.d-md-block.bg-light.sidebar
 		h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
 			span Shared Servers
 		ul.nav.nav-pills.flex-column.mb-2
-			li(ng-repeat='server in main.sorted').nav-item.dropdown
+			//- li(ng-repeat='(key,value) in main.sorted | filter: {key.Alias:main.searchAlias}').nav-item.dropdown
+			li(ng-repeat='(key,value) in main.sorted').nav-item.dropdown
 				a(data-toggle='dropdown', href='#', role='button', aria-haspopup='true', aria-expanded='false').nav-link.dropdown-toggle
 					span(data-feather='file-text')
-					i(ng-class="{'green' : server[0].Min_ago<30 , 'red' : (server[0].Min_ago>30) || !server[0].Min_ago}").fas.fa-laptop.feather
-					|                    {{server[0].Description}}
+					i(ng-class="{'green' : value[0].Min_ago<30 , 'red' : (value[0].Min_ago>30) || !value[0].Min_ago}").fas.fa-laptop.feather
+					|                    {{key}}
 				.dropdown-menu
-					a(ng-repeat='customer in server',href='/server/{{customer.Description}}/{{customer.Alias}}').dropdown-item {{customer.Alias}}
+					a(ng-repeat='customer in value | filter: {Alias:main.searchAlias}',href='/server/{{customer.Description}}/{{customer.Alias}}').dropdown-item {{customer.Alias}}
 		h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
 			span Private Servers
 		ul.nav.flex-column.mb-2
-			li(ng-repeat='server in main.orphans | orderBy: "+Alias"').nav-item
+			li(ng-repeat='server in main.orphans | filter: {Alias:main.searchAlias} | orderBy: "+Alias"').nav-item
 				a(href='/server/{{server.Description}}/{{server.Alias}}',ng-hide='((server.Description=="none") || !server.Alias)').nav-link
 					span(data-feather='file-text')
 					i(ng-class="{'green' : server.Min_ago<30 , 'red' : (server.Min_ago>30) || !server.Min_ago}").fas.fa-laptop.feather
