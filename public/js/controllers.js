@@ -15,6 +15,7 @@ function MainCtrl($scope,$http,_) {
 	var vm = this;
 	vm.title = '';
 	vm.servers = [];
+	vm.searchAlias= '';
 
 	//- Get a list of all active servers in [axerrio].[registeredservers]
 	//- for use in the side menu
