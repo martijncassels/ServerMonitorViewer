@@ -378,12 +378,6 @@ exports.getblocking = function(req, res) {
 }
 /*
 select m.MetricThresholdKey,m.ColumnName, mt.Description, mt.Value, mt.Timespan\
-from [" + req.params.alias + "].[ServerMonitor].monitor.Metric m with(readuncommitted)\
-join [" + req.params.alias + "].[ServerMonitor].monitor.MetricThreshold mt with(readuncommitted)\
-on m.MetricThresholdKey = mt.MetricThresholdKey\
-where m.Active = 1\
-union all\
-select m.MetricThresholdKey,m.ColumnName, mt.Description, mt.Value, mt.Timespan\
 from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
 join [" + req.params.alias + "].[" + req.params.db + "].monitor.MetricThreshold mt with(readuncommitted)\
 on m.MetricThresholdKey = mt.MetricThresholdKey\
@@ -391,10 +385,8 @@ where m.Active = 1
 */
 exports.getthresholds = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		sequelize.query("select m.MetricThresholdKey,m.ColumnName, mt.Description, mt.Value, mt.Timespan\
+		sequelize.query("select m.*\
 	from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
-	join [" + req.params.alias + "].[" + req.params.db + "].monitor.MetricThreshold mt with(readuncommitted)\
-		on m.MetricThresholdKey = mt.MetricThresholdKey\
 	where m.Active = 1", {
 			raw: true,
 			type: sequelize.QueryTypes.SELECT
@@ -402,7 +394,8 @@ exports.getthresholds = function(req, res) {
 			res.status(200).send(result);
 		})
 		.catch(err => {
-			console.log(err);
+			//console.log(err);
+			res.status(200).send(err);
 		});
 	}
 	else {
@@ -414,7 +407,7 @@ exports.updatethreshold = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		console.log("update m set Value = " + req.params.value + "\
 		from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
-		where m.Active = 1 and m.[MetricThresholdKey] = " + req.params.key);
+		where m.Active = 1 and m.[MetricKey] = " + req.params.key);
 		// sequelize.query("update \
 		// [" + req.params.alias + "].[ServerMonitor].[monitor].[MetricThreshold]\
 		// set Value = " + req.body.value + " where [key] = " + req.params.key, {raw: true,type: sequelize.QueryTypes.UPDATE}).then(result => {
