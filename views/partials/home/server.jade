@@ -27,14 +27,17 @@ script(id='pagination.html',type='text/ng-template')
 					button(type='button',data-dismiss='modal',aria-label='Close').close
 						span(aria-hidden='true') &times;
 				.modal-body
-					div(ng-repeat='threshold in vm.thresholds')
-						label {{threshold.ColumnName}}
-						div.input-group.mb-2
-							.input-group-prepend
-								span#basic-addon3.input-group-text {{threshold.Description}}
-							input#threshold1.form-control(type='text',ng-model='threshold.Value',aria-describedby='basic-addon3')
-							.input-group-append
-								button(type="button",ng-click='vm.updateThreshold(threshold.MetricThresholdKey,threshold.Value)').btn.btn-outline-secondary Update
+					div(ng-show="vm.thresholds.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+						{{vm.thresholds.original.message}}
+					div(ng-hide="vm.thresholds.name=='SequelizeDatabaseError'")
+						div(ng-repeat='threshold in vm.thresholds')
+							label {{threshold.ColumnName}}
+							div.input-group.mb-2
+								.input-group-prepend
+									span#basic-addon3.input-group-text {{threshold.Description}}
+								input#threshold1.form-control(type='text',ng-model='threshold.ThresholdValue',aria-describedby='basic-addon3')
+								.input-group-append
+									button(type="button",ng-click='vm.updateThreshold(threshold.MetricKey,threshold.ThresholdValue)').btn.btn-outline-secondary Update
 				.modal-footer
 					button(type='button',data-dismiss='modal').btn.btn-secondary Close
 	//- end of modal
