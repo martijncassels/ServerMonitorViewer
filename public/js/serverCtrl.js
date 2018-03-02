@@ -33,6 +33,10 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		vm.pccpcalcss = [];
 		vm.pccpcalcssdata = [];
 		vm.pccpcalcsslabels = [];
+		vm.cpu = [];
+		vm.cpudata = [];
+		vm.cpulabels = [];
+		vm.cpuseries = 'CPU';
 		vm.etradeservercounters = [];
 		vm.etradeservercounterdata = [[],[]];
 		vm.etradeservercounterlabels = [];
@@ -359,6 +363,24 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 						for(var i=0;i<data.length;i++){
 							vm.pccpcalcssdata.push(data[i].ToCalculate);
 							vm.pccpcalcsslabels.push(data[i].Description);
+						}
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+
+		//- get cpu metrics
+		vm.cpustarting = true;
+		$http.get('/getcpu/'+$routeParams.alias+'/'+vm.db)
+				.success(function(data) {
+						data.reverse();
+						vm.cpustarting = false;
+						vm.cpu = data;
+
+						for(var i=0;i<data.length;i++){
+							vm.cpudata.push(data[i].Value);
+							vm.cpulabels.push(data[i].Timestamp);
 						}
 				})
 				.error(function(data) {

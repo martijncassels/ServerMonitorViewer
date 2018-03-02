@@ -442,6 +442,22 @@ exports.updatethreshold = function(req, res) {
 	}
 }
 
+exports.getcpu = function(req, res) {
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
+
+	sequelize.query("SELECT TOP 100 *\
+	  FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics] where Metric = 'CPU_SQL' order by [Timestamp]", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		res.status(200).send(result);
+	})
+	.catch(err => {
+		console.log(err);
+	});
+	}
+	else {
+		res.status(200).send(null);
+	}
+}
+
 exports.partial = function (req, res) {
 	var name = req.params.name;
 	var sub = req.params.sub
