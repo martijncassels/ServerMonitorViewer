@@ -18,14 +18,14 @@ function BlockingCtrl($scope,$route,$http,$interval,$routeParams) {
 		vm.max = 60000;
 		vm.dynamic = vm.max;
 
-  	if($routeParams.servername=='HO-SQL01' && $routeParams.db=='FlowerCore') {
-			vm.alias = 'HOL';
-		}
+  	// if($routeParams.servername=='HO-SQL01' && $routeParams.db=='FlowerCore') {
+		// 	vm.alias = 'HOL';
+		// }
 
 
-		//- Get active license useage
+		//- Get blocking
 		vm.blockingstarting = true;
-		$http.get('/getblocking/'+vm.alias+'/'+$routeParams.db)
+		$http.get('/getblocking/'+$routeParams.alias + '/' + $routeParams.db)
 				.success(function(data) {
 						_.each(data,function(value1,index){
 							_.each(value1,function(value2,key){

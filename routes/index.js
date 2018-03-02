@@ -73,13 +73,24 @@ exports.index = function(req, res){
 
 exports.listservers = function(req, res) {
 	if(config.sqlstring.database!= ''){
-	sequelize.query("SELECT isnull(rg.[Description],'none') as [Description],rg.[Alias],max(rq.[timestamp]) as [timestamp],datediff(MINUTE,max(rq.[timestamp]),getdate()) as [Min_ago]\
+	sequelize.query("SELECT \
+isnull(rg.[Description],'none') as [Description]\
+,rg.[Alias]\
+,max(rq.[timestamp]) as [hbtimestamp]\
+,datediff(MINUTE,max(rq.[timestamp]),getdate()) as [hbMin_ago]\
+,max(rq2.[timestamp]) as [timestamp]\
+,datediff(MINUTE,max(rq2.[timestamp]),getdate()) as [Min_ago]\
 FROM [ServerMonitor].[axerrio].[RegisteredServer] rg with(readuncommitted)\
 OUTER APPLY	(\
 	SELECT  TOP 1 * FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq with(readuncommitted)\
-	WHERE (rq.[InstanceName] = rg.[Description]) order by [RemoteQueuedMetricKey] desc\
-) rq GROUP BY rg.[Description],rg.[Alias]\
-	ORDER BY rg.[Description]", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+	WHERE (rq.[InstanceName] = rg.[Description] and Metric = 'Heartbeat') order by [RemoteQueuedMetricKey] desc\
+) rq \
+OUTER APPLY	(\
+	SELECT  TOP 1 * FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq with(readuncommitted)\
+	WHERE (rq.[InstanceName] = rg.[Description] and Metric <> 'Heartbeat') order by [RemoteQueuedMetricKey] desc\
+) rq2 \
+GROUP BY rg.[Description],rg.[Alias]\
+ORDER BY [Min_ago] desc,[hbMin_ago] desc,rg.[Alias]", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
 	})
 	.catch(err => {
@@ -278,7 +289,11 @@ exports.getcustomermutations = function(req, res) {
 
 exports.getcustomerentitycounts = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		sequelize.query("select top 100 * from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts with(readuncommitted)\
+		sequelize.query("select top 100 ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
+		ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
+		ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
+		from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
+			join [HOL].[master].sys.databases dbs on dbs.database_id = ec.[dbid] and dbs.name = '" + req.params.db + "'\
 		where datepart(mi,timestamp) between 0 and 5\
 		 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
@@ -294,8 +309,12 @@ exports.getcustomerentitycounts = function(req, res) {
 //where datepart(mi,timestamp) between 0 and 5\
 exports.getcustomerentitycountmutations = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		sequelize.query("select * from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts with(readuncommitted)\
-		 where ID > " + req.params.lastkey + "", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		sequelize.query("select ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
+		ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
+		ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
+		from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
+			join [HOL].[master].sys.databases dbs on dbs.database_id = ec.[dbid] and dbs.name = '" + req.params.db + "'\
+		where ID > " + req.params.lastkey, {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
 		.catch(err => {

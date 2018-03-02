@@ -1,0 +1,10 @@
+.card
+	.card-header
+		h5 
+			i.fas.fa-address-card
+			|                   Pricelists
+	div(ng-if='vm.customerentitycountdatastarting',align='center').loading
+			i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
+	div(ng-show="vm.customerentitycountdata.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+		{{vm.customerentitycountdata.original.message}}
+	canvas(id='bar',chart-data='[vm.customerentitycountdata[17],vm.customerentitycountdata[18]]',chart-labels='vm.customerentitycountdata[1]',chart-series='[vm.customerentitycountseries[17],vm.customerentitycountseries[18]]',chart-options='vm.options2',height='100',chart-dataset-override="[{pointRadius:0}]").chart.chart-bar
