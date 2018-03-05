@@ -26,7 +26,7 @@ nav.col-md-2.d-none.d-md-block.bg-light.sidebar
 			span Servers
 		ul.nav.flex-column.mb-2
 			li(ng-repeat='server in main.servers | filter: {Alias:main.searchAlias}').nav-item
-				a(href='/server/{{server.Description}}/{{server.Alias}}',ng-hide='((server.Description=="none") || !server.Alias)').nav-link
+				a(href='/server/{{server.Description}}/{{server.Alias}}/{{server.Notes}}',ng-hide='((server.Description=="none") || !server.Alias)').nav-link
 					span(data-feather='file-text')
 					i(ng-class="{'green' : (server.hbMin_ago<30 && server.hbMin_ago!==null && server.Min_ago===null) , 'red' : (server.hbMin_ago>30 || server.Min_ago!==null)}").fas.fa-laptop.feather
 					|                    {{server.Alias}} - {{server.Description}}

@@ -33,10 +33,11 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		vm.pccpcalcss = [];
 		vm.pccpcalcssdata = [];
 		vm.pccpcalcsslabels = [];
-		vm.cpu = [];
-		vm.cpudata = [];
-		vm.cpulabels = [];
-		vm.cpuseries = 'CPU';
+		vm.cpu_ = [];
+		vm.cpu_data = [];
+		vm.cpu_labels = [];
+		vm.cpu_chartdata = [];
+		vm.cpu_series = 'CPU';
 		vm.etradeservercounters = [];
 		vm.etradeservercounterdata = [[],[]];
 		vm.etradeservercounterlabels = [];
@@ -46,6 +47,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		//vm.customerentitycountseriesselection = ["ID","Timestamp","TotalLots","RealLots","VirtualLots","VirtualLotsToBeDeleted","TotalOrders","TotalOrderRows","ABSOrders","ABSOrderRows","WebShopOrders","WebShopOrderRows","ProductionOrders","ProductionOrderRows","PCCPTotal","PCCPToBeCalculated","VPSupplyLineTotal","TotalPricelists","TotalPricelistRows"];
 		vm.max = 60000;
 		vm.dynamic = vm.max;
+		vm.isCollapsed = false;
 
 		$http.get('/getcustomermetrics/'+$routeParams.servername+'/'+$routeParams.alias)
 				.success(function(data) {
@@ -118,7 +120,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 						vm.db = 'FlowerCore';
 						break;
 				default:
-							vm.db = 'none';
+							vm.db = $routeParams.db;
 				}
 		/*
 		switch($routeParams.alias) {
@@ -371,17 +373,32 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 				});
 
 		//- get cpu metrics
-		vm.cpustarting = true;
+		vm.cpu_starting = true;
 		$http.get('/getcpu/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
-						data.reverse();
-						vm.cpustarting = false;
-						vm.cpu = data;
+					console.log(data.length);
+					_.each(data,function(value1,index){
+						_.each(value1,function(value2,key){
+							if(["Timestamp"].indexOf(key) != -1){
+								data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
+							}
+						});
+					});
+					var tmpdata = data.reverse();
+					vm.cpu_starting = false;
+					vm.cpu_ = data;
 
-						for(var i=0;i<data.length;i++){
-							vm.cpudata.push(data[i].Value);
-							vm.cpulabels.push(data[i].Timestamp);
-						}
+					_.each(data,function(value1,index){
+						_.each(value1,function(value2,key){
+							if(typeof(vm.cpu_chartdata[Object.keys(value1).indexOf(key)]) == 'undefined'){
+								vm.cpu_chartdata[Object.keys(value1).indexOf(key)] = [];
+							}
+							if(typeof(vm.cpu_chartdata[Object.keys(value1).indexOf(key)][index]) == 'undefined'){
+								vm.cpu_chartdata[Object.keys(value1).indexOf(key)][index] = [];
+							}
+							vm.cpu_chartdata[Object.keys(value1).indexOf(key)][index] = value2;
+						});
+					});
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
@@ -571,7 +588,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 
 		vm.onClick = function (points, evt) {
 		};
-		vm.datasetOverride = [{ yAxisID: 'y-axis-1', fill: +1 }, { yAxisID: 'y-axis-2', fill: false }];
+		//vm.datasetOverride = [{ yAxisID: 'y-axis-1', fill: +1 }, { yAxisID: 'y-axis-2', fill: false }];
 		vm.options = {
 			scales: {
 				gridLines: {
