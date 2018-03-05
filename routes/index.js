@@ -44,8 +44,8 @@ var sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user, 
 		idle: 10000
 	},
 	define: {
-        timestamps: false
-    }
+				timestamps: false
+		}
 });
 //}
 
@@ -76,20 +76,21 @@ exports.listservers = function(req, res) {
 	sequelize.query("SELECT \
 isnull(rg.[Description],'none') as [Description]\
 ,rg.[Alias]\
-,max(rq.[timestamp]) as [hbtimestamp]\
-,datediff(MINUTE,max(rq.[timestamp]),getdate()) as [hbMin_ago]\
-,max(rq2.[timestamp]) as [timestamp]\
-,datediff(MINUTE,max(rq2.[timestamp]),getdate()) as [Min_ago]\
+,rg.[Notes]\
+,max(hb.[timestamp]) as [hbtimestamp]\
+,datediff(MINUTE,max(hb.[timestamp]),getdate()) as [hbMin_ago]\
+,max(rq.[timestamp]) as [timestamp]\
+,datediff(MINUTE,max(rq.[timestamp]),getdate()) as [Min_ago]\
 FROM [ServerMonitor].[axerrio].[RegisteredServer] rg with(readuncommitted)\
 OUTER APPLY	(\
 	SELECT  TOP 1 * FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq with(readuncommitted)\
 	WHERE (rq.[InstanceName] = rg.[Description] and Metric = 'Heartbeat') order by [RemoteQueuedMetricKey] desc\
-) rq \
+) hb \
 OUTER APPLY	(\
 	SELECT  TOP 1 * FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq with(readuncommitted)\
-	WHERE (rq.[InstanceName] = rg.[Description] and Metric <> 'Heartbeat') order by [RemoteQueuedMetricKey] desc\
-) rq2 \
-GROUP BY rg.[Description],rg.[Alias]\
+	WHERE ((rq.[InstanceName] = rg.[Description] and rq.DatabaseName = rg.Notes) and Metric <> 'Heartbeat') order by [RemoteQueuedMetricKey] desc\
+) rq \
+GROUP BY rg.[Description],rg.[Alias],rg.[Notes]\
 ORDER BY [Min_ago] desc,[hbMin_ago] desc,rg.[Alias]", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
 	})
@@ -131,10 +132,10 @@ exports.listserversv2 = function(req, res) {
 
 exports.getmodels = function(req, res) {
 	auto.run(function (err) {
-  if (err) throw err;
+	if (err) throw err;
 
-  res.status(200).send(auto.tables); // table list
-  //res.status(200).send(auto.foreignKeys); // foreign key list
+	res.status(200).send(auto.tables); // table list
+	//res.status(200).send(auto.foreignKeys); // foreign key list
 });
 }
 
@@ -262,7 +263,8 @@ exports.getpccpcalcs = function(req,res) {
 				res.status(200).send(result);
 			})
 			.catch(err => {
-				console.log(err);
+				//console.log(err);
+				res.status(200).send(err);
 			});
 	}
 	else {
@@ -289,18 +291,35 @@ exports.getcustomermutations = function(req, res) {
 
 exports.getcustomerentitycounts = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		sequelize.query("select top 100 ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
-		ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
-		ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
-		from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
-			join [HOL].[master].sys.databases dbs on dbs.database_id = ec.[dbid] and dbs.name = '" + req.params.db + "'\
-		where datepart(mi,timestamp) between 0 and 5\
-		 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
-			res.status(200).send(result);
-		})
-		.catch(err => {
-			console.log(err);
-		});
+		// temporary workaround, difference between entitycounts.db_id and entitycounts.dbid
+		if(req.params.alias=='HOL' || req.params.alias=='HUS'){
+			sequelize.query("select top 100 ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
+			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
+			ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
+			from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
+				join [" + req.params.alias + "].[master].sys.databases dbs on dbs.database_id = ec.[dbid] and dbs.name = '" + req.params.db + "'\
+			where datepart(mi,timestamp) between 0 and 5\
+			 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+		}
+		else {
+			sequelize.query("select top 100 ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
+			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
+			ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
+			from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
+				join [" + req.params.alias + "].[master].sys.databases dbs on dbs.database_id = ec.[db_id] and dbs.name = '" + req.params.db + "'\
+			where datepart(mi,timestamp) between 0 and 5\
+			 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+		}
 	}
 	else {
 		res.status(200).send(null);
@@ -441,12 +460,15 @@ exports.updatethreshold = function(req, res) {
 		res.status(200).send(null);
 	}
 }
-
+/*
+SELECT TOP 100 MetricKey,MetricValueKey,Timestamp,convert(int,Value) as [Value],Metric,InstanceKey,\
+	DatabaseName,MetricThreshold,ThresholdValue,MetricContainerKey,Publish\
+	FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics] where Metric = 'CPU_SQL' order by [Timestamp] desc
+*/
 exports.getcpu = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-
-	sequelize.query("SELECT TOP 100 *\
-	  FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics] where Metric = 'CPU_SQL' order by [Timestamp]", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+	sequelize.query("SELECT TOP 100 Timestamp,convert(int,Value) as [Value]\
+		FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics] where Metric = 'CPU_SQL' order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
 	})
 	.catch(err => {
