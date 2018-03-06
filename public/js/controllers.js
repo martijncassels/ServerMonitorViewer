@@ -8,10 +8,10 @@ angular
 .controller('MainCtrl', MainCtrl)
 .controller('HomeCtrl', HomeCtrl);
 
-MainCtrl.$inject = ['$scope','$http','_'];
+MainCtrl.$inject = ['$scope','$http','_','$interval'];
 HomeCtrl.$inject = ['$scope', '$route','$http','$interval'];
 
-function MainCtrl($scope,$http,_) {
+function MainCtrl($scope,$http,_,$interval) {
 	var vm = this;
 	vm.title = '';
 	vm.servers = [];
@@ -19,54 +19,63 @@ function MainCtrl($scope,$http,_) {
 
 	//- Get a list of all active servers in [axerrio].[registeredservers]
 	//- for use in the side menu
-	$http.get('/listservers')
-			.success(function(data) {
-					vm.servers = data;
-					vm.servers2 = data;
-					vm.orphans = [];
-					vm.children = [];
-					vm.new = [];
-					//- Set siblings for all entries, common parent = Description (servername)
-					for(var i=0;i<vm.servers.length;i++){
-						if(i<vm.servers.length-1){
-							if(vm.servers[i].Description == vm.servers[i+1].Description && vm.servers[i].Description!='none'){
-								vm.servers[i].hasSiblings = true;
-								vm.servers[i+1].hasSiblings = true;
+	vm.getServers = function() {
+		$http.get('/listservers')
+				.success(function(data) {
+						vm.servers = data;
+						vm.servers2 = data;
+						vm.orphans = [];
+						vm.children = [];
+						vm.new = [];
+						//- Set siblings for all entries, common parent = Description (servername)
+						for(var i=0;i<vm.servers.length;i++){
+							if(i<vm.servers.length-1){
+								if(vm.servers[i].Description == vm.servers[i+1].Description && vm.servers[i].Description!='none'){
+									vm.servers[i].hasSiblings = true;
+									vm.servers[i+1].hasSiblings = true;
+								}
+								else {
+									vm.servers[i+1].hasSiblings = false;
+								}
 							}
 							else {
-								vm.servers[i+1].hasSiblings = false;
+								if(vm.servers[i].Description == vm.servers[i-1].Description && vm.servers[i].Description!='none') {
+									vm.servers[i].hasSiblings = true;
+									vm.servers[i-1].hasSiblings = true;
+								}
+								else {
+									vm.servers[i].hasSiblings = false;
+								}
 							}
 						}
-						else {
-							if(vm.servers[i].Description == vm.servers[i-1].Description && vm.servers[i].Description!='none') {
-								vm.servers[i].hasSiblings = true;
-								vm.servers[i-1].hasSiblings = true;
+						angular.forEach(vm.servers, function(value,index){
+							if(value.hasSiblings){
+								//- New entry
+								if(typeof(vm.new[value.Description]) == 'undefined'){
+									vm.new[value.Description] = [];
+								}
+								vm.new[value.Description].push(value);
+								vm.children.push(value);
 							}
-							else {
-								vm.servers[i].hasSiblings = false;
+							else if(!value.hasSiblings){
+								vm.orphans.push(value);
 							}
-						}
-					}
-					angular.forEach(vm.servers, function(value,index){
-						if(value.hasSiblings){
-							//- New entry
-							if(typeof(vm.new[value.Description]) == 'undefined'){
-								vm.new[value.Description] = [];
-							}
-							vm.new[value.Description].push(value);
-							vm.children.push(value);
-						}
-						else if(!value.hasSiblings){
-							vm.orphans.push(value);
-						}
-					});
-					//_.indexBy(vm.children,'Description');
-					vm.sorted = _.groupBy(vm.children,'Description');
-			})
-			.error(function(data) {
-					console.log('Error: ' + data);
-					vm.error = data;
-			});
+						});
+						//_.indexBy(vm.children,'Description');
+						vm.sorted = _.groupBy(vm.children,'Description');
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+			}
+
+	vm.getServers();
+	var interval = $interval(function () {vm.getServers()}, 60000);
+
+	$scope.$on('$destroy', function() {
+		$interval.cancel(interval);
+	});
 }
 
 function HomeCtrl($scope,$route,$http,$interval) {

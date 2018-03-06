@@ -291,13 +291,28 @@ exports.getcustomermutations = function(req, res) {
 
 exports.getcustomerentitycounts = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
+		var tmpservers = ['HOL','HUS','VVP'];
 		// temporary workaround, difference between entitycounts.db_id and entitycounts.dbid
-		if(req.params.alias=='HOL' || req.params.alias=='HUS'){
+		//if(req.params.alias=='HOL' || req.params.alias=='HUS'  || req.params.alias=='VVP'){
+		if(tmpservers.indexOf(req.params.alias)!=-1){
 			sequelize.query("select top 100 ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
 			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
 			ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
 			from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
 				join [" + req.params.alias + "].[master].sys.databases dbs on dbs.database_id = ec.[dbid] and dbs.name = '" + req.params.db + "'\
+			where datepart(mi,timestamp) between 0 and 5\
+			 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+		}
+		else if(req.params.alias=='VVB'){
+			sequelize.query("select top 100 ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
+			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
+			ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
+			from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
 			where datepart(mi,timestamp) between 0 and 5\
 			 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 				res.status(200).send(result);
