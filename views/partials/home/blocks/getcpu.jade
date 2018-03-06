@@ -6,9 +6,5 @@
 	div(ng-if='vm.cpu_starting',align='center').loading
 			i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
 	div(uib-alert,ng-show="vm.cpu_.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.cpu_.name=null").alert-danger
-<<<<<<< HEAD
-		{{vm.cpu_.original.message}}
-=======
 		{{vm.cpu_.original.message}} 
->>>>>>> 12622db657971dd1c7f672540ec000ca66ae8255
 	canvas(id='line',chart-data='vm.cpu_chartdata',chart-labels='vm.cpu_chartdata[0]',chart-series='["Timestamp","Value"]',chart-options='vm.options2',chart-dataset-override="[{pointRadius:0}]",height='100').chart.chart-line

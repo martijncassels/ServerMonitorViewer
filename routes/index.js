@@ -291,15 +291,10 @@ exports.getcustomermutations = function(req, res) {
 
 exports.getcustomerentitycounts = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-<<<<<<< HEAD
-		// temporary workaround, difference between entitycounts.db_id and entitycounts.dbid
-		if(req.params.alias=='HOL' || req.params.alias=='HUS'){
-=======
 		var tmpservers = ['HOL','HUS','VVP'];
 		// temporary workaround, difference between entitycounts.db_id and entitycounts.dbid
 		//if(req.params.alias=='HOL' || req.params.alias=='HUS'  || req.params.alias=='VVP'){
 		if(tmpservers.indexOf(req.params.alias)!=-1){
->>>>>>> 12622db657971dd1c7f672540ec000ca66ae8255
 			sequelize.query("select top 100 ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
 			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
 			ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
@@ -313,8 +308,6 @@ exports.getcustomerentitycounts = function(req, res) {
 				console.log(err);
 			});
 		}
-<<<<<<< HEAD
-=======
 		else if(req.params.alias=='VVB'){
 			sequelize.query("select top 100 ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
 			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
@@ -328,7 +321,6 @@ exports.getcustomerentitycounts = function(req, res) {
 				console.log(err);
 			});
 		}
->>>>>>> 12622db657971dd1c7f672540ec000ca66ae8255
 		else {
 			sequelize.query("select top 100 ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
 			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\

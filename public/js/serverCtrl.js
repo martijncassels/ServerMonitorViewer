@@ -376,10 +376,6 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		vm.cpu_starting = true;
 		$http.get('/getcpu/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
-<<<<<<< HEAD
-					console.log(data.length);
-=======
->>>>>>> 12622db657971dd1c7f672540ec000ca66ae8255
 					_.each(data,function(value1,index){
 						_.each(value1,function(value2,key){
 							if(["Timestamp"].indexOf(key) != -1){
