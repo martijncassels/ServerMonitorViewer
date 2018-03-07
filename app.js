@@ -187,8 +187,8 @@ app.get('/partials/:sub/:name', routes.partial);
 
 app.get('/getqueue', routes.getqueue);
 app.get('/getmutations/:lastkey', routes.getmutations);
-app.get('/getcustomermetrics/:server/:alias', routes.getcustomermetrics);
-app.get('/getcustomermutations/:server/:lastkey', routes.getcustomermutations);
+app.get('/getcustomermetrics/:server/:alias/:db', routes.getcustomermetrics);
+app.get('/getcustomermutations/:server/:alias/:db/:lastkey', routes.getcustomermutations);
 app.get('/gettop10errors/:alias/:db', routes.gettop10errors);
 app.get('/getpccpcalcs/:alias/:db', routes.getpccpcalcs);
 app.get('/getetradeservercounter/:alias/:db', routes.getetradeservercounter);

@@ -13,6 +13,8 @@
 				i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
 		div(uib-alert,ng-show="vm.licenses.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.licenses.name=null").alert-danger
 			{{vm.licenses.original.message}}
+		div(uib-alert,ng-show="vm.licenses.length<1",style='margin:5px;').alert-danger
+			p No data!
 		div(ng-repeat='license in vm.licenses track by $index', style='padding:5px;',ng-hide="vm.licenses.name=='SequelizeDatabaseError'")
 			.row
 				.col-md-6

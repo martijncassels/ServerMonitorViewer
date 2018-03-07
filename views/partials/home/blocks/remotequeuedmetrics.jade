@@ -11,4 +11,4 @@ div(ng-show='vm.mockdata.length>0').table-responsive
 					div(ng-if='key=="Message" && $parent.records.Metric=="Blocking occurred, job was started"')
 						a(href='/serverblocking/{{vm.alias}}/{{vm.db}}') {{value}}
 					div(ng-if='key!="Message"') {{value}}
-div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
+div(ng-show='vm.mockdata.length<1').alert.alert-info No events!

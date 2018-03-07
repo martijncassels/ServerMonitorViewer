@@ -48,9 +48,10 @@ br
 	.col-md-6
 		include ./blocks/etradecounters
 br
-uib-progressbar(max='vm.max', value='vm.dynamic')
-	span(style='color:white; white-space:nowrap;'){{vm.dynamic/1000}} / {{vm.max/1000}}
-br
+//- Not needed anymore
+//- uib-progressbar(max='vm.max', value='vm.dynamic')
+//- 	span(style='color:white; white-space:nowrap;'){{vm.dynamic/1000}} / {{vm.max/1000}}
+//- br
 .row
 	.col-md-12
 		include ./blocks/archivecounters

@@ -184,7 +184,8 @@ exports.getcustomermetrics = function(req, res) {
 	if(config.sqlstring.database!= ''){
 	sequelize.query("SELECT TOP 100 *\
 	FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] with(readuncommitted)\
-	WHERE [InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+	WHERE [InstanceName] = '" + req.params.server + "' AND DatabaseName in ('ServerMonitor','" + req.params.db + "')\
+	AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
 	})
 	.catch(err => {
@@ -278,7 +279,8 @@ exports.getcustomermutations = function(req, res) {
 		sequelize.query("SELECT *\
 		FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] with(readuncommitted)\
 		WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey + " AND\
-		[InstanceName] = '" + req.params.server + "' AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		[InstanceName] = '" + req.params.server + "' AND DatabaseName in ('ServerMonitor','" + req.params.db + "')\
+		AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
 		.catch(err => {
