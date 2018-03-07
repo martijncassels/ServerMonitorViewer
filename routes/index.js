@@ -464,9 +464,12 @@ exports.updatethreshold = function(req, res) {
 		console.log("update m set Value = " + req.params.value + "\
 		from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
 		where m.Active = 1 and m.[MetricKey] = " + req.params.key);
-		// sequelize.query("update \
-		// [" + req.params.alias + "].[ServerMonitor].[monitor].[MetricThreshold]\
-		// set Value = " + req.body.value + " where [key] = " + req.params.key, {raw: true,type: sequelize.QueryTypes.UPDATE}).then(result => {
+		// sequelize.query("update m set Value = " + req.params.value + "\
+		// from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
+		// where m.Active = 1 and m.[MetricKey] = " + req.params.key, {
+		// raw: true,
+		// type: sequelize.QueryTypes.UPDATE
+		// }).then(result => {
 		// 	res.status(200).send(result);
 		// })
 		// .catch(err => {
