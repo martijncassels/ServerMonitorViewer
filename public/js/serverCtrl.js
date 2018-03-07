@@ -122,204 +122,6 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 				default:
 							vm.db = $routeParams.db;
 				}
-		/*
-		switch($routeParams.alias) {
-		case 'UFE':
-			vm.db = 'none';
-			break;
-		case 'AVH':
-			vm.db = 'none';
-			break;
-		case 'BHF':
-			vm.db = 'none';
-			break;
-		case 'DRC':
-			vm.db = 'none';
-			break;
-		case 'FAR':
-			vm.db = 'none';
-			break;
-		case 'PRF':
-			vm.db = 'none';
-			break;
-		case 'CAT':
-			vm.db = 'none';
-			break;
-		case 'ALG':
-			vm.db = 'FlowerCore';
-			break;
-		case 'IPP':
-			vm.db = 'Axerrio';
-			break;
-		case 'B2K':
-			vm.db = 'B2K_ABS';
-			break;
-		case 'BUS':
-			vm.db = 'BUS_ABS';
-			break;
-		case 'HBM':
-			vm.db = 'HBM_ABS';
-			break;
-		case 'FGG':
-			vm.db = 'FGG_ABS';
-			break;
-		case 'A4Y':
-			vm.db = 'A4Y_ABS';
-			break;
-		case 'BYF':
-			vm.db = 'BYF_ABS';
-			break;
-		case 'DHC':
-			vm.db = 'none';
-			break;
-		case 'DUD':
-			vm.db = 'ABSDutchDirect';
-			break;
-		case 'GTX':
-			vm.db = 'FloraBoxGermany';
-			break;
-		case 'BRU':
-			vm.db = 'BRU_ABS';
-			break;
-		case 'LIN':
-			vm.db = 'none';
-			break;
-		case 'PFC':
-			vm.db = 'none';
-			break;
-		case 'PJO':
-			vm.db = 'none';
-			break;
-		case 'PKF':
-			vm.db = 'none';
-			break;
-		case 'SMA':
-			vm.db = 'ABSSmalbil';
-			break;
-		case 'UNI':
-			vm.db = 'none';
-			break;
-		case 'PHY':
-			vm.db = 'ABSPHY';
-			break;
-		case 'EZF':
-			vm.db = 'EZF_ABS';
-			break;
-		case 'BAR':
-			vm.db = 'Axerrio';
-			break;
-		case 'BEA':
-			vm.db = 'none';
-			break;
-		case 'FCA':
-			vm.db = 'FlowerCore';
-			break;
-		case 'BLO':
-			vm.db = 'BLO_ABS';
-			break;
-		case 'CEL':
-			vm.db = 'Axerrio';
-			break;
-		case 'GRA':
-			vm.db = 'Axerrio';
-			break;
-		case 'HUS':
-			vm.db = 'ABSHUS';
-			break;
-		case 'HOL':
-			vm.db = 'FlowerCore';
-			break;
-		case 'VIL':
-			vm.db = 'VIL_ABS';
-			break;
-		case 'VPR':
-			vm.db = 'VPR_ABS';
-			break;
-		case 'VKL':
-			vm.db = 'VKL_ABS';
-			break;
-		case 'VKA':
-			vm.db = 'VKA_ABS';
-			break;
-		case 'KEM':
-			vm.db = 'Axerrio';
-			break;
-		case 'TUN':
-			vm.db = 'Axerrio';
-			break;
-		case 'VAB':
-			vm.db = 'Axerrio';
-			break;
-		case 'VAS':
-			vm.db = 'Axerrio';
-			break;
-		case 'VAT':
-			vm.db = 'Axerrio';
-			break;
-		case 'VBI':
-			vm.db = 'Axerrio';
-			break;
-		case 'VGA':
-			vm.db = 'Axerrio';
-			break;
-		case 'VIN':
-			vm.db = 'Axerrio';
-			break;
-		case 'VIS':
-			vm.db = 'Axerrio';
-			break;
-		case 'VNO':
-			vm.db = 'Axerrio';
-			break;
-		case 'VRI':
-			vm.db = 'Axerrio';
-			break;
-		case 'VSO':
-			vm.db = 'Axerrio';
-			break;
-		case 'VST':
-			vm.db = 'Axerrio';
-			break;
-		case 'VVB':
-			vm.db = 'ABSBloemen';
-			break;
-		case 'VNY':
-			vm.db = 'Axerrio';
-			break;
-		case 'VVD':
-			vm.db = 'Axerrio';
-			break;
-		case 'VVE':
-			vm.db = 'Axerrio';
-			break;
-		case 'VVS':
-			vm.db = 'VVSA';
-			break;
-		case 'VVG':
-			vm.db = 'Axerrio';
-			break;
-		case 'VVH':
-			vm.db = 'Axerrio';
-			break;
-		case 'VVL':
-			vm.db = 'AXERRIO';
-			break;
-		case 'VVM':
-			vm.db = 'Axerrio';
-			break;
-		case 'VVN':
-			vm.db = 'Axerrio';
-			break;
-		case 'VVP':
-			vm.db = 'FCPotplants';
-			break;
-		case 'VVZ':
-			vm.db = 'Axerrio';
-			break;
-		default:
-			vm.db = 'none';
-		}
-		*/
 
 		//- Get active license useage
 		vm.licensesstarting = true;
@@ -374,7 +176,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 
 		//- get cpu metrics
 		vm.cpu_starting = true;
-		$http.get('/getcpu/'+$routeParams.alias+'/'+vm.db)
+		$http.get('/getcpu/'+$routeParams.alias+'/'+vm.db+'/new')
 				.success(function(data) {
 					_.each(data,function(value1,index){
 						_.each(value1,function(value2,key){
@@ -652,10 +454,11 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 
 
 var interval = $interval(function () {
-	vm.getLiveCustomerChartData()
+	vm.getLiveCustomerChartData();
+	vm.getlivecpumutations();
 }, vm.max);
 var interval2 = $interval(function () {
-	vm.setcustomerprogressbarvalue()
+	vm.setcustomerprogressbarvalue();
 }, 1000);
 var interval3 = $interval(function () {
 	vm.getlivecustomerentitycountmutations();
@@ -774,6 +577,43 @@ vm.getLiveCustomerChartData = function() {
 						console.log('Error: ' + data);
 						vm.error = data;
 				});
+			} // end $http
+		} // end if
+
+		vm.getlivecpumutations = function() {
+			if(vm.cpu_[vm.cpu_.length-1]!=undefined) {
+				$http.get('/getcpu/'+$routeParams.alias+'/'+vm.db+'/'+vm.cpu_[vm.cpu_.length-1].MetricValueKey)
+					.success(function(data) {
+						var tmpdata = data.reverse();
+						_.each(data,function(value1,index){
+							_.each(value1,function(value2,key){
+								if(["Timestamp"].indexOf(key) != -1){
+									data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
+								}
+							});
+						});
+						console.log('updating '+tmpdata.length+' cpu record(s)...');
+						for(var i=0;i<vm.cpu_chartdata.length;i++){
+							vm.cpu_chartdata[i].slice(tmpdata.length);
+						}
+
+						_.each(data,function(value1,index){
+							vm.cpu_.slice(1);
+							vm.cpu_.push(value1);
+							_.each(value1,function(value2,key){
+								if(value2!=null){
+									vm.cpu_chartdata[Object.keys(value1).indexOf(key)].push(value2);
+								}
+								else {
+									vm.cpu_chartdata[Object.keys(value1).indexOf(key)][index] = 0;
+								}
+							});
+						});
+					})
+					.error(function(data) {
+							console.log('Error: ' + data);
+							vm.error = data;
+					});
 			} // end $http
 		} // end if
 

@@ -45,7 +45,8 @@ var sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user, 
 	},
 	define: {
 				timestamps: false
-		}
+		},
+	logging: false
 });
 //}
 
@@ -482,13 +483,24 @@ SELECT TOP 100 MetricKey,MetricValueKey,Timestamp,convert(int,Value) as [Value],
 */
 exports.getcpu = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-	sequelize.query("SELECT TOP 100 Timestamp,convert(int,Value) as [Value]\
-		FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics] where Metric = 'CPU_SQL' order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
-		res.status(200).send(result);
-	})
-	.catch(err => {
-		console.log(err);
-	});
+		if(req.params.lastkey=='new') {
+			sequelize.query("SELECT TOP 100 Timestamp,convert(int,Value) as [Value],MetricValueKey\
+				FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics] where Metric = 'CPU_SQL' order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+		}
+		else {
+			sequelize.query("SELECT Timestamp,convert(int,Value) as [Value],MetricValueKey\
+				FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics] where Metric = 'CPU_SQL' and MetricValueKey > " + req.params.lastkey + " order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+		}
 	}
 	else {
 		res.status(200).send(null);

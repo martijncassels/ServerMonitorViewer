@@ -204,7 +204,7 @@ app.get('/lastheartbeat/:server', routes.lastheartbeat);
 app.get('/getblocking/:alias/:db', routes.getblocking);
 app.get('/getthresholds/:alias/:db', routes.getthresholds);
 app.put('/updatethreshold/:alias/:db/:key/:value', routes.updatethreshold);
-app.get('/getcpu/:alias/:db', routes.getcpu);
+app.get('/getcpu/:alias/:db/:lastkey', routes.getcpu);
 
 app.post('/register', routes.register);
 app.post('/login', routes.login);
