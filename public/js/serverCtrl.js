@@ -49,7 +49,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		vm.dynamic = vm.max;
 		vm.isCollapsed = false;
 
-		$http.get('/getcustomermetrics/'+$routeParams.servername+'/'+$routeParams.alias)
+		$http.get('/getcustomermetrics/'+$routeParams.servername+'/'+$routeParams.alias+'/'+$routeParams.db)
 				.success(function(data) {
 						_.each(data,function(value1,index){
 							_.each(value1,function(value2,key){
@@ -475,7 +475,7 @@ vm.setcustomerprogressbarvalue = function() {
 
 vm.getLiveCustomerChartData = function() {
 	if(vm.mockdata[vm.mockdata.length-1]!=undefined) {
-		$http.get('/getcustomermutations/' + $routeParams.servername + '/' + vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
+		$http.get('/getcustomermutations/'+$routeParams.servername+'/'+$routeParams.alias+'/'+$routeParams.db+'/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
 			.success(function(data) {
 				var tmpdata = data.reverse();
 				_.each(tmpdata,function(value1,index){
