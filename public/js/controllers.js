@@ -9,7 +9,7 @@ angular
 .controller('HomeCtrl', HomeCtrl);
 
 MainCtrl.$inject = ['$scope','$http','_','$interval'];
-HomeCtrl.$inject = ['$scope', '$route','$http','$interval'];
+HomeCtrl.$inject = ['$scope', '$route','$http','$interval','Helpers'];
 
 function MainCtrl($scope,$http,_,$interval) {
 	var vm = this;
@@ -78,7 +78,7 @@ function MainCtrl($scope,$http,_,$interval) {
 	});
 }
 
-function HomeCtrl($scope,$route,$http,$interval) {
+function HomeCtrl($scope,$route,$http,$interval,Helpers) {
 		var vm = this;
 		vm.title = '';
 		vm.mockdata = [];
@@ -92,13 +92,7 @@ function HomeCtrl($scope,$route,$http,$interval) {
 		//- Get the initial RemoteQueuedMetrics from [axerrio].[RemoteQueuedMetric]
 		$http.get('/getqueue')
 				.success(function(data) {
-						_.each(data,function(value1,index){
-							_.each(value1,function(value2,key){
-								if(["Timestamp"].indexOf(key) != -1){
-									data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-								}
-							});
-						});
+						data = Helpers.parseTimestamps(data);
 						vm.mockdata = data.reverse();
 						for(var i=0;i<vm.mockdata.length;i++){
 							vm.data2[0].push(vm.mockdata[i].MetricValue);
@@ -170,13 +164,7 @@ function HomeCtrl($scope,$route,$http,$interval) {
 				$http.get('/getmutations/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
 					.success(function(data) {
 						var tmpdata = data.reverse();
-						_.each(tmpdata,function(value1,index){
-							_.each(value1,function(value2,key){
-								if(["Timestamp"].indexOf(key) != -1){
-									tmpdata[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-								}
-							});
-						});
+						data = Helpers.parseTimestamps(data);
 						console.log('updating '+tmpdata.length+' record(s)...');
 						var tmplength = 0;
 						if (vm.data2[0].length) {
