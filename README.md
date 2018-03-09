@@ -13,3 +13,4 @@ To do:
 - [x] Clean up side menu bar
 - [ ] Use sequelize built-in model-usage instead of RAW SQL queries
 - [ ] Move git branch/repo from public to Axerrio private enviroment
+- [ ] Fix named instances in API calls + URLS (escape the slash)
