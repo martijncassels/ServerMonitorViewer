@@ -4,7 +4,8 @@
  */
 
 var express 	      = require('express'),
-		routes 		      = require('./routes'),
+		routes 		      = require('./routes/index'),
+		reporting				=	require('./routes/reporting'),
 		//msgapi 		      = require('./routes/msgapi'),
 		//proapi 		      = require('./routes/proapi'),
 		//facapi          = require('./routes/facapi'),
@@ -205,6 +206,9 @@ app.get('/getblocking/:alias/:db', routes.getblocking);
 app.get('/getthresholds/:alias/:db', routes.getthresholds);
 app.put('/updatethreshold/:alias/:db/:key/:value', routes.updatethreshold);
 app.get('/getcpu/:alias/:db/:lastkey', routes.getcpu);
+
+app.get('/reporting/getweekstats/:alias/:db/:datefrom/:dateuntil',reporting.getweekstats);
+app.post('/reporting/getweekstats/:alias/:db',reporting.getweekstats);
 
 app.post('/register', routes.register);
 app.post('/login', routes.login);
