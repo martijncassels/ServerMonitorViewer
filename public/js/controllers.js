@@ -27,6 +27,10 @@ function MainCtrl($scope,$http,_,$interval) {
 						vm.orphans = [];
 						vm.children = [];
 						vm.new = [];
+
+						angular.forEach(vm.servers, function(value,index){
+							value.escaped = encodeURIComponent(value.Description);
+						});
 						//- Set siblings for all entries, common parent = Description (servername)
 						for(var i=0;i<vm.servers.length;i++){
 							if(i<vm.servers.length-1){

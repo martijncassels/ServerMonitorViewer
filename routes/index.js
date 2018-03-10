@@ -294,7 +294,7 @@ exports.getcustomermutations = function(req, res) {
 
 exports.getcustomerentitycounts = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		var tmpservers = ['HOL','HUS','VVP'];
+		var tmpservers = ['HOL','HUS','VVP','VUS','VVI','VVT'];
 		// temporary workaround, difference between entitycounts.db_id and entitycounts.dbid
 		//if(req.params.alias=='HOL' || req.params.alias=='HUS'  || req.params.alias=='VVP'){
 		if(tmpservers.indexOf(req.params.alias)!=-1){
@@ -330,7 +330,7 @@ exports.getcustomerentitycounts = function(req, res) {
 			ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
 			from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
 				join [" + req.params.alias + "].[master].sys.databases dbs on dbs.database_id = ec.[db_id] and dbs.name = '" + req.params.db + "'\
-			where datepart(mi,timestamp) between 0 and 5\
+			where datepart(mi,ec.timestamp) between 0 and 5\
 			 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 				res.status(200).send(result);
 			})
@@ -343,7 +343,7 @@ exports.getcustomerentitycounts = function(req, res) {
 		res.status(200).send(null);
 	}
 }
-//where datepart(mi,timestamp) between 0 and 5\
+
 exports.getcustomerentitycountmutations = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
@@ -351,7 +351,7 @@ exports.getcustomerentitycountmutations = function(req, res) {
 		ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
 		from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
 			join [HOL].[master].sys.databases dbs on dbs.database_id = ec.[dbid] and dbs.name = '" + req.params.db + "'\
-		where ID > " + req.params.lastkey, {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		where ID > " + req.params.lastkey+" and datepart(mi,ec.timestamp) between 0 and 5", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
 		.catch(err => {
@@ -461,21 +461,23 @@ exports.getthresholds = function(req, res) {
 
 exports.updatethreshold = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		console.log("update m set Value = " + req.params.value + "\
-		from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
-		where m.Active = 1 and m.[MetricKey] = " + req.params.key);
-		// sequelize.query("update m set Value = " + req.params.value + "\
+		// console.log("update m set ThresholdValue = " + req.params.value + "\
 		// from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
-		// where m.Active = 1 and m.[MetricKey] = " + req.params.key, {
-		// raw: true,
-		// type: sequelize.QueryTypes.UPDATE
-		// }).then(result => {
-		// 	res.status(200).send(result);
-		// })
-		// .catch(err => {
-		// 	console.log(err);
-		// });
-		res.status(200).send('ok!');
+		// where m.Active = 1 and m.[MetricKey] = " + req.params.key);
+		if(req.params.alias && req.params.key && req.params.value){
+			sequelize.query("update m set ThresholdValue = " + req.params.value + "\
+			from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
+			where m.Active = 1 and m.[MetricKey] = " + req.params.key, {
+			raw: true,
+			type: sequelize.QueryTypes.UPDATE
+			}).then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+			//res.status(200).send('ok!');
+		}
 	}
 	else {
 		res.status(200).send(null);
