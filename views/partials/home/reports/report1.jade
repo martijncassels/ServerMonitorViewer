@@ -1,0 +1,10 @@
+h5 {{vm.report.name}}
+br
+.table-responsive
+	ul(uib-pagination,total-items="vm.report_totalItems",ng-model="vm.report_currentPage",ng-change="vm.pageChanged()",class="pagination-sm",items-per-page="vm.report_itemsPerPage",template-url="pagination.html",max-size="5",boundary-links="true",boundary-link-number="true",rotate="true",force-ellipses="true").pagination
+	table(ng-shpw="vm.report_data.length>0").table.table-striped.table-sm
+		thead
+			th(ng-repeat='(key,value) in vm.report[0]') {{key}}
+		tbody
+			tr(ng-repeat="report_data_row in vm.report_data.slice(((vm.report_currentPage-1)*vm.report_itemsPerPage), ((vm.report_currentPage)*vm.report_itemsPerPage))")
+				td(ng-repeat='(key,value) in report_data_row') {{value}}

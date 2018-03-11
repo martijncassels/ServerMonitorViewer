@@ -20,6 +20,13 @@ function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers) {
 
 		vm.max = 60000;
 		vm.dynamic = vm.max;
+
+		vm.reports = [
+			{name: "Invoiced and Payments", sp: "axspFRDInvoicedAndPaymentsPerPeriod"},
+			{name: "ICT Per Customer", sp: "axspFRDICTPerCustomerPerPeriod"},
+		];
+		vm.report = vm.reports[0];
+
 		vm.datefrom = new Date();
 		vm.dateuntil = new Date();
 
@@ -121,41 +128,26 @@ function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers) {
 		return '';
 	}
 
-		//- Get blocking
-		vm.weekstatsstarting = true;
-		vm.callWeekstats = function(){
-			// $http.get('/reporting/getweekstats/'+$routeParams.alias + '/' + $routeParams.db + '/' + vm.datefrom + '/' + vm.dateuntil)
-			// 	.success(function(data) {
-			// 		_.each(data,function(value1,index){
-			// 			_.each(value1,function(value2,key){
-			// 				if(["MeasureTime"].indexOf(key) != -1){
-			// 					data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-			// 				}
-			// 			});
-			// 		});
-			// 		vm.weekstatsstarting = false;
-			// 		vm.weekstats = data;
-			// 	})
-			// 	.error(function(data) {
-			// 		vm.error = data;
-			// 	});
-			// }
-			$http.post('/reporting/getweekstats/'+$routeParams.alias + '/' + $routeParams.db,{
+		//- Get report data
+		vm.reportstarting = true;
+		vm.callReport = function(){
+			$http.post('/reporting/getreport/'+$routeParams.alias + '/' + $routeParams.db,{
 				datefrom: vm.datefrom,
-				dateuntil: vm.dateuntil
+				dateuntil: vm.dateuntil,
+				sp: vm.report.sp
 			})
 			.success(function(data) {
 				data = Helpers.parseTimestamps(data);
-				vm.weekstatsstarting = false;
-				vm.weekstats = data;
-				vm.weekstats_totalItems = vm.weekstats.length;
-				vm.weekstats_currentPage = 1;
-				vm.weekstats_viewby = 10;
-				vm.weekstats_itemsPerPage = vm.weekstats_viewby;
-				vm.weekstats_maxSize = 5;
-				vm.setweekstats_ItemsPerPage = function(num) {
-					vm.weekstats_itemsPerPage = num;
-					vm.weekstats_currentPage = 1; //reset to first page
+				vm.reportstarting = false;
+				vm.report_data = data;
+				vm.report_totalItems = vm.report.length;
+				vm.report_currentPage = 1;
+				vm.report_viewby = 10;
+				vm.report_itemsPerPage = vm.report_viewby;
+				vm.report_maxSize = 5;
+				vm.setreport_ItemsPerPage = function(num) {
+					vm.report_itemsPerPage = num;
+					vm.report_currentPage = 1; //reset to first page
 				}
 			})
 			.error(function(data) {

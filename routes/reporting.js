@@ -51,24 +51,13 @@ var sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user, 
 });
 //}
 
-exports.getweekstats = function(req, res) {
+exports.getreport = function(req, res) {
 	var datefrom = moment(req.body.datefrom).format("YYYY-MM-DD HH:mm:ss:SSS");
 	var dateuntil = moment(req.body.dateuntil).format("YYYY-MM-DD HH:mm:ss:SSS");
-	//var query = "["+req.params.db+"].[dbo].axspFRDWEEKSTATS";
+	//var query = "axspFRDInvoicedAndPaymentsPerPeriod";
+	var query = req.body.sp.toString();
 	sequelize
-	// .query('CALL ['+req.params.alias+'].['+req.params.db+'].[dbo].axspFRDWEEKSTATS (:datefrom, :dateuntil)',
-	// 			{replacements: {
-	// 				datefrom: moment(req.body.datefrom).format("YYYY-MM-DD HH:mm:ss:SSS"),
-	// 				dateuntil: moment(req.body.dateuntil).format("YYYY-MM-DD HH:mm:ss:SSS")
-	// 			}})
-	// .then(function(result) {
-	// 	res.status(200).send(result);
-	// })
-	// .catch(function(err) {
-	// 	console.log(err);
-	// });
-	//.query("["+req.params.alias+"].["+req.params.db+"].[dbo].axspFRDWEEKSTATS '"+datefrom.toString()+"','"+dateuntil.toString()+"'",
-	.query("select * from openquery(["+req.params.alias+"],'["+req.params.db+"].[dbo].axspFRDInvoicedAndPaymentsPerPeriod \""+datefrom.toString()+"\",\""+dateuntil.toString()+"\"')",
+	.query("select * from openquery(["+req.params.alias+"],'["+req.params.db+"].[dbo]."+query+" \""+datefrom.toString()+"\",\""+dateuntil.toString()+"\"')",
 	{raw: true,type: sequelize.QueryTypes.SELECT})
 	.then(function(result) {
 		res.status(200).send(result);

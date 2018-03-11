@@ -207,8 +207,8 @@ app.get('/getthresholds/:alias/:db', routes.getthresholds);
 app.put('/updatethreshold/:alias/:db/:key/:value', routes.updatethreshold);
 app.get('/getcpu/:alias/:db/:lastkey', routes.getcpu);
 
-app.get('/reporting/getweekstats/:alias/:db/:datefrom/:dateuntil',reporting.getweekstats);
-app.post('/reporting/getweekstats/:alias/:db',reporting.getweekstats);
+//app.get('/reporting/getreport/:alias/:db/:datefrom/:dateuntil',reporting.getreport);
+app.post('/reporting/getreport/:alias/:db',reporting.getreport);
 
 app.post('/register', routes.register);
 app.post('/login', routes.login);

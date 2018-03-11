@@ -39,8 +39,17 @@ h4 Dates
 			.input-group-append
 				button.btn.btn-default(type='button', ng-click='vm.open2()')
 					i.fas.fa-calendar.feather
+.row
+	.col-md-6
+		//- label
+		//- 	| Selected: {{vm.report.name}}
+		select.form-control(ng-model='vm.report', ng-options='report as report.name for report in vm.reports')
+			option
+br
+button(ng-click='vm.callReport()').btn.btn-default
+	span Call report
 br
 .row
 	.col-md-12
-		include ./reports/weekstats
+		include ./reports/report1
 //- End Content
