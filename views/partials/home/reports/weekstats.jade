@@ -1,6 +1,8 @@
 h5 Weekstats
 button(ng-click='vm.callWeekstats()').btn.btn-default
 	span Call weekstats
+br
+br
 .table-responsive
 	ul(uib-pagination,total-items="vm.weekstats_totalItems",ng-model="vm.weekstats_currentPage",ng-change="vm.pageChanged()",class="pagination-sm",items-per-page="vm.weekstats_itemsPerPage",template-url="pagination.html",max-size="5",boundary-links="true",boundary-link-number="true",rotate="true",force-ellipses="true").pagination
 	table(ng-shpw="vm.weekstats.length>0").table.table-striped.table-sm

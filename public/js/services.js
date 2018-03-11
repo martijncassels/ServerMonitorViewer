@@ -26,7 +26,7 @@ function Helpers() {
 		parseTimestamps: function (input){
 			_.each(input,function(value1,index){
 				_.each(value1,function(value2,key){
-					if(["Timestamp","CounterTimestamp","LoggedTimeStamp"].indexOf(key) != -1){
+					if(["Timestamp","CounterTimestamp","LoggedTimeStamp","Date"].indexOf(key) != -1){
 						input[index][key] = moment(value2).utc().format('DD-MM-YYYY HH:mm:ss');
 					}
 				});

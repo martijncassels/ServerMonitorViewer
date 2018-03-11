@@ -13,6 +13,8 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers) {
 		var vm = this;
 		vm.title = '';
 		vm.alias = $routeParams.alias;
+		vm.db = $routeParams.db;
+		vm.servername = $routeParams.servername;
 		vm.mockdata = [];
 		vm.series = ['MetricValue','ThresholdValue']
 		vm.licenses = [];

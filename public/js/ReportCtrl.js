@@ -7,9 +7,9 @@ angular
 
 .controller('ReportCtrl', ReportCtrl);
 
-ReportCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams'];
+ReportCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams','Helpers'];
 
-function ReportCtrl($scope,$route,$http,$interval,$routeParams) {
+function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers) {
 		var vm = this;
 		vm.title = '';
 		vm.alias = $routeParams.alias;
@@ -145,13 +145,7 @@ function ReportCtrl($scope,$route,$http,$interval,$routeParams) {
 				dateuntil: vm.dateuntil
 			})
 			.success(function(data) {
-				_.each(data,function(value1,index){
-					_.each(value1,function(value2,key){
-						if(["MeasureTime"].indexOf(key) != -1){
-							data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-						}
-					});
-				});
+				data = Helpers.parseTimestamps(data);
 				vm.weekstatsstarting = false;
 				vm.weekstats = data;
 				vm.weekstats_totalItems = vm.weekstats.length;
