@@ -7,12 +7,14 @@ angular
 
 .controller('ServerCtrl', ServerCtrl);
 
-ServerCtrl.$inject = ['$scope','$route','$http','$interval','$routeParams','_'];
+ServerCtrl.$inject = ['$scope','$route','$http','$interval','$routeParams','_','Helpers'];
 
-function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
+function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers) {
 		var vm = this;
 		vm.title = '';
 		vm.alias = $routeParams.alias;
+		vm.db = $routeParams.db;
+		vm.servername = $routeParams.servername;
 		vm.mockdata = [];
 		vm.series = ['MetricValue','ThresholdValue']
 		vm.licenses = [];
@@ -51,13 +53,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 
 		$http.get('/getcustomermetrics/'+$routeParams.servername+'/'+$routeParams.alias+'/'+$routeParams.db)
 				.success(function(data) {
-						_.each(data,function(value1,index){
-							_.each(value1,function(value2,key){
-								if(["Timestamp"].indexOf(key) != -1){
-									data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-								}
-							});
-						});
+						data = Helpers.parseTimestamps(data);
 						vm.mockdata = data;
 						vm.mockdata.reverse();
 						for(var i=0;i<vm.mockdata.length;i++){
@@ -178,13 +174,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		vm.cpu_starting = true;
 		$http.get('/getcpu/'+$routeParams.alias+'/'+vm.db+'/new')
 				.success(function(data) {
-					_.each(data,function(value1,index){
-						_.each(value1,function(value2,key){
-							if(["Timestamp"].indexOf(key) != -1){
-								data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-							}
-						});
-					});
+					data = Helpers.parseTimestamps(data);
 					var tmpdata = data.reverse();
 					vm.cpu_starting = false;
 					vm.cpu_ = data;
@@ -210,18 +200,8 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		vm.etradeservercountersstarting = true;
 		$http.get('/getetradeservercounter/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
-					_.each(data,function(value1,index){
-						_.each(value1,function(value2,key){
-							if(["LoggedTimestamp"].indexOf(key) != -1){
-								data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-							}
-						});
-					});
-					//console.log(data);
-					// if(data.name=="SequelizeDatabaseError") {
-					// 	vm.etradeservercountererror = true;
-					// }
-					//else {
+					data = Helpers.parseTimestamps(data);
+
 						vm.etradeservercountersstarting = false;
 						vm.etradeservercounters = data;
 
@@ -244,17 +224,11 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		vm.getvirtualmarketplacemutationsstarting = true;
 		$http.get('/getvirtualmarketplacemutations/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
-					_.each(data,function(value1,index){
-						_.each(value1,function(value2,key){
-							if(["Timestamp"].indexOf(key) != -1){
-								data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-							}
-						});
-					});
-						vm.getvirtualmarketplacemutationsstarting = false;
-						vm.getvirtualmarketplacemutations = data;
-						vm.getvirtualmarketplacemutationsdata = [[],[],[],[],[]];
-						vm.getvirtualmarketplacemutationslabels = [];
+					data = Helpers.parseTimestamps(data);
+					vm.getvirtualmarketplacemutationsstarting = false;
+					vm.getvirtualmarketplacemutations = data;
+					vm.getvirtualmarketplacemutationsdata = [[],[],[],[],[]];
+					vm.getvirtualmarketplacemutationslabels = [];
 
 						for(var i=0;i<data.length;i++){
 							vm.getvirtualmarketplacemutationsdata[0].push(data[i].NewOrMutatedSupplylines);
@@ -280,13 +254,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 		vm.archivecountersstarting = true;
 		$http.get('/getarchivecounters/'+$routeParams.alias+'/'+vm.db)
 					.success(function(data) {
-						_.each(data,function(value1,index){
-							_.each(value1,function(value2,key){
-								if(["CounterTimestamp"].indexOf(key) != -1){
-									data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-								}
-							});
-						});
+						data = Helpers.parseTimestamps(data);
 						vm.archivecountersstarting = false;
 						vm.archivecounters = data;
 						_.each(data,function(value1,index){
@@ -309,30 +277,12 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 						console.log('Error: ' + data);
 						vm.error = data;
 				});
-		//- function to select/view data in chart
-		// vm.toggleArchiveSelection = function toggleArchiveSelection(serie,name) {
-		// 	var idx = vm.archivecounterschartdataselection.indexOf(serie);
-		// 	if (idx > -1) {
-		// 		vm.archivecounterschartdataselection.splice(idx, 1);
-		// 		vm.archivecounterschartseriesselection.splice(idx, 1);
-		// 	}
-		// 	else {
-		// 		vm.archivecounterschartdataselection.push(serie);
-		// 		vm.archivecounterschartseriesselection.push(name);
-		// 	}
-		// };
 
 		//- get entitycounters
 		vm.customerentitycountsstarting = true;
 		$http.get('/getcustomerentitycounts/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
-					_.each(data,function(value1,index){
-						_.each(value1,function(value2,key){
-							if(["Timestamp"].indexOf(key) != -1){
-								data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-							}
-						});
-					});
+					data = Helpers.parseTimestamps(data);
 					// vm.customerentitycounts_setPage = function (pageNo) {
 					// 	vm.customerentitycounts_currentPage = pageNo;
 					// };
@@ -373,19 +323,6 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_) {
 						console.log('Error: ' + data);
 						vm.error = data;
 				});
-
-		//- function to select/view data in chart
-		// vm.toggleEntitySelection = function toggleEntitySelection(serie,name) {
-		// 	var idx = vm.customerentitycountdataselection.indexOf(serie);
-		// 	if (idx > -1) {
-		// 		vm.customerentitycountdataselection.splice(idx, 1);
-		// 		vm.customerentitycountseriesselection.splice(idx, 1);
-		// 	}
-		// 	else {
-		// 		vm.customerentitycountdataselection.push(serie);
-		// 		vm.customerentitycountseriesselection.push(name);
-		// 	}
-		// };
 
 		vm.onClick = function (points, evt) {
 		};
@@ -478,13 +415,7 @@ vm.getLiveCustomerChartData = function() {
 		$http.get('/getcustomermutations/'+$routeParams.servername+'/'+$routeParams.alias+'/'+$routeParams.db+'/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
 			.success(function(data) {
 				var tmpdata = data.reverse();
-				_.each(tmpdata,function(value1,index){
-					_.each(value1,function(value2,key){
-						if(["Timestamp"].indexOf(key) != -1){
-							tmpdata[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-						}
-					});
-				});
+				data = Helpers.parseTimestamps(data);
 				console.log('updating '+tmpdata.length+' record(s)...');
 				var tmplength = 0;
 				if (vm.data[0].length) {
@@ -548,13 +479,7 @@ vm.getLiveCustomerChartData = function() {
 				.success(function(data) {
 					var tmpdata = data;
 					vm.customerentitycounts.reverse();
-					_.each(tmpdata,function(value1,index){
-						_.each(value1,function(value2,key){
-							if(["Timestamp"].indexOf(key) != -1){
-								tmpdata[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-							}
-						});
-					});
+					data = Helpers.parseTimestamps(data);
 					console.log('updating '+tmpdata.length+' entitycount(s)...');
 						for(var i=0;i<vm.customerentitycountdata.length;i++){
 							vm.customerentitycountdata[i].slice(tmpdata.length);
@@ -585,13 +510,7 @@ vm.getLiveCustomerChartData = function() {
 				$http.get('/getcpu/'+$routeParams.alias+'/'+vm.db+'/'+vm.cpu_[vm.cpu_.length-1].MetricValueKey)
 					.success(function(data) {
 						var tmpdata = data.reverse();
-						_.each(data,function(value1,index){
-							_.each(value1,function(value2,key){
-								if(["Timestamp"].indexOf(key) != -1){
-									data[index][key] = moment(value2).utc().format('DD-MM-YYYY hh:mm:ss');
-								}
-							});
-						});
+						data = Helpers.parseTimestamps(data);
 						console.log('updating '+tmpdata.length+' cpu record(s)...');
 						for(var i=0;i<vm.cpu_chartdata.length;i++){
 							vm.cpu_chartdata[i].slice(tmpdata.length);

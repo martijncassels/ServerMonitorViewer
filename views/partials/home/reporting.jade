@@ -1,0 +1,55 @@
+//- Start Content
+script(id='pagination.html',type='text/ng-template')
+	ul.pagination
+		li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noPrevious()||ngDisabled}").page-item
+			button(ng-click="selectPage(1,$event)",ng-disabled="noPrevious()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('first')}}
+		li(role="menuitem",ng-if="::directionLinks",ng-class="{disabled: noPrevious()||ngDisabled}").page-item
+			button(ng-click="selectPage(page-1,$event)",ng-disabled="noPrevious()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('previous')}}
+		li(role="menuitem",ng-repeat="page in pages track by $index",ng-class="{active: page.active,disabled: ngDisabled&&!page.active}").page-item
+			button(ng-click="selectPage(page.number,$event)",ng-disabled="ngDisabled&&!page.active",uib-tabindex-toggle).page-link {{page.text}}
+		li(role="menuitem",ng-if="::directionLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
+			button(ng-click="selectPage(page+1,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('next')}}
+		li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
+			button(ng-click="selectPage(totalPages,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('last')}}
+script(id='datepicker.html',type='text/ng-template')
+	div(ng-switch='datepickerMode')
+		.uib-daypicker(uib-daypicker='', ng-switch-when='day', tabindex='0')
+		.uib-monthpicker(uib-monthpicker='', ng-switch-when='month', tabindex='0')
+		.uib-yearpicker(uib-yearpicker='', ng-switch-when='year', tabindex='0')
+
+.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pb-2.mb-3.border-bottom
+h2 Reporting {{vm.alias}}
+	//- .btn-toolbar.mb-2.mb-md-0
+	//- 	.btn-group.mr-2
+	//- Modal goes here
+	//- include ./blocks/modal
+	//- end of modal
+h2 Reports
+h4 Dates
+.row
+	.col-md-6
+		.input-group.mb-3
+			input.form-control(type='text', uib-datepicker-popup='{{vm.format}}', datepicker-template-url='datepicker.html', ng-model='vm.datefrom', is-open='vm.popup1.opened', datepicker-options='vm.dateOptions', ng-required='true', close-text='Close', alt-input-formats='vm.altInputFormats')
+			.input-group-append
+				button.btn.btn-default(type='button', ng-click='vm.open1()')
+					i.fas.fa-calendar.feather
+	.col-md-6
+		.input-group.mb-3
+			input.form-control(type='text', uib-datepicker-popup='{{vm.format}}', datepicker-template-url='datepicker.html', ng-model='vm.dateuntil', is-open='vm.popup2.opened', datepicker-options='vm.dateOptions', ng-required='true', close-text='Close', alt-input-formats='vm.altInputFormats')
+			.input-group-append
+				button.btn.btn-default(type='button', ng-click='vm.open2()')
+					i.fas.fa-calendar.feather
+.row
+	.col-md-6
+		//- label
+		//- 	| Selected: {{vm.report.name}}
+		select.form-control(ng-model='vm.report', ng-options='report as report.name for report in vm.reports')
+			option
+br
+button(ng-click='vm.callReport()').btn.btn-default
+	span Call report
+br
+.row
+	.col-md-12
+		include ./reports/report1
+//- End Content

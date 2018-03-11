@@ -15,6 +15,7 @@ script(id='pagination.html',type='text/ng-template')
 	h1.h2 Dashboard {{vm.alias}}
 	.btn-toolbar.mb-2.mb-md-0
 		.btn-group.mr-2
+			a(role='button',href='/reporting/{{vm.servername}}/{{vm.alias}}/{{vm.db}}').btn.btn-sm.btn-outline-secondary Reports
 			button(type='button',data-toggle='modal',data-target='#ThresholdsModal').btn.btn-sm.btn-outline-secondary Metric Thresholds
 			button(ng-click='vm.getLiveCustomerChartData()').btn.btn-sm.btn-outline-secondary Update events
 			button(ng-click='vm.getlivecustomerentitycountmutations()').btn.btn-sm.btn-outline-secondary Update entitycounts

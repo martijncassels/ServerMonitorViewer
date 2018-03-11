@@ -11,5 +11,8 @@ To do:
 - [x] Create additional block for used ABS licenses
 - [x] Create additional block for other customer-specific data (services)
 - [x] Clean up side menu bar
+- [x] Fix named instances in API calls + URLS (escape the slash)
+- [x] Add reporting functionality
+- [x] Make one generic call for all reporting
 - [ ] Use sequelize built-in model-usage instead of RAW SQL queries
 - [ ] Move git branch/repo from public to Axerrio private enviroment

@@ -10,12 +10,13 @@ div(id='ThresholdsModal',tabindex='-1',role='dialog',aria-labelledby='Thresholds
 					{{vm.thresholds.original.message}}
 				div(ng-hide="vm.thresholds.name=='SequelizeDatabaseError'")
 					div(ng-repeat='threshold in vm.thresholds')
-						label {{threshold.ColumnName}}
-						div.input-group.mb-2
-							.input-group-prepend
-								span#basic-addon3.input-group-text {{threshold.Description}}
-							input#threshold1.form-control(type='text',ng-model='threshold.ThresholdValue',aria-describedby='basic-addon3')
-							.input-group-append
-								button(type="button",ng-click='vm.updateThreshold(threshold.MetricKey,threshold.ThresholdValue)').btn.btn-outline-secondary Update
+						div(ng-if='threshold.ThresholdValue')
+							label {{threshold.ColumnName}}
+							div.input-group.mb-2
+								.input-group-prepend
+									span#basic-addon3.input-group-text {{threshold.Description}}
+								input#threshold1.form-control(type='text',ng-model='threshold.ThresholdValue',aria-describedby='basic-addon3')
+								.input-group-append
+									button(type="button",ng-click='vm.updateThreshold(threshold.MetricKey,threshold.ThresholdValue)').btn.btn-outline-secondary Update
 			.modal-footer
 				button(type='button',data-dismiss='modal').btn.btn-secondary Close
