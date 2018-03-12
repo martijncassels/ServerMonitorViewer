@@ -7,4 +7,4 @@ br
 			th(ng-repeat='(key,value) in vm.report_data[0]') {{key}}
 		tbody
 			tr(ng-repeat="report_data_row in vm.report_data.slice(((vm.report_currentPage-1)*vm.report_itemsPerPage), ((vm.report_currentPage)*vm.report_itemsPerPage))")
-				td(ng-repeat='(key,value) in report_data_row') {{value}}
+				td(ng-repeat='(key,value) in report_data_row') {{value}} 
