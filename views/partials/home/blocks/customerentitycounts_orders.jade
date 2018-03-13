@@ -3,10 +3,16 @@
 		h5 
 			i.fas.fa-address-card
 			|                   Orders
-	div(ng-if='vm.customerentitycountdatastarting',align='center').loading
-			i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
-	div(uib-alert,ng-show="vm.customerentitycountdata.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.customerentitycountdata.name=null").alert-danger
-		{{vm.customerentitycountdata.original.message}}
-	div(uib-alert,ng-show="vm.customerentitycountdata.length<1 && !vm.customerentitycountdatastarting",style='margin:5px;').alert-danger
-		p No data!
-	canvas(id='line',chart-data='[vm.customerentitycountdata[6],vm.customerentitycountdata[8],vm.customerentitycountdata[10],vm.customerentitycountdata[12]]',chart-labels='vm.customerentitycountdata[1]',chart-series='[vm.customerentitycountseries[6],vm.customerentitycountseries[8],vm.customerentitycountseries[10],vm.customerentitycountseries[12]]',chart-options='vm.options2',height='100',chart-dataset-override="[{pointRadius:0},{pointRadius:0},{pointRadius:0},{pointRadius:0}]").chart.chart-line
+			button(ng-click="vm.isCollapsed = !vm.isCollapsed",type="button",data-toggle="collapse",data-target="#collapseOrders",role="button",aria-expanded="false",aria-controls="collapseDiskSpace").btn.btn-default.btn-sm.float-right
+				i(ng-show='vm.isCollapsed').fas.fa-plus
+				//- |                   collapse
+				i(ng-show='!vm.isCollapsed').fas.fa-minus
+				//- |                   collapse
+	div(id="collapseOrders").collapse.show
+		div(ng-if='vm.customerentitycountdatastarting',align='center').loading
+				i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
+		div(uib-alert,ng-show="vm.customerentitycountdata.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.customerentitycountdata.name=null").alert-danger
+			{{vm.customerentitycountdata.original.message}}
+		div(uib-alert,ng-show="vm.customerentitycountdata.length<1 && !vm.customerentitycountdatastarting",style='margin:5px;').alert-danger
+			p No data!
+		canvas(id='line',chart-data='[vm.customerentitycountdata[6],vm.customerentitycountdata[8],vm.customerentitycountdata[10],vm.customerentitycountdata[12]]',chart-labels='vm.customerentitycountdata[1]',chart-series='[vm.customerentitycountseries[6],vm.customerentitycountseries[8],vm.customerentitycountseries[10],vm.customerentitycountseries[12]]',chart-options='vm.options2',height='100',chart-dataset-override="[{pointRadius:0},{pointRadius:0},{pointRadius:0},{pointRadius:0}]").chart.chart-line

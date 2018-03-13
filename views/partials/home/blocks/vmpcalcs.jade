@@ -3,21 +3,27 @@
 		h5 
 			i.fas.fa-address-card
 			|                   VMP Calculations
-	div(ng-if='!vm.pccpcalcssdatastarting')
-		.row
-			.col-md-6
-				|	Department
-			.col-md-6
-				| To Calculate
-	div(ng-if='vm.pccpcalcssdatastarting',align='center').loading
-			i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
-	div(uib-alert,ng-show="vm.pccpcalcss.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.pccpcalcss.name=null").alert-danger
-		{{vm.pccpcalcss.original.message}}
-	div(uib-alert,ng-show="vm.pccpcalcss.length<1 && !vm.pccpcalcssdatastarting",style='margin:5px;').alert-danger
-		p No data!
-	div(ng-repeat='pccpcalc in vm.pccpcalcss track by $index', style='padding:5px;',ng-hide="vm.pccpcalcss.name=='SequelizeDatabaseError'")
-		.row
-			.col-md-6
-				{{pccpcalc.Description}}
-			.col-md-6
-				{{pccpcalc.ToCalculate}}
+			button(ng-click="vm.isCollapsed = !vm.isCollapsed",type="button",data-toggle="collapse",data-target="#collapseVMP_Calculations",role="button",aria-expanded="false",aria-controls="collapseDiskSpace").btn.btn-default.btn-sm.float-right
+				i(ng-show='vm.isCollapsed').fas.fa-plus
+				//- |                   collapse
+				i(ng-show='!vm.isCollapsed').fas.fa-minus
+				//- |                   collapse
+	div(id="collapseVMP_Calculations").collapse.show
+		div(ng-if='!vm.pccpcalcssdatastarting')
+			.row
+				.col-md-6
+					|	Department
+				.col-md-6
+					| To Calculate
+		div(ng-if='vm.pccpcalcssdatastarting',align='center').loading
+				i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
+		div(uib-alert,ng-show="vm.pccpcalcss.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.pccpcalcss.name=null").alert-danger
+			{{vm.pccpcalcss.original.message}}
+		div(uib-alert,ng-show="vm.pccpcalcss.length<1 && !vm.pccpcalcssdatastarting",style='margin:5px;').alert-danger
+			p No data!
+		div(ng-repeat='pccpcalc in vm.pccpcalcss track by $index', style='padding:5px;',ng-hide="vm.pccpcalcss.name=='SequelizeDatabaseError'")
+			.row
+				.col-md-6
+					{{pccpcalc.Description}}
+				.col-md-6
+					{{pccpcalc.ToCalculate}}
