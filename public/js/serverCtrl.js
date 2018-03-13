@@ -479,13 +479,13 @@ vm.getLiveCustomerChartData = function() {
 				.success(function(data) {
 					var tmpdata = data;
 					vm.customerentitycounts.reverse();
-					data = Helpers.parseTimestamps(data);
+					tmpdata = Helpers.parseTimestamps(tmpdata);
 					console.log('updating '+tmpdata.length+' entitycount(s)...');
 						for(var i=0;i<vm.customerentitycountdata.length;i++){
-							vm.customerentitycountdata[i].slice(tmpdata.length);
+							vm.customerentitycountdata[i] = vm.customerentitycountdata[i].slice(tmpdata.length);
 						}
 						_.each(tmpdata,function(value1,index){
-							vm.customerentitycounts.slice(1);
+							vm.customerentitycounts = vm.customerentitycounts.slice(1);
 							vm.customerentitycounts.push(value1);
 							_.each(value1,function(value2,key){
 								if(value2!=null){
@@ -509,14 +509,15 @@ vm.getLiveCustomerChartData = function() {
 			if(vm.cpu_[vm.cpu_.length-1]!=undefined) {
 				$http.get('/getcpu/'+$routeParams.alias+'/'+vm.db+'/'+vm.cpu_[vm.cpu_.length-1].MetricValueKey)
 					.success(function(data) {
-						var tmpdata = data.reverse();
-						data = Helpers.parseTimestamps(data);
+						var tmpdata = data;
+						tmpdata = Helpers.parseTimestamps(tmpdata);
+						//tmpdata.reverse();
 						console.log('updating '+tmpdata.length+' cpu record(s)...');
 						for(var i=0;i<vm.cpu_chartdata.length;i++){
-							vm.cpu_chartdata[i].slice(tmpdata.length);
+							vm.cpu_chartdata[i] = vm.cpu_chartdata[i].slice(tmpdata.length);
 						}
 
-						_.each(data,function(value1,index){
+						_.each(tmpdata,function(value1,index){
 							vm.cpu_.slice(1);
 							vm.cpu_.push(value1);
 							_.each(value1,function(value2,key){
