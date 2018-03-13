@@ -131,7 +131,19 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers) {
 						vm.error = data;
 				});
 
-		//- Get active license useage
+		//- Get disc space
+		vm.diskspacestarting = true;
+		$http.get('/getdiskspace/'+$routeParams.alias+'/'+vm.db)
+				.success(function(data) {
+						vm.diskspacestarting = false;
+						vm.diskspace = data;
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+
+		//- Get thresholds
 		vm.thresholdsstarting = true;
 		$http.get('/getthresholds/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {

@@ -198,6 +198,7 @@ app.get('/getcustomerentitycountmutations/:alias/:db/:lastkey', routes.getcustom
 app.get('/getarchivecounters/:alias/:db', routes.getarchivecounters);
 app.get('/getvirtualmarketplacemutations/:alias/:db', routes.getvirtualmarketplacemutations);
 app.get('/getlicenses/:alias/:db', routes.getlicenses);
+app.get('/getdiskspace/:alias/:db', routes.getdiskspace);
 app.get('/listservers', routes.listservers);
 app.get('/listserversv2', routes.listserversv2);
 app.get('/getmodels', routes.getmodels);

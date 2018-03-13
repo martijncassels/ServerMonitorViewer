@@ -231,6 +231,33 @@ else {
 }
 }
 
+exports.getdiskspace = function(req, res) {
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
+		//var query = req.body.sp.toString();
+		sequelize
+		//.query("select * from openquery(["+req.params.alias+"],'[master].[dbo].xp_fixeddrives')",
+		.query("select * \
+		from openquery ([" + req.params.alias + "], '\
+		SELECT distinct dovs.logical_volume_name AS LogicalName,\
+		dovs.volume_mount_point AS Drive,\
+		CONVERT(INT,dovs.available_bytes/1048576.0) AS FreeSpaceInMB\
+		,CONVERT(INT,total_bytes/1048576.0) AS TotalSpaceInMB\
+		FROM [" + req.params.db + "].sys.master_files mf\
+		CROSS APPLY sys.dm_os_volume_stats(mf.database_id, mf.FILE_ID) dovs\
+		ORDER BY FreeSpaceInMB ASC')",
+		{raw: true,type: sequelize.QueryTypes.SELECT})
+		.then(function(result) {
+			res.status(200).send(result);
+		})
+		.catch(function(err) {
+			console.log(err);
+		});
+}
+else {
+	res.status(200).send(null);
+}
+}
+
 exports.gettop10errors = function(req,res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select top 10\
