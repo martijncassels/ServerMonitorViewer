@@ -1,0 +1,24 @@
+.card
+	.card-header 
+		h5 
+			i.fas.fa-address-card
+			|                   Disk Space
+			button(ng-click="vm.isCollapsed = !vm.isCollapsed",type="button",data-toggle="collapse",data-target="#collapseDiskSpace",role="button",aria-expanded="false",aria-controls="collapseDiskSpace").btn.btn-default.btn-sm.float-right
+				i(ng-show='vm.isCollapsed').fas.fa-plus
+				//- |                   collapse
+				i(ng-show='!vm.isCollapsed').fas.fa-minus
+				//- |                   collapse
+	div(id="collapseDiskSpace").collapse.show
+		div(ng-if='vm.diskspacestarting',align='center').loading
+				i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
+		div(uib-alert,ng-show="vm.diskspace.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.diskspace.name=null").alert-danger
+			{{vm.diskspace.original.message}}
+		div(uib-alert,ng-show="vm.diskspace.length<1 && !vm.diskspacestarting",style='margin:5px;').alert-danger
+			p No data!
+		div(ng-repeat='disk in vm.diskspace track by $index', style='padding:5px;',ng-hide="vm.diskspace.name=='SequelizeDatabaseError'")
+			.row
+				.col-md-6
+					{{disk.LogicalName}}, {{disk.Drive}}
+				.col-md-6
+					uib-progressbar(max='disk.TotalSpaceInMB', value='disk.FreeSpaceInMB',type='bg-danger')
+						span(style='color:white; white-space:nowrap;',ng-class='{"bg-danger": ({{disk.FreeSpaceInMB}}/{{disk.TotalSpaceInMB}})>0.9, "bg-success": ({{disk.FreeSpaceInMB}}/{{disk.TotalSpaceInMB}})<0.3, "bg-warning": (({{disk.FreeSpaceInMB}}/{{disk.TotalSpaceInMB}})>0.7 && ({{disk.FreeSpaceInMB}}/{{disk.TotalSpaceInMB}})<0.9)}') {{disk.FreeSpaceInMB}} MB / {{disk.TotalSpaceInMB}} MB
