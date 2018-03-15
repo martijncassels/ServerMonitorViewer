@@ -242,7 +242,7 @@ exports.getdiskspace = function(req, res) {
 		dovs.volume_mount_point AS Drive,\
 		CONVERT(INT,dovs.available_bytes/1048576.0) AS FreeSpaceInMB\
 		,CONVERT(INT,total_bytes/1048576.0) AS TotalSpaceInMB\
-		FROM [" + req.params.db + "].sys.master_files mf\
+		FROM [" + req.params.db + "].sys.master_files mf with(readuncommitted)\
 		CROSS APPLY sys.dm_os_volume_stats(mf.database_id, mf.FILE_ID) dovs\
 		ORDER BY FreeSpaceInMB ASC')",
 		{raw: true,type: sequelize.QueryTypes.SELECT})
@@ -329,7 +329,7 @@ exports.getcustomerentitycounts = function(req, res) {
 			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
 			ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
 			from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
-				join [" + req.params.alias + "].[master].sys.databases dbs on dbs.database_id = ec.[dbid] and dbs.name = '" + req.params.db + "'\
+				join [" + req.params.alias + "].[master].sys.databases dbs with(readuncommitted) on dbs.database_id = ec.[dbid] and dbs.name = '" + req.params.db + "'\
 			where datepart(mi,timestamp) between 0 and 5\
 			 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 				res.status(200).send(result);
@@ -356,7 +356,7 @@ exports.getcustomerentitycounts = function(req, res) {
 			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
 			ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
 			from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
-				join [" + req.params.alias + "].[master].sys.databases dbs on dbs.database_id = ec.[db_id] and dbs.name = '" + req.params.db + "'\
+				join [" + req.params.alias + "].[master].sys.databases dbs with(readuncommitted) on dbs.database_id = ec.[db_id] and dbs.name = '" + req.params.db + "'\
 			where datepart(mi,ec.timestamp) between 0 and 5\
 			 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 				res.status(200).send(result);
@@ -377,7 +377,7 @@ exports.getcustomerentitycountmutations = function(req, res) {
 		ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
 		ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
 		from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
-			join [HOL].[master].sys.databases dbs on dbs.database_id = ec.[dbid] and dbs.name = '" + req.params.db + "'\
+			join [HOL].[master].sys.databases dbs with(readuncommitted) on dbs.database_id = ec.[dbid] and dbs.name = '" + req.params.db + "'\
 		where ID > " + req.params.lastkey+" and datepart(mi,ec.timestamp) between 0 and 5", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
@@ -411,7 +411,8 @@ exports.getetradeservercounter = function(req, res) {
 
 exports.getvirtualmarketplacemutations = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		sequelize.query("select vmp.[Description], m.* from [" + req.params.alias + "].ServerMonitor.dbo.VirtualMarketPlaceMutation m with(readuncommitted)\
+		sequelize.query("select vmp.[Description], m.*\
+		from [" + req.params.alias + "].ServerMonitor.dbo.VirtualMarketPlaceMutation m with(readuncommitted)\
 		join [" + req.params.alias + "].[" + req.params.db + "].[dbo].virtualmarketplace vmp with(readuncommitted) on m.virtualmarketplacekey = vmp.[key]\
 		where [Timestamp] > dateadd(hour,-1,getdate())\
 		order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
@@ -447,7 +448,7 @@ exports.lastheartbeat = function(req, res) {
 exports.getblocking = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select top 100 *\
-		from [" + req.params.alias + "].ServerMonitor.dbo.Blocking\
+		from [" + req.params.alias + "].ServerMonitor.dbo.Blocking with(readuncommitted)\
 		order by MeasureTime desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
@@ -519,7 +520,8 @@ exports.getcpu = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		if(req.params.lastkey=='new') {
 			sequelize.query("SELECT TOP 100 Timestamp,convert(int,Value) as [Value],MetricValueKey\
-				FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics] where Metric = 'CPU_SQL' order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+				FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics] with(readuncommitted)\
+				where Metric = 'CPU_SQL' order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 				res.status(200).send(result);
 			})
 			.catch(err => {
@@ -528,7 +530,8 @@ exports.getcpu = function(req, res) {
 		}
 		else {
 			sequelize.query("SELECT Timestamp,convert(int,Value) as [Value],MetricValueKey\
-				FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics] where Metric = 'CPU_SQL' and MetricValueKey > " + req.params.lastkey + " order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+				FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics] with(readuncommitted)\
+				where Metric = 'CPU_SQL' and MetricValueKey > " + req.params.lastkey + " order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 				res.status(200).send(result);
 			})
 			.catch(err => {

@@ -143,6 +143,18 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers) {
 						vm.error = data;
 				});
 
+		//- Get top 10 errors
+		vm.top10errorsstarting = true;
+		$http.get('/gettop10errors/'+$routeParams.alias+'/'+vm.db)
+				.success(function(data) {
+						vm.top10errorsstarting = false;
+						vm.top10errors = data;
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+
 		//- Get thresholds
 		vm.thresholdsstarting = true;
 		$http.get('/getthresholds/'+$routeParams.alias+'/'+vm.db)
