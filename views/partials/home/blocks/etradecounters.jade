@@ -3,10 +3,16 @@
 		h5 
 			i.fas.fa-address-card
 			|                   EtradeCounters
-	div(ng-if='vm.etradeservercountersstarting',align='center').loading
-			i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
-	div(uib-alert,ng-show="vm.etradeservercounters.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.etradeservercounters.name=null").alert-danger
-		{{vm.etradeservercounters.original.message}}
-	div(uib-alert,ng-show="vm.etradeservercounters.length<1 && !vm.etradeservercountersstarting",style='margin:5px;').alert-danger
-		p No data!
-	canvas(ng-hide="vm.etradeservercounters.name=='SequelizeDatabaseError'",id='bar',chart-data='vm.etradeservercounterdata',chart-labels='vm.etradeservercounterlabels',chart-series='["NumberOfSuccesfullPurchases","NumberOfFailedPurchases"]',chart-options='vm.options2',chart-colors='["#5cb85c","#d9534f"]',height='150').chart.chart-bar
+			button(ng-click="vm.isCollapsed = !vm.isCollapsed",type="button",data-toggle="collapse",data-target="#collapseEtradeCounters",role="button",aria-expanded="false",aria-controls="collapseDiskSpace").btn.btn-default.btn-sm.float-right
+				i(ng-show='vm.isCollapsed').fas.fa-plus
+				//- |                   collapse
+				i(ng-show='!vm.isCollapsed').fas.fa-minus
+				//- |                   collapse
+	div(id="collapseEtradeCounters").collapse.show
+		div(ng-if='vm.etradeservercountersstarting',align='center').loading
+				i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
+		div(uib-alert,ng-show="vm.etradeservercounters.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.etradeservercounters.name=null").alert-danger
+			{{vm.etradeservercounters.original.message}}
+		div(uib-alert,ng-show="vm.etradeservercounters.length<1 && !vm.etradeservercountersstarting",style='margin:5px;').alert-danger
+			p No data!
+		canvas(ng-hide="vm.etradeservercounters.name=='SequelizeDatabaseError'",id='bar',chart-data='vm.etradeservercounterdata',chart-labels='vm.etradeservercounterlabels',chart-series='["NumberOfSuccesfullPurchases","NumberOfFailedPurchases"]',chart-options='vm.options2',chart-colors='["#5cb85c","#d9534f"]',height='150').chart.chart-bar
