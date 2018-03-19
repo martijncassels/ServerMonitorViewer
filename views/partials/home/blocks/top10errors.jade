@@ -20,7 +20,7 @@
 				.col-md-6
 					{{error.loggedfromsub}}
 					br
-					{{error.lastmessage}}
+					{{error.message}}
 				.col-md-6
 					uib-progressbar(max='vm.top10errors[0].count', value='error.count',type='bg-danger')
 						span(style='color:white; white-space:nowrap;') {{error.count}}

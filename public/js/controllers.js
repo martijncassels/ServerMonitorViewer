@@ -198,6 +198,7 @@ function HomeCtrl($scope,$route,$http,$interval,Helpers) {
 
 		$scope.$on('$destroy', function() {
 			$interval.cancel(interval);
+			//$scope.refresh();
 		});
 }
 

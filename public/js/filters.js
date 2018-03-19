@@ -8,11 +8,13 @@ angular
 
 .filter('interpolate', interpolate)
 .filter('highlight', highlight)
-.filter('cut', cut);
+.filter('cut', cut)
+.filter('sumByKey', sumByKey);
 
 interpolate.$inject = ['version'];
 highlight.$inject = ['$sce'];
 cut.$inject = [];
+sumByKey.$inject = [];
 
 function interpolate(version) {
 	return function(text) {
@@ -51,5 +53,21 @@ function cut() {
 			}
 			//return value + (tail || ' …');
 			return value + (tail || ' …');
+	};
+}
+
+function sumByKey() {
+	return function(data, key) {
+		if (typeof(data) === 'undefined' || typeof(key) === 'undefined') {
+				return 0;
+		}
+
+		var sum = 0;
+		angular.forEach(data, function(obj, objKey){
+				//sum+= parseFloat(obj[key]);
+				sum+= obj[key];
+		});
+
+		return sum;
 	};
 }

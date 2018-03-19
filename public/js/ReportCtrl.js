@@ -7,11 +7,13 @@ angular
 
 .controller('ReportCtrl', ReportCtrl);
 
-ReportCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams','Helpers'];
+ReportCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams','Helpers','tmhDynamicLocale'];
 
-function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers) {
+function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers,tmhDynamicLocale) {
+		//tmhDynamicLocale.set('nl');
 		var vm = this;
 		vm.title = '';
+		vm.showdetails=false;
 		vm.alias = $routeParams.alias;
 		vm.db = $routeParams.db;
 		vm.servername = $routeParams.servername;
@@ -26,6 +28,8 @@ function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers) {
 			{name: "ICT Per Customer", sp: "axspFRDICTPerCustomerPerPeriod"},
 		];
 		vm.report = vm.reports[0];
+		vm.report_data_grouping = [];
+		vm.report_data_grouping_selected = false;
 
 		vm.datefrom = new Date();
 		vm.dateuntil = new Date();
@@ -140,7 +144,7 @@ function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers) {
 				data = Helpers.parseTimestamps(data);
 				vm.reportstarting = false;
 				vm.report_data = data;
-				vm.report_totalItems = vm.report.length;
+				vm.report_totalItems = vm.report_data.length;
 				vm.report_currentPage = 1;
 				vm.report_viewby = 10;
 				vm.report_itemsPerPage = vm.report_viewby;
@@ -149,6 +153,9 @@ function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers) {
 					vm.report_itemsPerPage = num;
 					vm.report_currentPage = 1; //reset to first page
 				}
+				angular.forEach (data[0],function(value,key) {
+					vm.report_data_grouping.push(key);
+				});
 			})
 			.error(function(data) {
 				vm.error = data;

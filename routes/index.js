@@ -261,10 +261,10 @@ else {
 exports.gettop10errors = function(req,res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select top 10\
-			count(el.loggedfromsub) as [count],el.loggedfromsub,max(el.message) as [lastmessage]\
+			count(el.loggedfromsub) as [count],el.loggedfromsub,[message]\
 			from (select top 10000 * from [" + req.params.alias + "].[" + req.params.db + "].[dbo].errorlog with(readuncommitted)\
 			where loggedfromsub not in ('FlowerPower\\DBProcessBoughtVirtualParties.ProcessBoughtVirtualParties')) el\
-			group by el.loggedfromsub\
+			group by el.loggedfromsub,[message]\
 			order by count(el.loggedfromsub) desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 				res.status(200).send(result);
 			})
