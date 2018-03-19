@@ -50,10 +50,14 @@ br
 	button(ng-click='vm.callReport()').btn.btn-default
 		span Call report
 	br
-	button(type="button",ng-model="vm.showdetails",uib-btn-checkbox,btn-checkbox-true="1",btn-checkbox-false="0").btn.btn-primary
-		span Show details
+	//- button(type="button",ng-model="vm.showdetails",uib-btn-checkbox,btn-checkbox-true="1",btn-checkbox-false="0").btn.btn-primary
+	//- 	span Show details
 	select.form-control(ng-model='vm.report_data_grouping_selected', ng-options='group as group for group in vm.report_data_grouping')
 		option
+br
+.form-check
+	input(id='checkbox1',type='checkbox',ng-model="vm.showdetails",ng-true-value=1,ng-false-value=0).form-check-input
+	label(for='checkbox1').form-check-label Show details
 br
 .row
 	.col-md-12

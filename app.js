@@ -210,6 +210,7 @@ app.get('/getcpu/:alias/:db/:lastkey', routes.getcpu);
 
 //app.get('/reporting/getreport/:alias/:db/:datefrom/:dateuntil',reporting.getreport);
 app.post('/reporting/getreport/:alias/:db',reporting.getreport);
+app.post('/reporting/getreport2/:alias/:db',reporting.getreport2);
 
 app.post('/register', routes.register);
 app.post('/login', routes.login);

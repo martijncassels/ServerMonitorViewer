@@ -1,6 +1,7 @@
 var passport	= require('passport');
 var Promise 	= require('bluebird');
 var Profile		= require('../models/profiles');
+var sql				= require('mssql');
 
 var Sequelize = require('sequelize');
 var mockjson = require('./mockmetrics.json');
@@ -50,6 +51,18 @@ var sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user, 
 	logging: false
 });
 //}
+var config2 = {
+	user: config.sqlstring.user,
+	//userName: config.sqlstring.user,
+	connectionString: config.sqlstring.connectionString,
+	password: config.sqlstring.password,
+	server: '94.103.159.131',
+	database: config.sqlstring.database,
+	host: config.sqlstring.server,
+	port: 1437,
+	dialect: 'mssql',
+	driver: 'tedious'
+};
 
 exports.getreport = function(req, res) {
 	var datefrom = moment(req.body.datefrom).format("YYYY-MM-DD HH:mm:ss:SSS");
@@ -65,5 +78,44 @@ exports.getreport = function(req, res) {
 	.catch(function(err) {
 		console.log(err);
 	});
-	//res.status(200).send(req);
+}
+
+// Streaming report data for big reports!
+exports.getreport2 = function(req, res) {
+	var datefrom = moment(req.body.datefrom).format("YYYY-MM-DD HH:mm:ss:SSS");
+	var dateuntil = moment(req.body.dateuntil).format("YYYY-MM-DD HH:mm:ss:SSS");
+	var query = req.body.sp.toString();
+
+	sql.connect(config2, () => {
+		res.setHeader('Cache-Control', 'no-cache');
+
+		const request = new sql.Request()
+		request.stream = true;
+		request.query("select * from openquery(["+req.params.alias+"],'["+req.params.db+"].[dbo]."+query+" \""+datefrom.toString()+"\",\""+dateuntil.toString()+"\"')")
+
+		let rowCount = 0;
+		const BATCH_SIZE = 50;
+
+		request.on('recordset', () => {
+			res.setHeader('Content-Type', 'application/json');
+			res.write('[');
+		})
+
+		request.on('row', row => {
+			if (rowCount > 0)
+				res.write(',');
+
+			if (row % BATCH_SIZE === 0)
+				res.flush();
+
+			res.write(JSON.stringify(row));
+			rowCount++;
+		})
+
+		request.on('done', ()=> {
+			res.write(']');
+			sql.close();
+			res.end();
+		});
+});
 }

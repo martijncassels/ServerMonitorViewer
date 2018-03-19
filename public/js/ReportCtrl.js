@@ -13,7 +13,7 @@ function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers,tmhDynami
 		//tmhDynamicLocale.set('nl');
 		var vm = this;
 		vm.title = '';
-		vm.showdetails=false;
+		vm.showdetails=0;
 		vm.alias = $routeParams.alias;
 		vm.db = $routeParams.db;
 		vm.servername = $routeParams.servername;
@@ -135,7 +135,7 @@ function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers,tmhDynami
 		//- Get report data
 		vm.reportstarting = true;
 		vm.callReport = function(){
-			$http.post('/reporting/getreport/'+$routeParams.alias + '/' + $routeParams.db,{
+			$http.post('/reporting/getreport2/'+$routeParams.alias + '/' + $routeParams.db,{
 				datefrom: vm.datefrom,
 				dateuntil: vm.dateuntil,
 				sp: vm.report.sp
