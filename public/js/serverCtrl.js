@@ -565,5 +565,6 @@ vm.getLiveCustomerChartData = function() {
 		$interval.cancel(interval);
 		$interval.cancel(interval2);
 		$interval.cancel(interval3);
+		$scope.refresh();
 	});
 }
