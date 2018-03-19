@@ -1,10 +1,40 @@
 h5 {{vm.report.name}}
 br
-.table-responsive
-	ul(uib-pagination,total-items="vm.report_totalItems",ng-model="vm.report_currentPage",ng-change="vm.pageChanged()",class="pagination-sm",items-per-page="vm.report_itemsPerPage",template-url="pagination.html",max-size="5",boundary-links="true",boundary-link-number="true",rotate="true",force-ellipses="true").pagination
-	table(ng-shpw="vm.report_data.length>0").table.table-striped.table-sm
-		thead
-			th(ng-repeat='(key,value) in vm.report_data[0]') {{key}}
-		tbody
-			tr(ng-repeat="report_data_row in vm.report_data.slice(((vm.report_currentPage-1)*vm.report_itemsPerPage), ((vm.report_currentPage)*vm.report_itemsPerPage))")
-				td(ng-repeat='(key,value) in report_data_row') {{value}} 
+//- .table-responsive
+//- 	ul(uib-pagination,total-items="vm.report_totalItems",ng-model="vm.report_currentPage",ng-change="vm.pageChanged()",class="pagination-sm",items-per-page="vm.report_itemsPerPage",template-url="pagination.html",max-size="5",boundary-links="true",boundary-link-number="true",rotate="true",force-ellipses="true").pagination
+//- 	table(ng-shpw="vm.report_data.length>0").table.table-striped.table-sm
+//- 		thead
+//- 			th(ng-repeat='(key,value) in vm.report_data[0]') {{key}}
+//- 		tbody
+//- 			tr(ng-repeat="report_data_row in vm.report_data.slice(((vm.report_currentPage-1)*vm.report_itemsPerPage), ((vm.report_currentPage)*vm.report_itemsPerPage)) | groupBy: 'Customercode'")
+//- 				td(ng-repeat='(key,value) in report_data_row') {{value}} 
+b Total amount: {{vm.report_data | sumByKey:'Amount' | number:2 }}
+div(ng-if='vm.report_data_grouping_selected',ng-repeat='(grouping,invoices) in vm.report_data | groupBy: vm.report_data_grouping_selected') 
+	h5 Grouping : {{vm.report_data_grouping_selected}} : {{grouping}}
+	.table-responsive
+		table.table.table-striped.table-sm
+			thead
+				th(ng-repeat='(field,value) in invoices[0]') {{field}}
+			tbody
+				tr(ng-show='vm.showdetails',ng-repeat='(invoicenr,invoice) in invoices')
+					td(ng-repeat='(field,value) in invoice') {{value}}
+				tr
+					td(ng-repeat='(field,value) in invoices[0]')
+						div(ng-if='field=="Amount"')
+							b {{invoices | sumByKey:'Amount' | number:2 }}
+div(ng-if='!vm.report_data_grouping_selected') 	
+	.table-responsive
+		ul(uib-pagination,total-items="vm.report_totalItems",ng-model="vm.report_currentPage",ng-change="vm.pageChanged()",class="pagination-sm",items-per-page="vm.report_itemsPerPage",template-url="pagination.html",max-size="5",boundary-links="true",boundary-link-number="true",rotate="true",force-ellipses="true").pagination
+		table(ng-shpw="vm.report_data.length>0").table.table-striped.table-sm
+			thead
+				th(ng-repeat='(key,value) in vm.report_data[0]') {{key}}
+			tbody
+				tr(ng-repeat="report_data_row in vm.report_data.slice(((vm.report_currentPage-1)*vm.report_itemsPerPage), ((vm.report_currentPage)*vm.report_itemsPerPage))")
+					td(ng-repeat='(key,value) in report_data_row') {{value}} 	
+//- .row
+//- 	.col-md-12
+//- 		ul
+//- 			li(ng-repeat="(key,value) in vm.report_data | groupBy: 'Customercode'")
+//- 				p Group name: {{ key }}
+//- 				ul
+//- 					li(ng-repeat='(key,value2) in value') {{value.Customercode}} 
