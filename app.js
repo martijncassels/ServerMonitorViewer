@@ -193,6 +193,7 @@ app.get('/getcustomermetrics/:server/:alias/:db', routes.getcustomermetrics);
 app.get('/getcustomermutations/:server/:alias/:db/:lastkey', routes.getcustomermutations);
 app.get('/gettop10errors/:alias/:db', routes.gettop10errors);
 app.get('/getpccpcalcs/:alias/:db', routes.getpccpcalcs);
+app.get('/getpccpcalcs2/:alias/:db', routes.getpccpcalcs2);
 app.get('/getetradeservercounter/:alias/:db', routes.getetradeservercounter);
 app.get('/getcustomerentitycounts/:alias/:db', routes.getcustomerentitycounts);
 app.get('/getcustomerentitycountmutations/:alias/:db/:lastkey', routes.getcustomerentitycountmutations);

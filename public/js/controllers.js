@@ -98,14 +98,14 @@ function HomeCtrl($scope,$route,$http,$interval,Helpers) {
 				.success(function(data) {
 						data = Helpers.parseTimestamps(data);
 						vm.mockdata = data.reverse();
-						for(var i=0;i<vm.mockdata.length;i++){
-							vm.data2[0].push(vm.mockdata[i].MetricValue);
-							vm.data2[1].push(vm.mockdata[i].ThresholdValue);
-							// set next dataset to negative to plot this dataset on other side of x-axis!
-							vm.data2[2].push(vm.mockdata[i].ThresholdValue-vm.mockdata[i].MetricValue);
-							vm.labels2.push(vm.mockdata[i].RemoteQueuedMetricKey + ' ' + vm.mockdata[i].InstanceName);
-						}
-						vm.series = ['MetricValue', 'ThresholdValue','Difference'];
+						// for(var i=0;i<vm.mockdata.length;i++){
+						// 	vm.data2[0].push(vm.mockdata[i].MetricValue);
+						// 	vm.data2[1].push(vm.mockdata[i].ThresholdValue);
+						// 	// set next dataset to negative to plot this dataset on other side of x-axis!
+						// 	vm.data2[2].push(vm.mockdata[i].ThresholdValue-vm.mockdata[i].MetricValue);
+						// 	vm.labels2.push(vm.mockdata[i].RemoteQueuedMetricKey + ' ' + vm.mockdata[i].InstanceName);
+						// }
+						// vm.series = ['MetricValue', 'ThresholdValue','Difference'];
 						//console.log(vm.mockdata[vm.mockdata.length-1]);
 				})
 				.error(function(data) {
@@ -167,26 +167,27 @@ function HomeCtrl($scope,$route,$http,$interval,Helpers) {
 			if(vm.mockdata[vm.mockdata.length-1]!=undefined) {
 				$http.get('/getmutations/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
 					.success(function(data) {
-						var tmpdata = data.reverse();
 						data = Helpers.parseTimestamps(data);
+						var tmpdata = data.reverse();
 						console.log('updating '+tmpdata.length+' record(s)...');
 						var tmplength = 0;
-						if (vm.data2[0].length) {
-							tmplength = vm.data2[0].length;
+						if (tmpdata.length) {
+							tmplength = tmpdata.length;
 
 							//- remove data in array if there is data to insert
-							vm.labels2 = vm.labels2.slice(tmpdata.length);
-							vm.data2[0] = vm.data2[0].slice(tmpdata.length);
-							vm.data2[1] = vm.data2[1].slice(tmpdata.length);
-							vm.mockdata = vm.mockdata.slice(tmpdata.length);
+							// vm.labels2 = vm.labels2.slice(tmpdata.length);
+							// vm.data2[0] = vm.data2[0].slice(tmpdata.length);
+							// vm.data2[1] = vm.data2[1].slice(tmpdata.length);
+							// vm.mockdata = vm.mockdata.slice(tmpdata.length);
 						}
-
+						vm.mockdata = vm.mockdata.slice(tmpdata.length);
 						//- push new data into array
-						for (var i=0;vm.data2[0].length < tmplength;i++) {
-							vm.labels2.push(tmpdata[i].RemoteQueuedMetricKey + ' ' + vm.mockdata[i].InstanceName);
+						for (var i=0;i < tmplength;i++) {
+							//vm.labels2.push(tmpdata[i].RemoteQueuedMetricKey + ' ' + vm.mockdata[i].InstanceName);
+
 							vm.mockdata.push(tmpdata[i]);
-							vm.data2[0].push(tmpdata[i].MetricValue);
-							vm.data2[1].push(tmpdata[i].ThresholdValue);
+							//vm.data2[0].push(tmpdata[i].MetricValue);
+							//vm.data2[1].push(tmpdata[i].ThresholdValue);
 						}
 					})
 					.error(function(data) {

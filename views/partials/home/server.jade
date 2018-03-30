@@ -1,77 +1,80 @@
 //- Start Content
-script(id='pagination.html',type='text/ng-template')
-	ul.pagination
-		li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noPrevious()||ngDisabled}").page-item
-			button(ng-click="selectPage(1,$event)",ng-disabled="noPrevious()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('first')}}
-		li(role="menuitem",ng-if="::directionLinks",ng-class="{disabled: noPrevious()||ngDisabled}").page-item
-			button(ng-click="selectPage(page-1,$event)",ng-disabled="noPrevious()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('previous')}}
-		li(role="menuitem",ng-repeat="page in pages track by $index",ng-class="{active: page.active,disabled: ngDisabled&&!page.active}").page-item
-			button(ng-click="selectPage(page.number,$event)",ng-disabled="ngDisabled&&!page.active",uib-tabindex-toggle).page-link {{page.text}}
-		li(role="menuitem",ng-if="::directionLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
-			button(ng-click="selectPage(page+1,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('next')}}
-		li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
-			button(ng-click="selectPage(totalPages,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('last')}}
-.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pb-2.mb-3.border-bottom
-	h1.h2 Dashboard {{vm.alias}}
-	.btn-toolbar.mb-2.mb-md-0
-		.btn-group.mr-2
-			a(role='button',href='/reporting/{{vm.servername}}/{{vm.alias}}/{{vm.db}}').btn.btn-sm.btn-outline-secondary Reports
-			button(type='button',data-toggle='modal',data-target='#ThresholdsModal').btn.btn-sm.btn-outline-secondary Metric Thresholds
-			button(ng-click='vm.getLiveCustomerChartData()').btn.btn-sm.btn-outline-secondary Update events
-			button(ng-click='vm.getlivecustomerentitycountmutations()').btn.btn-sm.btn-outline-secondary Update entitycounts
-	//- Modal goes here
-	include ./blocks/modal
-	//- end of modal
-h2 Events
-include ./blocks/remotequeuedmetrics
-br 
-.row
-	.col-md-6
-		include ./blocks/licenses
-	.col-md-6
-		//include ./blocks/vmpcalcs
-		include ./blocks/diskspace
-br
-.row
-	.col-md-6
-		include ./blocks/customerentitycounts_orders
-	.col-md-6
-		include ./blocks/customerentitycounts_orderrows
-br
-.row
-	.col-md-6
-		include ./blocks/customerentitycounts_lots
-	.col-md-6
-		include ./blocks/customerentitycounts_pricelists
-br
-.row
-	.col-md-6
-		include ./blocks/vmpmutations
-	.col-md-6
-		include ./blocks/etradecounters
-br
 .row
 	.col-md-12
-		include ./blocks/vmpcalcs
-br
-.row
-	.col-md-12
-		include ./blocks/top10errors
-br
-//- Not needed anymore
-//- uib-progressbar(max='vm.max', value='vm.dynamic')
-//- 	span(style='color:white; white-space:nowrap;'){{vm.dynamic/1000}} / {{vm.max/1000}}
-//- br
-.row
-	.col-md-12
-		include ./blocks/archivecounters
-//- br
-//- .row
-//- 	.col-md-12
-//- 		include ./blocks/customerentitycounts
-br
-.row
-	.col-md-12
-		include ./blocks/getcpu
-br
+		.container-fluid
+			script(id='pagination.html',type='text/ng-template')
+				ul.pagination
+					li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noPrevious()||ngDisabled}").page-item
+						button(ng-click="selectPage(1,$event)",ng-disabled="noPrevious()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('first')}}
+					li(role="menuitem",ng-if="::directionLinks",ng-class="{disabled: noPrevious()||ngDisabled}").page-item
+						button(ng-click="selectPage(page-1,$event)",ng-disabled="noPrevious()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('previous')}}
+					li(role="menuitem",ng-repeat="page in pages track by $index",ng-class="{active: page.active,disabled: ngDisabled&&!page.active}").page-item
+						button(ng-click="selectPage(page.number,$event)",ng-disabled="ngDisabled&&!page.active",uib-tabindex-toggle).page-link {{page.text}}
+					li(role="menuitem",ng-if="::directionLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
+						button(ng-click="selectPage(page+1,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('next')}}
+					li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
+						button(ng-click="selectPage(totalPages,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('last')}}
+			.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pb-2.mb-3.border-bottom
+				h1.h2 Dashboard {{vm.alias}} {{vm.pccpcalcs.length}}
+				.btn-toolbar.mb-2.mb-md-0
+					.btn-group.mr-2
+						a(role='button',href='/reporting/{{vm.servername}}/{{vm.alias}}/{{vm.db}}').btn.btn-sm.btn-outline-secondary Reports
+						button(type='button',data-toggle='modal',data-target='#ThresholdsModal').btn.btn-sm.btn-outline-secondary Metric Thresholds
+						button(ng-click='vm.getLiveCustomerChartData()').btn.btn-sm.btn-outline-secondary Update events
+						button(ng-click='vm.getlivecustomerentitycountmutations()').btn.btn-sm.btn-outline-secondary Update entitycounts
+				//- Modal goes here
+				include ./blocks/modal
+				//- end of modal
+			h2 Events
+			include ./blocks/remotequeuedmetrics
+			br 
+			.row
+				.col-md-6
+					include ./blocks/licenses
+				.col-md-6
+					//include ./blocks/vmpcalcs
+					include ./blocks/diskspace
+			br
+			.row
+				.col-md-6
+					include ./blocks/customerentitycounts_orders
+				.col-md-6
+					include ./blocks/customerentitycounts_orderrows
+			br
+			.row
+				.col-md-6
+					include ./blocks/customerentitycounts_lots
+				.col-md-6
+					include ./blocks/customerentitycounts_pricelists
+			br
+			.row
+				.col-md-6
+					include ./blocks/vmpmutations
+				.col-md-6
+					include ./blocks/etradecounters
+			br
+			.row
+				.col-md-12
+					include ./blocks/vmpcalcs
+			br
+			.row
+				.col-md-12
+					include ./blocks/top10errors
+			br
+			//- Not needed anymore
+			//- uib-progressbar(max='vm.max', value='vm.dynamic')
+			//- 	span(style='color:white; white-space:nowrap;'){{vm.dynamic/1000}} / {{vm.max/1000}}
+			//- br
+			.row
+				.col-md-12
+					include ./blocks/archivecounters
+			//- br
+			//- .row
+			//- 	.col-md-12
+			//- 		include ./blocks/customerentitycounts
+			br
+			.row
+				.col-md-12
+					include ./blocks/getcpu
+			br
 //- End Content
