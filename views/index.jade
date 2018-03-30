@@ -12,7 +12,8 @@ block append body
 			//- 	span Servers
 			ul.sidebar-nav
 				li
-					img(ng-src='./Logo-transparant.png',style='width:75%;').img
+					a(href='/home')
+						img(ng-src='./Logo-transparant.png',style='width:75%;').img
 				li
 					input.form-control.form-control-dark.w-100(ng-model="main.searchAlias",type='text', placeholder='Search servers...', aria-label='Search')
 				//- li.sidebar-brand

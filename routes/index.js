@@ -1,10 +1,13 @@
 var passport	= require('passport');
 var Promise 	= require('bluebird');
 var Profile		= require('../models/profiles');
+var sql				= require('mssql');
+var JSONStringify = require('streaming-json-stringify');
 
 var Sequelize = require('sequelize');
 var mockjson = require('./mockmetrics.json');
 var SequelizeAuto = require('sequelize-auto');
+var moment = require('moment');
 
 //The following file isn't included and needs to be created
 //Example below
@@ -49,6 +52,18 @@ var sequelize = new Sequelize(config.sqlstring.database, config.sqlstring.user, 
 	logging: false
 });
 //}
+var config2 = {
+	user: config.sqlstring.user,
+	//userName: config.sqlstring.user,
+	connectionString: config.sqlstring.connectionString,
+	password: config.sqlstring.password,
+	server: '94.103.159.131',
+	database: config.sqlstring.database,
+	host: config.sqlstring.server,
+	port: 1437,
+	dialect: 'mssql',
+	driver: 'tedious'
+};
 
 var auto = new SequelizeAuto(config.sqlstring.database, config.sqlstring.user, config.sqlstring.password, {
 	host: config.sqlstring.server,
@@ -140,11 +155,20 @@ exports.getmodels = function(req, res) {
 });
 }
 
+/*
+SELECT TOP 100 *
+FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] with(readuncommitted)
+WHERE [Metric] NOT IN ('Heartbeat')
+order by [RemoteQueuedMetricKey] desc
+*/
 exports.getqueue = function(req, res) {
 	if(config.sqlstring.database!= ''){
-	sequelize.query("SELECT TOP 100 *\
+	sequelize.query("SELECT max([RemoteQueuedMetricKey]) as [RemoteQueuedMetricKey],max([Timestamp]) as [Timestamp]\
+	,InstanceName,DatabaseName,Metric,max(MetricValue) as MetricValue,MetricThreshold,ThresholdValue\
+	,max(LastQueuedMetricKey) as LastQueuedMetricKey,[Message]\
 	FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] with(readuncommitted)\
 	WHERE [Metric] NOT IN ('Heartbeat')\
+	group by InstanceName,DatabaseName,Metric,MetricThreshold,ThresholdValue,[Message]\
 	order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
 	})
@@ -168,11 +192,21 @@ else {
 }
 }
 
+/*
+SELECT *\
+FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] with(readuncommitted)\
+WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey+ " \
+AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc
+*/
 exports.getmutations = function(req, res) {
-	sequelize.query("SELECT *\
+	sequelize.query("SELECT max([RemoteQueuedMetricKey]) as [RemoteQueuedMetricKey],max([Timestamp]) as [Timestamp]\
+	,InstanceName,DatabaseName,Metric,max(MetricValue) as MetricValue,MetricThreshold,ThresholdValue\
+	,max(LastQueuedMetricKey) as LastQueuedMetricKey,[Message]\
 	FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] with(readuncommitted)\
-	WHERE [RemoteQueuedMetrickey] > " + req.params.lastkey+ " \
-	AND [Metric] NOT IN ('Heartbeat') order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+	WHERE [Metric] NOT IN ('Heartbeat')\
+	AND [RemoteQueuedMetrickey] > " + req.params.lastkey+ " \
+	group by InstanceName,DatabaseName,Metric,MetricThreshold,ThresholdValue,[Message]\
+	order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
 	})
 	.catch(err => {
@@ -289,6 +323,7 @@ exports.gettop10errors = function(req,res) {
 	}
 }
 //getvmptransactions
+
 exports.getpccpcalcs = function(req,res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select d.[Key], d.[Description], d.CalculationImportance,\
@@ -312,6 +347,41 @@ exports.getpccpcalcs = function(req,res) {
 		res.status(200).send(null);
 	}
 }
+
+
+exports.getpccpcalcs2 = function(req, res) {
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
+		sql.connect(config2, () => {
+			res.setHeader('Cache-Control', 'no-cache');
+			//res.status(206);
+			res.setHeader('Content-Type', 'application/json; charset=utf-8');
+
+			const request = new sql.Request()
+			request.stream = true;
+			request.pipe(new JSONStringify()).pipe(res);
+			//request.query("select top 100 * from [HUS].[ABSHUS].[dbo].errorlog");
+			request.query("select d.[Key], d.[Description], d.CalculationImportance,\
+				COUNT(1) as ToCalculate\
+				from [" + req.params.alias + "].[" + req.params.db + "].dbo.partycalculationcontextprice pccp with (readuncommitted)\
+				join [" + req.params.alias + "].[" + req.params.db + "].dbo.Party p with (readuncommitted) on pccp.PartyKey = p.[Key]\
+				join [" + req.params.alias + "].[" + req.params.db + "].dbo.Department d with (readuncommitted) on p.DepartmentKey = d.[Key]\
+				left join [" + req.params.alias + "].[" + req.params.db + "].dbo.PartyVirtual pv with (readuncommitted) on p.[Key] = pv.PartyKey\
+				where pccp.Calculate = 1 and isnull (pv.Deleted,0) = 0\
+				group by d.[Key], d.CalculationImportance, d.[Description]\
+				order by d.CalculationImportance, d.[Key]")
+			res.on('error', err => {
+				res.send(err);
+				res.end();
+			})
+			res.on('finish',() => {
+				res.status(200);
+				res.end();
+				sql.close();
+			})
+		});
+	}
+}
+
 
 exports.getcustomermutations = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.lastkey){

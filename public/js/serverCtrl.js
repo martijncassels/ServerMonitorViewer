@@ -7,9 +7,9 @@ angular
 
 .controller('ServerCtrl', ServerCtrl);
 
-ServerCtrl.$inject = ['$scope','$route','$http','$interval','$routeParams','_','Helpers'];
+ServerCtrl.$inject = ['$scope','$route','$http','$interval','$routeParams','_','Helpers','Oboe'];
 
-function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers) {
+function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe) {
 		var vm = this;
 		vm.title = '';
 		vm.alias = $routeParams.alias;
@@ -32,9 +32,9 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers) {
 		vm.servers = [];
 		vm.data = [[],[]];
 		vm.labels = [];
-		vm.pccpcalcss = [];
-		vm.pccpcalcssdata = [];
-		vm.pccpcalcsslabels = [];
+		vm.pccpcalcs = [];
+		vm.pccpcalcsdata = [];
+		vm.pccpcalcslabels = [];
 		vm.cpu_ = [];
 		vm.cpu_data = [];
 		vm.cpu_labels = [];
@@ -178,21 +178,56 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers) {
 		}
 
 		//- get vmp calculations
-		vm.pccpcalcssdatastarting = true;
+		vm.pccpcalcsdatastarting = true;
 		$http.get('/getpccpcalcs/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
-						vm.pccpcalcssdatastarting = false;
-						vm.pccpcalcss = data;
+						vm.pccpcalcsdatastarting = false;
+						vm.pccpcalcs = data;
 
 						for(var i=0;i<data.length;i++){
-							vm.pccpcalcssdata.push(data[i].ToCalculate);
-							vm.pccpcalcsslabels.push(data[i].Description);
+							vm.pccpcalcsdata.push(data[i].ToCalculate);
+							vm.pccpcalcslabels.push(data[i].Description);
 						}
 				})
 				.error(function(data) {
 						console.log('Error: ' + data);
 						vm.error = data;
 				});
+		// vm.pccpcalcsdatastarting = true;
+		// Oboe({
+		// 			url: '/getpccpcalcs/'+$routeParams.alias+'/'+vm.db,
+		// 			method: 'GET',
+		// 			pattern: '{key}',
+		// 			start: function(stream) {
+		// 					// handle to the stream
+		// 					vm.pccpstream = stream;
+		// 					vm.status = 'started';
+		//
+		// 			},
+		// 			done: function(parsedJSON) {
+		// 					vm.status = 'done';
+		// 			}
+		// 	}).then(function() {
+		//
+		// 	}, function(error) {
+		// 			// handle errors
+		// 	}, function(node) {
+		// 			// node received
+		// 			_.each(node,function(value2,key){
+		// 				if(["Timestamp","CounterTimestamp","LoggedTimeStamp","Date"].indexOf(key) != -1){
+		// 					node[key] = moment(value2).utc().format('DD-MM-YYYY HH:mm:ss');
+		// 				}
+		// 			});
+		// 			vm.pccpcalcs.push(node);
+		// 			vm.pccpcalcsdata.push(node.ToCalculate);
+		// 			vm.pccpcalcslabels.push(node.Description);
+		//
+		// 			vm.pccpcalcsdatastarting = false;
+		// 			if(vm.pccpcalcs.length === 10001) {
+		// 					vm.pccpstream.abort();
+		// 					alert('The maximum of one thousand records reached');
+		// 			}
+		// 	});
 
 		//- get cpu metrics
 		vm.cpu_starting = true;
