@@ -15,7 +15,8 @@ var ServerMonitorViewer = angular.module('ServerMonitorViewer',[
 		'angularMoment',
 		'underscore',
 		'angular.filter',
-		'tmh.dynamicLocale']);
+		'tmh.dynamicLocale',
+		'ngOboe']);
 
 ServerMonitorViewer
 .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider,tmhDynamicLocaleProvider) {

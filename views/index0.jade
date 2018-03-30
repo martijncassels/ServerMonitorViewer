@@ -1,34 +1,31 @@
 extends layout
 
 block append body
-	#wrapper(ng-controller='MainCtrl as main').toggled
-		//- include ./header.jade
-		// Sidebar
-		#sidebar-wrapper
-			//- .text-center
-			//- 	a(href='/home')
-			//- 		img(ng-src='./Logo-transparant.png').img-fluid
-			//- h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
-			//- 	span Servers
-			ul.sidebar-nav
-				li
-					img(ng-src='./Logo-transparant.png',style='width:75%;').img
-				li
-					input.form-control.form-control-dark.w-100(ng-model="main.searchAlias",type='text', placeholder='Search servers...', aria-label='Search')
-				//- li.sidebar-brand
-				//- 	a(href='#')
-				//- 		| Servers
-				li(ng-repeat='server in main.servers | filter: {Alias:main.searchAlias}').nav-item
-					a(href='/server/{{server.escaped}}/{{server.Alias}}/{{server.Notes}}',ng-hide='((server.Description=="none") || !server.Alias)').nav-link
-						span(data-feather='file-text')
-						i(ng-class="{'green' : (server.hbMin_ago<30 && server.hbMin_ago!==null && server.Min_ago===null) , 'red' : (server.hbMin_ago>30 || server.Min_ago!==null)}").fas.fa-laptop.feather
-						|                    {{server.Alias}} - {{server.Description}}
-		// /#sidebar-wrapper
-		// Page Content
-		include ./header.jade
-		#page-content-wrapper
-			.container-fluid(ng-view)
-		// /#page-content-wrapper
+	.container-fluid.h-100
+		.row.h-100
+			.col.p-0
+				a.float-right.m-3.navbar-light(href='', data-target='#sidebar', data-toggle='collapse')
+					span.navbar-toggler-icon
+				.p-2.content
+					div(ng-view).container
+					//- h2
+					//- 	| Bootstrap 4 Off-canvas
+					//- p
+					//- 	| 3 wolf moon retro jean shorts chambray sustainable roof party. Shoreditch vegan artisan Helvetica. Tattooed Codeply Echo Park Godard kogi, next level irony ennui twee squid fap selvage. Meggings flannel Brooklyn literally small batch, mumblecore
+					//- 	| PBR try-hard kale chips. Brooklyn vinyl lumbersexual bicycle rights, viral fap cronut leggings squid chillwave pickled gentrify mustache. 3 wolf moon hashtag church-key Odd Future. Austin messenger bag normcore, Helvetica Williamsburg
+					//- 	| sartorial tote bag distillery Portland before they sold out gastropub taxidermy Vice.
+			#sidebar.col-2.collapse.bg-inverse.pt-2.h-100
+				ul.nav.flex-column
+					li.nav-item
+						a.nav-link(href='#') Overview
+	//- div(ng-controller='MainCtrl as main')
+	//- 	//- Top menu
+	//- 	include ./header.jade
+	//- 	.container-fluid
+	//- 		.row
+	//- 			include ./menu.jade
+	//- 			//div(ng-view)
+	//- 			main.col-md-9.ml-sm-auto.col-lg-10.pt-3.px-4(role='main',ng-view)
 block scripts
 	//- Angular core
 	script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js')
@@ -83,8 +80,3 @@ block scripts
 	//- 	$('#messages').append($('<li>').text(msg));
 	//- 	});
 	//- 	});
-	script.
-		$("#menu-toggle2").click(function(e) {
-		e.preventDefault();
-		$("#wrapper").toggleClass("toggled");
-		});

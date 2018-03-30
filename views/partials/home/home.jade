@@ -1,21 +1,31 @@
-//- Start Content
-.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pb-2.mb-3.border-bottom
-	h1.h2 Dashboard
-	.btn-toolbar.mb-2.mb-md-0
-		.btn-group.mr-2
-			button(ng-click='vm.getLiveChartData()').btn.btn-sm.btn-outline-secondary Update
-//- Not needed anymore
-//- uib-progressbar(max='vm.max', value='vm.dynamic')
-//- 	span(style='color:white; white-space:nowrap;'){{vm.dynamic/1000}} / {{vm.max/1000}}
-//- br
-h2 Events
-div(ng-show='vm.mockdata.length>0').table-responsive
-	table.table.table-striped.table-sm
-		thead
-			tr
-				th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
-		tbody
-			tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
-				td(ng-repeat='(key,value) in records') {{value}}
-div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
-//- End Content
+//- //- Start Content
+//- .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pb-2.mb-3.border-bottom
+//- 	h1.h2 Dashboard
+//- 	.btn-toolbar.mb-2.mb-md-0
+//- 		.btn-group.mr-2
+//- 			button(ng-click='vm.getLiveChartData()').btn.btn-sm.btn-outline-secondary Update
+//- //- Not needed anymore
+//- //- uib-progressbar(max='vm.max', value='vm.dynamic')
+//- //- 	span(style='color:white; white-space:nowrap;'){{vm.dynamic/1000}} / {{vm.max/1000}}
+//- //- br
+//- h2 Events
+//- div(ng-show='vm.mockdata.length>0').table-responsive-md
+//- 	table.table.table-striped.table-sm
+//- 		thead
+//- 			tr
+//- 				th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
+//- 		tbody
+//- 			tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
+//- 				td(ng-repeat='(key,value) in records') {{value}}
+//- div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
+//- //- End Content
+.row
+	.col-md-12
+		.table-responsive
+			table.table.table-striped.table-sm
+				thead
+					tr
+						th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
+				tbody
+					tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
+						td(ng-repeat='(key,value) in records') {{value}}

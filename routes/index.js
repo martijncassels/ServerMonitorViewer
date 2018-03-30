@@ -209,16 +209,27 @@ else {
 	res.status(200).send(null);
 }
 }
-
+/*
+select\
+count(lt.[ID]) as ActiveLicenses, case when lt.[licenses] = count(lt.[ID]) then 'all used' else convert(nvarchar,lt.[licenses] - count(lt.[ID]))+' left' end as [status]\
+, lt.[ID], lt. [description], lt.[licenses],case when (lt.id < 500 or lt.id > 599) then 'Multiple' else max(fp.HostName) end as [hostname]\
+from [" + req.params.alias + "].[" + req.params.db + "].[dbo].[fpprocess] fp with(readuncommitted)\
+	join [" + req.params.alias + "].[" + req.params.db + "].[dbo].[licensetype] lt with(readuncommitted) on lt.[key] = fp.[licensetypekey]\
+	join [" + req.params.alias + "].[" + req.params.db + "].[dbo].[user] u with(readuncommitted) on u.[key] = fp.[userkey]\
+group by lt.[ID], lt. [description], lt.[licenses]
+*/
 exports.getlicenses = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select\
-		count(lt.[ID]) as ActiveLicenses, case when lt.[licenses] = count(lt.[ID]) then 'all used' else convert(nvarchar,lt.[licenses] - count(lt.[ID]))+' left' end as [status]\
-		, lt.[ID], lt. [description], lt.[licenses],case when (lt.id < 500 or lt.id > 599) then 'Multiple' else max(fp.HostName) end as [hostname]\
-		from [" + req.params.alias + "].[" + req.params.db + "].[dbo].[fpprocess] fp with(readuncommitted)\
-			join [" + req.params.alias + "].[" + req.params.db + "].[dbo].[licensetype] lt with(readuncommitted) on lt.[key] = fp.[licensetypekey]\
-			join [" + req.params.alias + "].[" + req.params.db + "].[dbo].[user] u with(readuncommitted) on u.[key] = fp.[userkey]\
-		group by lt.[ID], lt. [description], lt.[licenses]", {raw: true,type: sequelize.QueryTypes.SELECT})
+		count(fp.LicenseTypeKey) as ActiveLicenses\
+		, case when lt.[licenses] = count(fp.LicenseTypeKey) then 'all used' else convert(nvarchar,lt.[licenses] - count(fp.LicenseTypeKey))+' left' end as [status]\
+		, lt.[ID], lt. [description], lt.[licenses]\
+		, case when (lt.id < 500 or lt.id > 599) then 'Multiple' else max(fp.HostName) end as [hostname]\
+		from [" + req.params.alias + "].[" + req.params.db + "].[dbo].[licensetype] lt with(readuncommitted)\
+			left join [" + req.params.alias + "].[" + req.params.db + "].[dbo].fpprocess fp with(readuncommitted) on lt.[key] = fp.[licensetypekey]\
+			left join [" + req.params.alias + "].[" + req.params.db + "].[dbo].[user] u with(readuncommitted) on u.[key] = fp.[userkey]\
+		where lt.Licenses > 0\
+		group by fp.LicenseTypeKey, lt.[ID], lt. [description], lt.[licenses]", {raw: true,type: sequelize.QueryTypes.SELECT})
 		.then(result => {
 			res.status(200).send(result);
 		})
@@ -263,7 +274,8 @@ exports.gettop10errors = function(req,res) {
 		sequelize.query("select top 10\
 			count(el.loggedfromsub) as [count],el.loggedfromsub,[message]\
 			from (select top 10000 * from [" + req.params.alias + "].[" + req.params.db + "].[dbo].errorlog with(readuncommitted)\
-			where loggedfromsub not in ('FlowerPower\\DBProcessBoughtVirtualParties.ProcessBoughtVirtualParties')) el\
+			where loggedfromsub not in ('FlowerPower\\DBProcessBoughtVirtualParties.ProcessBoughtVirtualParties')\
+			order by loggedtimestamp desc) el\
 			group by el.loggedfromsub,[message]\
 			order by count(el.loggedfromsub) desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 				res.status(200).send(result);

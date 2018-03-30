@@ -43,7 +43,7 @@ h4 Dates
 	.col-md-6
 		//- label
 		//- 	| Selected: {{vm.report.name}}
-		select.form-control(ng-model='vm.report', ng-options='report as report.name for report in vm.reports')
+		select.form-control(ng-model='vm.report',ng-change='vm.resetData()',ng-options='report as report.name for report in vm.reports')
 			option
 br
 .btn-group
@@ -58,8 +58,15 @@ br
 .form-check
 	input(id='checkbox1',type='checkbox',ng-model="vm.showdetails",ng-true-value=1,ng-false-value=0).form-check-input
 	label(for='checkbox1').form-check-label Show details
+	p length: {{vm.myData.length}}
+	p status: {{vm.status}}
 br
 .row
 	.col-md-12
 		include ./reports/report1
+//- .row
+//- 	.col-md-12
+//- 		form(action="")
+//- 			input(id="m",autocomplete="off")
+//- 			button Send
 //- End Content

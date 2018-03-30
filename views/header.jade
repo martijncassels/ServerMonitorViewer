@@ -1,6 +1,11 @@
 nav.navbar.navbar-dark.sticky-top.bg-dark.flex-md-nowrap.p-0
+	a#menu-toggle2.btn(href='#menu-toggle2')
+		div(style="color: white;")
+			i.fas.fa-bars.feather
 	a.navbar-brand.col-sm-3.col-md-2.mr-0(href='/home') ServerMonitor
-	input.form-control.form-control-dark.w-100(ng-model="main.searchAlias",type='text', placeholder='Search', aria-label='Search')
+	//- input.form-control.form-control-dark.w-100(ng-model="main.searchAlias",type='text', placeholder='Search', aria-label='Search')
+	.w-100
 	ul.navbar-nav.px-3
 		li.nav-item.text-nowrap
 			a.nav-link(href='#') Sign out
+	//- a.nav-link.text-nowrap(href='#',data-target="#sidebar",data-toggle="collapse")

@@ -7,9 +7,9 @@ angular
 
 .controller('ReportCtrl', ReportCtrl);
 
-ReportCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams','Helpers','tmhDynamicLocale'];
+ReportCtrl.$inject = ['$scope', '$route','$http','$interval','$routeParams','Helpers','tmhDynamicLocale','Oboe'];
 
-function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers,tmhDynamicLocale) {
+function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers,tmhDynamicLocale,Oboe) {
 		//tmhDynamicLocale.set('nl');
 		var vm = this;
 		vm.title = '';
@@ -134,31 +134,96 @@ function ReportCtrl($scope,$route,$http,$interval,$routeParams,Helpers,tmhDynami
 
 		//- Get report data
 		vm.reportstarting = true;
+		vm.counter = 0;
+		vm.myData = [];
+		//vm.status = '';
 		vm.callReport = function(){
-			$http.post('/reporting/getreport2/'+$routeParams.alias + '/' + $routeParams.db,{
-				datefrom: vm.datefrom,
-				dateuntil: vm.dateuntil,
-				sp: vm.report.sp
-			})
-			.success(function(data) {
-				data = Helpers.parseTimestamps(data);
-				vm.reportstarting = false;
-				vm.report_data = data;
-				vm.report_totalItems = vm.report_data.length;
-				vm.report_currentPage = 1;
-				vm.report_viewby = 10;
-				vm.report_itemsPerPage = vm.report_viewby;
-				vm.report_maxSize = 5;
-				vm.setreport_ItemsPerPage = function(num) {
-					vm.report_itemsPerPage = num;
-					vm.report_currentPage = 1; //reset to first page
-				}
-				angular.forEach (data[0],function(value,key) {
-					vm.report_data_grouping.push(key);
+			// $http.get('/reporting/getreport3/'+$routeParams.alias + '/' + $routeParams.db,{
+			// 	datefrom: vm.datefrom,
+			// 	dateuntil: vm.dateuntil,
+			// 	sp: vm.report.sp
+			// })
+			// .success(function(data) {
+			// 	data = Helpers.parseTimestamps(data);
+			// 	vm.counter = data.length;
+			// 	vm.reportstarting = false;
+			// 	vm.report_data = data;
+			// 	vm.report_data_grouping = [];
+			// 	vm.report_totalItems = vm.report_data.length;
+			// 	vm.report_currentPage = 1;
+			// 	vm.report_viewby = 10;
+			// 	vm.report_itemsPerPage = vm.report_viewby;
+			// 	vm.report_maxSize = 5;
+			// 	vm.setreport_ItemsPerPage = function(num) {
+			// 		vm.report_itemsPerPage = num;
+			// 		vm.report_currentPage = 1; //reset to first page
+			// 	}
+			// 	angular.forEach (data[0],function(value,key) {
+			// 		vm.report_data_grouping.push(key);
+			// 	});
+			// })
+			// .error(function(data) {
+			// 	vm.error = data;
+			// 	//vm.report_totalItems
+			// });
+			Oboe({
+						url: '/reporting/getreport3/'+$routeParams.alias + '/' + $routeParams.db,
+						method: 'POST',
+						body: {
+							datefrom: vm.datefrom,
+							dateuntil: vm.dateuntil,
+							sp: vm.report.sp
+						},
+						pattern: '{ID}',
+						start: function(stream) {
+								// handle to the stream
+								vm.stream = stream;
+								vm.status = 'started';
+								vm.report_data = [];
+								vm.report_data_grouping = [];
+								vm.report_totalItems = 0;
+								vm.report_currentPage = 1;
+								vm.report_viewby = 10;
+								vm.report_itemsPerPage = vm.report_viewby;
+								vm.report_maxSize = 5;
+						},
+						done: function(parsedJSON) {
+								vm.status = 'done';
+						}
+				}).then(function() {
+						// promise is resolved
+						angular.forEach (vm.report_data[0],function(value,key) {
+							vm.report_data_grouping.push(key);
+						});
+				}, function(error) {
+						// handle errors
+				}, function(node) {
+						// node received
+						vm.myData.push(node);
+						_.each(node,function(value2,key){
+							if(["Timestamp","CounterTimestamp","LoggedTimeStamp","Date"].indexOf(key) != -1){
+								node[key] = moment(value2).utc().format('DD-MM-YYYY HH:mm:ss');
+							}
+						});
+						//node.LoggedTimestamp = moment(node.LoggedTimestamp).utc().format('DD-MM-YYYY HH:mm:ss');
+						vm.reportstarting = false;
+						vm.report_data.push(node);
+						vm.report_totalItems++;
+						vm.setreport_ItemsPerPage = function(num) {
+							vm.report_itemsPerPage = num;
+							vm.report_currentPage = 1; //reset to first page
+						}
+
+						if(vm.myData.length === 10001) {
+								vm.stream.abort();
+								alert('The maximum of one thousand records reached');
+						}
 				});
-			})
-			.error(function(data) {
-				vm.error = data;
-			});
+		}
+
+		vm.resetData = function(){
+			vm.report_data = null;
+			vm.report_data_grouping_selected = null;
+			vm.report_data_grouping = null;
 		}
 }

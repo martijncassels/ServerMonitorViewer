@@ -123,6 +123,7 @@ var oneWeek = 60 * 1000 * 60 * 24 * 7;
 var oneDay = 60 * 1000 * 60 * 24;
 // app.use(express.static(path.join(__dirname, 'public'), { maxAge: oneWeek }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'node_modules')));
 
 // app.use(serveStatic(__dirname + '/public/js/lib', {
 //   maxAge: oneWeek,
@@ -211,6 +212,8 @@ app.get('/getcpu/:alias/:db/:lastkey', routes.getcpu);
 //app.get('/reporting/getreport/:alias/:db/:datefrom/:dateuntil',reporting.getreport);
 app.post('/reporting/getreport/:alias/:db',reporting.getreport);
 app.post('/reporting/getreport2/:alias/:db',reporting.getreport2);
+app.post('/reporting/getreport3/:alias/:db',reporting.getreport3);
+//app.post('/reporting/getreport4/:alias/:db',reporting.getreport4);
 
 app.post('/register', routes.register);
 app.post('/login', routes.login);

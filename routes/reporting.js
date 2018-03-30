@@ -2,6 +2,12 @@ var passport	= require('passport');
 var Promise 	= require('bluebird');
 var Profile		= require('../models/profiles');
 var sql				= require('mssql');
+var JSONStringify = require('streaming-json-stringify');
+
+// var app = require('express')();
+// var http = require('http').Server(app);
+//var io = require('socket.io')(exports.http);
+//var io = require('socket.io').listen(exports.server);
 
 var Sequelize = require('sequelize');
 var mockjson = require('./mockmetrics.json');
@@ -85,14 +91,15 @@ exports.getreport2 = function(req, res) {
 	var datefrom = moment(req.body.datefrom).format("YYYY-MM-DD HH:mm:ss:SSS");
 	var dateuntil = moment(req.body.dateuntil).format("YYYY-MM-DD HH:mm:ss:SSS");
 	var query = req.body.sp.toString();
+	//console.log(req.body.sp);
 
 	sql.connect(config2, () => {
 		res.setHeader('Cache-Control', 'no-cache');
 
 		const request = new sql.Request()
 		request.stream = true;
+		//request.query("select * from openquery(["+req.params.alias+"],'["+req.params.db+"].[dbo]."+query+" \""+datefrom.toString()+"\",\""+dateuntil.toString()+"\"')")
 		request.query("select * from openquery(["+req.params.alias+"],'["+req.params.db+"].[dbo]."+query+" \""+datefrom.toString()+"\",\""+dateuntil.toString()+"\"')")
-
 		let rowCount = 0;
 		const BATCH_SIZE = 50;
 
@@ -119,3 +126,64 @@ exports.getreport2 = function(req, res) {
 		});
 });
 }
+// Streaming report data for big reports!
+exports.getreport3 = function(req, res) {
+	var datefrom = moment(req.body.datefrom).format("YYYY-MM-DD HH:mm:ss:SSS");
+	var dateuntil = moment(req.body.dateuntil).format("YYYY-MM-DD HH:mm:ss:SSS");
+	var query = req.body.sp.toString();
+
+	sql.connect(config2, () => {
+		res.setHeader('Cache-Control', 'no-cache');
+		//res.status(206);
+		res.setHeader('Content-Type', 'application/json; charset=utf-8');
+
+		const request = new sql.Request()
+		request.stream = true;
+		request.pipe(new JSONStringify()).pipe(res);
+		//request.query("select top 100 * from [HUS].[ABSHUS].[dbo].errorlog");
+		request.query("select * from openquery(["+req.params.alias+"],'["+req.params.db+"].[dbo]."+query+" \""+datefrom.toString()+"\",\""+dateuntil.toString()+"\"')")
+		res.on('error', err => {
+			res.end();
+		})
+		res.on('finish',() => {
+			res.status(200);
+			res.end();
+			sql.close();
+		})
+	});
+}
+// Streaming report data for big reports!
+/*
+exports.getreport4 = function(req, res) {
+	var datefrom = moment(req.body.datefrom).format("YYYY-MM-DD HH:mm:ss:SSS");
+	var dateuntil = moment(req.body.dateuntil).format("YYYY-MM-DD HH:mm:ss:SSS");
+	var query = req.body.sp.toString();
+
+	sql.connect(config2, () => {
+		res.setHeader('Cache-Control', 'no-cache');
+		res.setHeader('Content-Type', 'application/json; charset=utf-8');
+
+		const request = new sql.Request()
+		request.stream = true;
+		request.pipe(new JSONStringify()).pipe(res);
+		request.query("select top 10000 * from [HUS].[ABSHUS].[dbo].errorlog");
+		res.on('error', err => {
+			res.end();
+		})
+		res.on('finish',() => {
+			io.on('connection', function(socket){
+				socket.on('chat message', function(msg){
+					io.emit('chat message', msg);
+				});
+			});
+			res.end();
+			sql.close();
+		})
+		// io.on('connection', function(socket){
+		// 	socket.on('chat message', function(msg){
+		// 		io.emit('chat message', msg);
+		// 	});
+		// });
+	});
+}
+*/
