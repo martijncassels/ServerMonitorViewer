@@ -15,7 +15,7 @@
 					li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
 						button(ng-click="selectPage(totalPages,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('last')}}
 			.d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pb-2.mb-3.border-bottom
-				h1.h2 Dashboard {{vm.alias}} {{vm.pccpcalcs.length}}
+				h1.h2 Dashboard {{vm.alias}}
 				.btn-toolbar.mb-2.mb-md-0
 					.btn-group.mr-2
 						a(role='button',href='/reporting/{{vm.servername}}/{{vm.alias}}/{{vm.db}}').btn.btn-sm.btn-outline-secondary Reports
