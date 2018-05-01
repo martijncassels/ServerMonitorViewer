@@ -1,7 +1,19 @@
 //- remotequeuedmetrics chart
 //-canvas(id='bar',chart-data='vm.data',chart-labels='vm.labels',chart-series='vm.series',chart-options='vm.options',height='50').chart.chart-bar
-div(ng-show='vm.mockdata.length>0').table-responsive
-	table.table.table-striped.table-sm
+//- div(ng-show='vm.mockdata.length>0').table-responsive
+//- 	table.table.table-striped.table-sm
+//- 		thead
+//- 			tr
+//- 				th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
+//- 		tbody
+//- 			tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
+//- 				td(ng-repeat='(key,value) in records') 
+//- 					div(ng-if='key=="Message" && $parent.records.Metric=="Blocking occurred, job was started"')
+//- 						a(href='/serverblocking/{{vm.alias}}/{{vm.db}}') {{value}}
+//- 					div(ng-if='key!="Message"') {{value}}
+//- div(ng-show='vm.mockdata.length<1').alert.alert-info No events!
+div(ng-show='vm.mockdata.length>0')
+	table.responsive-table
 		thead
 			tr
 				th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}

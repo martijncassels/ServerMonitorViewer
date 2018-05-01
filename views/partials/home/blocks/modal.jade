@@ -1,22 +1,43 @@
-div(id='ThresholdsModal',tabindex='-1',role='dialog',aria-labelledby='ThresholdsModalLabel',aria-hidden='true').modal.fade
-	div(role='document').modal-dialog
-		.modal-content
-			.modal-header
-				h5.modal-title Metric Thresholds
-				button(type='button',data-dismiss='modal',aria-label='Close').close
-					span(aria-hidden='true') &times;
-			.modal-body
-				div(ng-show="vm.thresholds.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
-					{{vm.thresholds.original.message}}
+//- div(id='ThresholdsModal',tabindex='-1',role='dialog',aria-labelledby='ThresholdsModalLabel',aria-hidden='true').modal.fade
+//- 	div(role='document').modal-dialog
+//- 		.modal-content
+//- 			.modal-header
+//- 				h5.modal-title Metric Thresholds
+//- 				button(type='button',data-dismiss='modal',aria-label='Close').close
+//- 					span(aria-hidden='true') &times;
+//- 			.modal-body
+//- 				div(ng-show="vm.thresholds.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+//- 					{{vm.thresholds.original.message}}
+//- 				div(ng-hide="vm.thresholds.name=='SequelizeDatabaseError'")
+//- 					div(ng-repeat='threshold in vm.thresholds')
+//- 						div(ng-if='threshold.ThresholdValue')
+//- 							label {{threshold.ColumnName}}
+//- 							div.input-group.mb-2
+//- 								.input-group-prepend
+//- 									span#basic-addon3.input-group-text {{threshold.Description}}
+//- 								input#threshold1.form-control(type='text',ng-model='threshold.ThresholdValue',aria-describedby='basic-addon3')
+//- 								.input-group-append
+//- 									button(type="button",ng-click='vm.updateThreshold(threshold.MetricKey,threshold.ThresholdValue)').btn.btn-outline-secondary Update
+//- 			.modal-footer
+//- 				button(type='button',data-dismiss='modal').btn.btn-secondary Close
+// Modal Trigger
+//- a.waves-effect.waves-light.btn.modal-trigger(href='#modal1') Modal
+// Modal Structure
+#modal1.modal
+	.modal-content
+		h4 Metric Thresholds
+		div(ng-show="vm.thresholds.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+			{{vm.thresholds.original.message}}
+		.row
+			form.col.s12
 				div(ng-hide="vm.thresholds.name=='SequelizeDatabaseError'")
-					div(ng-repeat='threshold in vm.thresholds')
-						div(ng-if='threshold.ThresholdValue')
-							label {{threshold.ColumnName}}
-							div.input-group.mb-2
-								.input-group-prepend
-									span#basic-addon3.input-group-text {{threshold.Description}}
-								input#threshold1.form-control(type='text',ng-model='threshold.ThresholdValue',aria-describedby='basic-addon3')
-								.input-group-append
-									button(type="button",ng-click='vm.updateThreshold(threshold.MetricKey,threshold.ThresholdValue)').btn.btn-outline-secondary Update
-			.modal-footer
-				button(type='button',data-dismiss='modal').btn.btn-secondary Close
+					div(ng-repeat='threshold in vm.thresholds').row
+						div(ng-if='threshold.ThresholdValue').col.s10 {{threshold.Description}}
+							span(data-badge-caption="avg").new.badge {{threshold.AVGValue}}
+							input.input-field.validate(id='threshold{{$index}}',type='number',ng-value='{{threshold.ThresholdValue}}',ng-model='threshold.ThresholdValue',aria-describedby='basic-addon3')
+							label(for='#threshold{{$index}}') {{threshold.ColumnName}}
+							span(data-error="invalid",data-success="valid").helper-text 
+						.col.s2
+							button(type="button",ng-click='vm.updateThreshold(threshold.MetricKey,threshold.ThresholdValue)').btn.btn-outline-secondary Update
+	.modal-footer
+		a.modal-action.modal-close.waves-effect.waves-green.btn-flat(href='#!') Close

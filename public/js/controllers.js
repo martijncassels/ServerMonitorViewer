@@ -8,14 +8,27 @@ angular
 .controller('MainCtrl', MainCtrl)
 .controller('HomeCtrl', HomeCtrl);
 
-MainCtrl.$inject = ['$scope','$http','_','$interval'];
-HomeCtrl.$inject = ['$scope', '$route','$http','$interval','Helpers'];
+MainCtrl.$inject = ['$scope','$http','_','$interval','$mdSidenav',];
+HomeCtrl.$inject = ['$scope','$route','$http','$interval','$routeParams','Helpers','$mdToast'];
 
-function MainCtrl($scope,$http,_,$interval) {
+function MainCtrl($scope,$http,_,$interval,$mdSidenav) {
 	var vm = this;
 	vm.title = '';
 	vm.servers = [];
 	vm.searchAlias= '';
+
+	// $scope.$on('$includeContentLoaded', function(event){
+	// 	$window.alert('content load');
+	// });
+	$scope.FABisOpen = false;
+	$scope.toggleLeft = buildToggler('left');
+	$scope.toggleRight = buildToggler('right');
+
+	function buildToggler(componentId) {
+		return function() {
+			$mdSidenav(componentId).toggle();
+		};
+	}
 
 	//- Get a list of all active servers in [axerrio].[registeredservers]
 	//- for use in the side menu
@@ -82,7 +95,7 @@ function MainCtrl($scope,$http,_,$interval) {
 	});
 }
 
-function HomeCtrl($scope,$route,$http,$interval,Helpers) {
+function HomeCtrl($scope,$route,$http,$interval,$routeParams,Helpers,$mdToast) {
 		var vm = this;
 		vm.title = '';
 		vm.mockdata = [];

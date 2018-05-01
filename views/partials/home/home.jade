@@ -1,36 +1,31 @@
-//- //- Start Content
-//- .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pb-2.mb-3.border-bottom
-//- 	h1.h2 Dashboard
-//- 	.btn-toolbar.mb-2.mb-md-0
-//- 		.btn-group.mr-2
-//- 			button(ng-click='vm.getLiveChartData()').btn.btn-sm.btn-outline-secondary Update
-//- //- Not needed anymore
-//- //- uib-progressbar(max='vm.max', value='vm.dynamic')
-//- //- 	span(style='color:white; white-space:nowrap;'){{vm.dynamic/1000}} / {{vm.max/1000}}
-//- //- br
-//- h2 Events
-//- div(ng-show='vm.mockdata.length>0').table-responsive-md
-//- 	table.table.table-striped.table-sm
-//- 		thead
-//- 			tr
-//- 				th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
-//- 		tbody
-//- 			tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
-//- 				td(ng-repeat='(key,value) in records') {{value}}
-//- div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
-//- //- End Content
+//- Start Content
+script(type='text/ng-template', id='menu1.html').
+	<div class="fixed-action-btn">
+	<a class="btn-floating btn-large purple darken-3">
+		<i class="large material-icons">mode_edit</i>
+	</a>
+	<ul>
+		<li><button data-tooltip="Update data" ng-click='vm.getLiveChartData()' class="btn-floating red tooltipped"><i class="material-icons">update</i></button></li>
+	</ul>
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.fixed-action-btn').floatingActionButton();
+			$('.tooltipped').tooltip({position: 'left'});
+		});	
+	</script>
+ng-include(src="'menu1.html'")
 .row
-	.col-md-12
-		.btn-toolbar.float-right
-			.btn-group.float-right
-				button(ng-click='vm.getLiveChartData()').btn.btn-sm.btn-outline-secondary.float-right Update
-		br
-		br
-		.table-responsive
-			table.table.table-striped.table-sm
+	.col.s12
+		h5.h5 Dashboard
+		h6 Events
+		div(ng-show='vm.mockdata.length>0')
+			table.responsive-table
 				thead
 					tr
 						th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
 				tbody
 					tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
 						td(ng-repeat='(key,value) in records') {{value}}
+		div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
+//- End Content

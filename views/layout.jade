@@ -9,17 +9,14 @@ html(lang='en')
 		link(rel='icon', href='https://getbootstrap.com/favicon.ico')
 		title Dashboard Template for Bootstrap
 		//- Bootstrap core CSS
-		link(rel='stylesheet',href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm',crossorigin='anonymous')
-		//- link(href='/css/bootstrap.css', rel='stylesheet')
-		//- link(href='http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css', rel='stylesheet')
+		//- link(rel='stylesheet',href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm',crossorigin='anonymous')
+		//- Compiled and minified CSS Materialize CSS
+		link(rel="stylesheet",href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css")
+		link(rel="stylesheet",href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css")
+		link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
 		//- Custom styles for this template
 		//- link(href='/css/dashboard.css',rel='stylesheet')
-		link(href='/css/app.css',rel='stylesheet')
-		//- link(href='https://cdn.rawgit.com/iamphill/Bootstrap-Offcanvas/master/dist/css/bootstrap.offcanvas.min.css', rel='stylesheet')
-		//- link(href="https://coreui.io/demo/Ajax_Demo/vendors/css/flag-icon.min.css",rel="stylesheet")
-		//- link(href="https://coreui.io/demo/Ajax_Demo/vendors/css/font-awesome.min.css",rel="stylesheet")
-		//- link(href="https://coreui.io/demo/Ajax_Demo/vendors/css/simple-line-icons.min.css",rel="stylesheet")
-		//- link(href='https://coreui.io/demo/Ajax_Demo/css/style.css',rel="stylesheet")
+
 		block extraHeader
 	body(ng-app='ServerMonitorViewer')
 		block body

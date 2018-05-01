@@ -1,29 +1,8 @@
-//- nav(role="navigation").navbar.navbar-default
-//- 	div(id="js-bootstrap-offcanvas").navbar-offcanvas.navbar-offcanvas-touch
 nav(id='sidebar2').col-md-2.d-none.d-md-block.bg-light.sidebar
 	.sidebar-sticky
 		.text-center
 			a(href='/home')
 				img(ng-src='./Logo-transparant.png').img-fluid
-		//- h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
-		//- 	span Shared Servers
-		//- ul.nav.nav-pills.flex-column.mb-2
-		//- 	//- li(ng-repeat='(key,value) in main.sorted | filter: {key.Alias:main.searchAlias}').nav-item.dropdown
-		//- 	li(ng-repeat='(key,value) in main.sorted').nav-item.dropdown
-		//- 		a(data-toggle='dropdown', href='#', role='button', aria-haspopup='true', aria-expanded='false').nav-link.dropdown-toggle
-		//- 			span(data-feather='file-text')
-		//- 			i(ng-class="{'green' : (value[0].hbMin_ago<30 && value[0].Min_ago===null) , 'red' : (value[0].hbMin_ago>30 || value[0].Min_ago!==null)}").fas.fa-laptop.feather
-		//- 			|                    {{key}}
-		//- 		.dropdown-menu
-		//- 			a(ng-repeat='customer in value | filter: {Alias:main.searchAlias}',href='/server/{{customer.Description}}/{{customer.Alias}}').dropdown-item {{customer.Alias}}
-		//- h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
-		//- 	span Private Servers
-		//- ul.nav.flex-column.mb-2
-		//- 	li(ng-repeat='server in main.orphans | filter: {Alias:main.searchAlias} | orderBy: "+Alias"').nav-item
-		//- 		a(href='/server/{{server.Description}}/{{server.Alias}}',ng-hide='((server.Description=="none") || !server.Alias)').nav-link
-		//- 			span(data-feather='file-text')
-		//- 			i(ng-class="{'green' : (server.hbMin_ago<30 && value[0].Min_ago===null) , 'red' : (server.hbMin_ago>30 || server.Min_ago!==null)}").fas.fa-laptop.feather
-		//- 			|                    {{server.Alias}} - {{server.Description}}
 		h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
 			span Servers
 		ul.nav.flex-column.mb-2

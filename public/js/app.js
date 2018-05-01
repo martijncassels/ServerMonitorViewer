@@ -2,7 +2,10 @@
 
 var ServerMonitorViewer = angular.module('ServerMonitorViewer',[
 		'ngRoute',
-		'ngTouch',
+		// 'ngTouch',
+		'ngAria',
+		'ngMessages',
+		'ngAnimate',
 		'ServerMonitorViewer.controllers',
 		'ServerMonitorViewer.BlockingCtrl',
 		'ServerMonitorViewer.ReportCtrl',
@@ -16,7 +19,10 @@ var ServerMonitorViewer = angular.module('ServerMonitorViewer',[
 		'underscore',
 		'angular.filter',
 		'tmh.dynamicLocale',
-		'ngOboe']);
+		'ngOboe',
+		'ngMaterial',
+		'ngMessages'
+	]);
 
 ServerMonitorViewer
 .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider,tmhDynamicLocaleProvider) {
@@ -26,6 +32,11 @@ ServerMonitorViewer
 				.when('/reporting/:servername/:alias/:db', {templateUrl: 'partials/home/reporting', controller: 'ReportCtrl', controllerAs: 'vm', access: {restricted: false}})
 				.when('/serverblocking/:alias/:db', {templateUrl: 'partials/home/server_blocking', controller: 'BlockingCtrl', controllerAs: 'vm', access: {restricted: false}})
 				.otherwise({redirectTo: '/home', access: {restricted: false}});
+				// .when('/home', {templateUrl: 'partials/home_semanticui/home', controller: 'HomeCtrl', controllerAs: 'vm', access: {restricted: false}})
+				// .when('/server/:servername/:alias/:db', {params: {servername: {raw:true}},templateUrl: 'partials/home_semanticui/server', controller: 'ServerCtrl', controllerAs: 'vm', access: {restricted: false}})
+				// .when('/reporting/:servername/:alias/:db', {templateUrl: 'partials/home_semanticui/reporting', controller: 'ReportCtrl', controllerAs: 'vm', access: {restricted: false}})
+				// .when('/serverblocking/:alias/:db', {templateUrl: 'partials/home_semanticui/server_blocking', controller: 'BlockingCtrl', controllerAs: 'vm', access: {restricted: false}})
+				// .otherwise({redirectTo: '/home_semanticui', access: {restricted: false}});
 		$locationProvider.html5Mode(true);
 		//tmhDynamicLocaleProvider.localeLocationPattern('js/lib/angular/i18n/angular-locale_{{locale}}.js');
 }])

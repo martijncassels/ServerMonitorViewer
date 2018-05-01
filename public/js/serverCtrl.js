@@ -7,9 +7,9 @@ angular
 
 .controller('ServerCtrl', ServerCtrl);
 
-ServerCtrl.$inject = ['$scope','$route','$http','$interval','$routeParams','_','Helpers','Oboe'];
+ServerCtrl.$inject = ['$scope','$route','$http','$interval','$routeParams','_','Helpers','Oboe','$mdToast'];
 
-function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe) {
+function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe,$mdToast) {
 		var vm = this;
 		vm.title = '';
 		vm.alias = $routeParams.alias;
@@ -255,23 +255,35 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe) {
 						vm.error = data;
 				});
 
+		vm.showSimpleToast = function(msg) {
+
+			$mdToast.show(
+				$mdToast.simple()
+					.textContent(msg)
+					// .position('' )
+					.hideDelay(3000)
+			);
+		};
 		//- get etrade server counters
 		vm.etradeservercountersstarting = true;
 		$http.get('/getetradeservercounter/'+$routeParams.alias+'/'+vm.db)
 				.success(function(data) {
 					data = Helpers.parseTimestamps(data);
+					if(data.name=='SequelizeDatabaseError'){
+						vm.showSimpleToast('Error: '+data.original.message);
+					}
 
-						vm.etradeservercountersstarting = false;
-						vm.etradeservercounters = data;
+					vm.etradeservercountersstarting = false;
+					vm.etradeservercounters = data;
 
-						for(var i=0;i<data.length;i++){
-							vm.etradeservercounterdata[0].push(data[i].NumberOfSuccesfullPurchases);
-							vm.etradeservercounterdata[1].push(data[i].NumberOfFailedPurchases);
-							vm.etradeservercounterlabels.push(data[i].Remark+", Timestamp: "+data[i].LoggedTimeStamp);
-						}
-						vm.etradeservercounterdata[0].reverse();
-						vm.etradeservercounterdata[1].reverse();
-						vm.etradeservercounterlabels.reverse();
+					for(var i=0;i<data.length;i++){
+						vm.etradeservercounterdata[0].push(data[i].NumberOfSuccesfullPurchases);
+						vm.etradeservercounterdata[1].push(data[i].NumberOfFailedPurchases);
+						vm.etradeservercounterlabels.push(data[i].Remark+", Timestamp: "+data[i].LoggedTimeStamp);
+					}
+					vm.etradeservercounterdata[0].reverse();
+					vm.etradeservercounterdata[1].reverse();
+					vm.etradeservercounterlabels.reverse();
 					//}
 				})
 				.error(function(data) {
@@ -595,6 +607,91 @@ vm.getLiveCustomerChartData = function() {
 					});
 			} // end $http
 		} // end if
+
+		vm.getstuffwithdate = function() {
+			vm.dates = {
+				startdate: vm.startdate,
+				starttime: vm.starttime,
+				enddate: vm.enddate,
+				endtime: vm.endtime
+			}
+
+			$http.post('/getcustomerentitycountswithdate/'+$routeParams.alias+'/'+vm.db,vm.dates)
+				.success(function(data) {
+					vm.customerentitycounts = [];
+					vm.customerentitycountdata = [];
+					data = Helpers.parseTimestamps(data);
+					// vm.customerentitycounts_setPage = function (pageNo) {
+					// 	vm.customerentitycounts_currentPage = pageNo;
+					// };
+					vm.customerentitycountsstarting = true;
+					//vm.customerentitycountdataselection = [];
+					vm.customerentitycounts = data;
+					vm.customerentitycounts_totalItems = vm.customerentitycounts.length;
+					vm.customerentitycounts_currentPage = 1;
+					vm.customerentitycounts_viewby = 10;
+					vm.customerentitycounts_itemsPerPage = vm.customerentitycounts_viewby;
+					vm.customerentitycounts_maxSize = 5;
+					vm.setcustomerentitycounts_ItemsPerPage = function(num) {
+						vm.customerentitycounts_itemsPerPage = num;
+						vm.customerentitycounts_currentPage = 1; //reset to first page
+					}
+					_.each(data,function(value1,index){
+						_.each(value1,function(value2,key){
+							if(typeof(vm.customerentitycountdata[Object.keys(value1).indexOf(key)]) == 'undefined'){
+								vm.customerentitycountdata[Object.keys(value1).indexOf(key)] = [];
+							}
+							if(typeof(vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index]) == 'undefined'){
+								vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = [];
+							}
+							if(value2!=null){
+								vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = value2;
+							}
+							else {
+								vm.customerentitycountdata[Object.keys(value1).indexOf(key)][index] = 0;
+							}
+						});
+					});
+					for(var i=0;i<vm.customerentitycountdata.length;i++){
+						vm.customerentitycountdata[i].reverse();
+						//vm.customerentitycountdataselection.push(vm.customerentitycountdata[i]);
+					}
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+
+				$http.post('/getvirtualmarketplacemutationswithdate/'+$routeParams.alias+'/'+vm.db,vm.dates)
+					.success(function(data) {
+						vm.getvirtualmarketplacemutations = [];
+						vm.getvirtualmarketplacemutationsdata = [];
+						data = Helpers.parseTimestamps(data);
+						vm.getvirtualmarketplacemutationsstarting = false;
+						vm.getvirtualmarketplacemutations = data;
+						vm.getvirtualmarketplacemutationsdata = [[],[],[],[],[]];
+						vm.getvirtualmarketplacemutationslabels = [];
+
+							for(var i=0;i<data.length;i++){
+								vm.getvirtualmarketplacemutationsdata[0].push(data[i].NewOrMutatedSupplylines);
+								vm.getvirtualmarketplacemutationsdata[1].push(data[i].DeletedSupplylines);
+								vm.getvirtualmarketplacemutationsdata[2].push(data[i].InsertedParties);
+								vm.getvirtualmarketplacemutationsdata[3].push(data[i].InsertedPCCPs);
+								vm.getvirtualmarketplacemutationsdata[4].push(data[i].PurchaseAttempts);
+								vm.getvirtualmarketplacemutationslabels.push(data[i].Description+" "+data[i].Timestamp);
+							}
+							vm.getvirtualmarketplacemutationsdata[0].reverse();
+							vm.getvirtualmarketplacemutationsdata[1].reverse();
+							vm.getvirtualmarketplacemutationsdata[2].reverse();
+							vm.getvirtualmarketplacemutationsdata[3].reverse();
+							vm.getvirtualmarketplacemutationsdata[4].reverse();
+							vm.getvirtualmarketplacemutationslabels.reverse();
+					})
+					.error(function(data) {
+							console.log('Error: ' + data);
+							vm.error = data;
+					});
+		}
 
 	$scope.$on('$destroy', function() {
 		$interval.cancel(interval);

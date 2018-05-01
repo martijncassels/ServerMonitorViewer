@@ -1,0 +1,20 @@
+//- md-fab-speed-dial.md-fling(md-direction='up')
+//- 	md-fab-trigger
+//- 		md-button(aria-label='Add...')
+//- 			md-icon(md-svg-src='/img/icons/plus.svg')
+//- 	md-fab-actions
+//- 		md-button(aria-label='Add User')
+//- 			md-icon.material-icons mode_edit
+//- 		md-button(aria-label='Add Group')
+//- 			md-icon.material-icons update
+md-fab-speed-dial(md-open='FABisOpen',md-direction='up',ng-class='md-fling',ng-mouseenter='FABisOpen=true',ng-mouseleave='FABisOpen=false').md-fab-bottom-right
+	md-fab-trigger
+		md-button.md-fab.md-warn(aria-label='menu')
+			md-icon.material-icons mode_edit
+	md-fab-actions
+		md-button.md-fab.md-raised.md-mini(aria-label='Twitter')
+			md-icon.material-icons mode_edit
+		md-button.md-fab.md-raised.md-mini(aria-label='Facebook')
+			md-icon.material-icons mode_edit
+		md-button.md-fab.md-raised.md-mini(aria-label='Google Hangout')
+			md-icon.material-icons mode_edit

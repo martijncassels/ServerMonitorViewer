@@ -1,18 +1,40 @@
-.card
-	.card-header
-		h5 
-			i.fas.fa-address-card
-			|                   Pricelists
-			button(ng-click="vm.isCollapsed = !vm.isCollapsed",type="button",data-toggle="collapse",data-target="#collapsePricelists",role="button",aria-expanded="false",aria-controls="collapseDiskSpace").btn.btn-default.btn-sm.float-right
-				i(ng-show='vm.isCollapsed').fas.fa-plus
-				//- |                   collapse
-				i(ng-show='!vm.isCollapsed').fas.fa-minus
-				//- |                   collapse
-	div(id="collapsePricelists").collapse.show
-		div(ng-if='vm.customerentitycountdatastarting',align='center').loading
-				i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
-		div(uib-alert,ng-show="vm.customerentitycountdata.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.customerentitycountdata.name=null").alert-danger
-			{{vm.customerentitycountdata.original.message}}
-		div(uib-alert,ng-show="vm.customerentitycountdata.length<1 && !vm.customerentitycountdatastarting",style='margin:5px;').alert-danger
-			p No data!
-		canvas(id='line',chart-data='[vm.customerentitycountdata[17],vm.customerentitycountdata[18]]',chart-labels='vm.customerentitycountdata[1]',chart-series='[vm.customerentitycountseries[17],vm.customerentitycountseries[18]]',chart-options='vm.options2',height='100',chart-dataset-override="[{pointRadius:2},{pointRadius:2}]").chart.chart-line
+//- .card
+//- 	.card-header
+//- 		h5 
+//- 			i.fas.fa-address-card
+//- 			|                   Pricelists
+//- 			button(ng-click="vm.isCollapsed = !vm.isCollapsed",type="button",data-toggle="collapse",data-target="#collapsePricelists",role="button",aria-expanded="false",aria-controls="collapseDiskSpace").btn.btn-default.btn-sm.float-right
+//- 				i(ng-show='vm.isCollapsed').fas.fa-plus
+//- 				//- |                   collapse
+//- 				i(ng-show='!vm.isCollapsed').fas.fa-minus
+//- 				//- |                   collapse
+//- 	div(id="collapsePricelists").collapse.show
+//- 		div(ng-if='vm.customerentitycountdatastarting',align='center').loading
+//- 				i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
+//- 		div(uib-alert,ng-show="vm.customerentitycountdata.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.customerentitycountdata.name=null").alert-danger
+//- 			{{vm.customerentitycountdata.original.message}}
+//- 		div(uib-alert,ng-show="vm.customerentitycountdata.length<1 && !vm.customerentitycountdatastarting",style='margin:5px;').alert-danger
+//- 			p No data!
+//- 		canvas(id='line',chart-data='[vm.customerentitycountdata[17],vm.customerentitycountdata[18]]',chart-labels='vm.customerentitycountdata[1]',chart-series='[vm.customerentitycountseries[17],vm.customerentitycountseries[18]]',chart-options='vm.options2',height='100',chart-dataset-override="[{pointRadius:2},{pointRadius:2}]").chart.chart-line
+script(type='text/ng-template', id='Pricelists.html').
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.collapsible').collapsible();
+		});
+ng-include(src="'Pricelists.html'")
+ul.collapsible
+	li.active
+		.collapsible-header
+			h5 Pricelists
+		.collapsible-body
+			span
+				div(ng-if='vm.customerentitycountdatastarting',align='center').progress
+					.indeterminate
+				//- div(uib-alert,ng-show="vm.customerentitycountdata.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.customerentitycountdata.name=null").alert-danger
+				//- 	{{vm.customerentitycountdata.original.message}}
+				div(ng-show="vm.customerentitycountdata.name=='SequelizeDatabaseError'",style='margin:5px;').card.red.lighten-2
+					.card-content.white-text
+						{{vm.customerentitycountdata.original.message}}
+				div(uib-alert,ng-show="vm.customerentitycountdata.length<1 && !vm.customerentitycountdatastarting",style='margin:5px;').alert-danger
+					p No data!
+			canvas(id='line',chart-data='[vm.customerentitycountdata[17],vm.customerentitycountdata[18]]',chart-labels='vm.customerentitycountdata[1]',chart-series='[vm.customerentitycountseries[17],vm.customerentitycountseries[18]]',chart-options='vm.options2',height='100',chart-dataset-override="[{pointRadius:2},{pointRadius:2}]").chart.chart-line

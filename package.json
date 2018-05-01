@@ -3,7 +3,7 @@
   "version": "0.3.5",
   "private": true,
   "scripts": {
-    "start": "node app"
+    "start": "set debug=servermonitorviewer:* & set port=4000 & nodemon app"
   },
   "apps": [
     {

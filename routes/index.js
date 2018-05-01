@@ -85,6 +85,7 @@ var auto = new SequelizeAuto(config.sqlstring.database, config.sqlstring.user, c
 
 exports.index = function(req, res){
 	res.render('index');
+	// res.render('index_semanticui');
 }
 
 exports.listservers = function(req, res) {
@@ -472,13 +473,78 @@ exports.getcustomerentitycountmutations = function(req, res) {
 	}
 }
 
+exports.getcustomerentitycountswithdate = function(req, res) {
+	if(config.sqlstring.database!= '' && req.body.starttime && req.body.starttime && req.body.enddate && req.body.endtime){
+		var datefrom = moment(req.body.startdate + " " + req.body.starttime).format("YYYY-MM-DD HH:mm:ss:SSS");
+		var dateuntil = moment(req.body.enddate + " " + req.body.endtime).format("YYYY-MM-DD HH:mm:ss:SSS");
+		var tmpservers = ['HOL','HUS','VVP','VUS','VVI','VVT'];
+		// temporary workaround, difference between entitycounts.db_id and entitycounts.dbid
+		//if(req.params.alias=='HOL' || req.params.alias=='HUS'  || req.params.alias=='VVP'){
+		if(tmpservers.indexOf(req.params.alias)!=-1){
+			sequelize.query("select ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
+			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
+			ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
+			from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
+				join [" + req.params.alias + "].[master].sys.databases dbs with(readuncommitted) on dbs.database_id = ec.[dbid] and dbs.name = '" + req.params.db + "'\
+			where datepart(mi,timestamp) between 0 and 5\
+			and timestamp between '" + datefrom + "' and '" + dateuntil + "'\
+			 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+				res.status(200).send(err);
+			});
+		}
+		else if(req.params.alias=='VVB'){
+			sequelize.query("select ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
+			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
+			ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
+			from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
+			where datepart(mi,timestamp) between 0 and 5\
+			and timestamp between '" + datefrom + "' and '" + dateuntil + "'\
+			 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+				res.status(200).send(err);
+			});
+		}
+		else {
+			sequelize.query("select ec.ID,ec.Timestamp,ec.TotalLots,ec.RealLots,ec.VirtualLots,ec.VirtualLotsToBeDeleted,ec.TotalOrders,\
+			ec.TotalOrderRows,ec.ABSOrders,ec.ABSOrderRows,ec.WebShopOrders,ec.WebShopOrderRows,ec.ProductionOrders,ec.ProductionOrderRows,ec.PCCPTotal,\
+			ec.PCCPToBeCalculated,ec.VPSupplyLineTotal,ec.TotalPricelists,ec.TotalPricelistRows\
+			from [" + req.params.alias + "].ServerMonitor.dbo.EntityCounts ec with(readuncommitted)\
+				join [" + req.params.alias + "].[master].sys.databases dbs with(readuncommitted) on dbs.database_id = ec.[db_id] and dbs.name = '" + req.params.db + "'\
+			where datepart(mi,ec.timestamp) between 0 and 5\
+			and timestamp between '" + datefrom + "' and '" + dateuntil + "'\
+			 order by [id] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+				res.status(200).send(err);
+			});
+		}
+	}
+}
+
 exports.getetradeservercounter = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		sequelize.query("select top 100 \
-		es.ETradeServerCounterkey,eu.Remark,es.LoggedTimeStamp,es.NumberOfSuccesfullPurchases,es.NumberOfFailedPurchases,es.AvgResponseTimeMS,es.MinResponseTimeMS,es.MaxResponseTimeMS\
-		from [" + req.params.alias + "].[" + req.params.db + "].axerrio.ETradeServerCounter es with(readuncommitted)\
-		join [" + req.params.alias + "].[" + req.params.db + "].etradeserver.EtradeUser eu with(readuncommitted) on eu.[EtradeUserKey] = es.EtradeUserKey\
-		order by ETradeServerCounterkey desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		sequelize.query("IF (EXISTS (SELECT * \
+		FROM [" + req.params.alias + "].[" + req.params.db + "].INFORMATION_SCHEMA.TABLES \
+		WHERE TABLE_SCHEMA = 'axerrio' \
+		AND TABLE_NAME = 'ETradeServerCounter'))\
+		BEGIN\
+			select top 100 \
+			es.ETradeServerCounterkey,eu.Remark,es.LoggedTimeStamp,es.NumberOfSuccesfullPurchases,es.NumberOfFailedPurchases,es.AvgResponseTimeMS,es.MinResponseTimeMS,es.MaxResponseTimeMS\
+			from [" + req.params.alias + "].[" + req.params.db + "].axerrio.ETradeServerCounter es with(readuncommitted)\
+			join [" + req.params.alias + "].[" + req.params.db + "].etradeserver.EtradeUser eu with(readuncommitted) on eu.[EtradeUserKey] = es.EtradeUserKey\
+			order by ETradeServerCounterkey desc\
+		END\
+		ELSE\
+		select null", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
 		.catch(err => {
@@ -502,6 +568,28 @@ exports.getvirtualmarketplacemutations = function(req, res) {
 		})
 		.catch(err => {
 			console.log(err);
+			res.status(200).send(err);
+		});
+	}
+	else {
+		res.status(200).send(null);
+	}
+}
+
+exports.getvirtualmarketplacemutationswithdate = function(req, res) {
+	if(config.sqlstring.database!= '' && req.params.db!='none' && req.body.starttime && req.body.starttime && req.body.enddate && req.body.endtime){
+		var datefrom = moment(req.body.startdate + " " + req.body.starttime).format("YYYY-MM-DD HH:mm:ss:SSS");
+		var dateuntil = moment(req.body.enddate + " " + req.body.endtime).format("YYYY-MM-DD HH:mm:ss:SSS");
+		sequelize.query("select vmp.[Description], m.*\
+		from [" + req.params.alias + "].ServerMonitor.dbo.VirtualMarketPlaceMutation m with(readuncommitted)\
+		join [" + req.params.alias + "].[" + req.params.db + "].[dbo].virtualmarketplace vmp with(readuncommitted) on m.virtualmarketplacekey = vmp.[key]\
+		where [Timestamp] between '" + datefrom + "' and '" + dateuntil + "'\
+		order by [Timestamp] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+			res.status(200).send(result);
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(200).send(err);
 		});
 	}
 	else {
@@ -548,12 +636,36 @@ from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(re
 join [" + req.params.alias + "].[" + req.params.db + "].monitor.MetricThreshold mt with(readuncommitted)\
 on m.MetricThresholdKey = mt.MetricThresholdKey\
 where m.Active = 1
+
+select m.*\
+from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
+where m.Active = 1
+
+select ec.AVGValue,m.*
+from [HOL].[FlowerCore].monitor.Metric m with(readuncommitted)
+	join
+	(
+	SELECT AVG(convert(int,Value)) as AVGValue, metrickey
+	FROM [HOL].[ServerMonitor].[monitor].[AllMetrics]
+	where DatabaseName = 'FlowerCore'
+	and timestamp between DATEADD(month,-6,getdate()) and GETDATE()
+	group by metrickey
+	) ec on ec.metrickey = m.metrickey
+where m.Active = 1
 */
 exports.getthresholds = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		sequelize.query("select m.*\
-	from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
-	where m.Active = 1", {
+		sequelize.query("select ec.AVGValue,m.*\
+		from [HOL].[FlowerCore].monitor.Metric m with(readuncommitted)\
+			join \
+			(\
+			SELECT AVG(convert(int,Value)) as AVGValue, metrickey\
+			FROM [HOL].[ServerMonitor].[monitor].[AllMetrics]\
+			where DatabaseName = '" + req.params.db + "'\
+			and timestamp between DATEADD(month,-6,getdate()) and GETDATE()\
+			group by metrickey\
+		) ec on ec.metrickey = m.metrickey\
+		where m.Active = 1", {
 			raw: true,
 			type: sequelize.QueryTypes.SELECT
 		}).then(result => {
