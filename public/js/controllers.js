@@ -111,6 +111,9 @@ function HomeCtrl($scope,$route,$http,$interval,$routeParams,Helpers,$mdToast) {
 				.success(function(data) {
 						data = Helpers.parseTimestamps(data);
 						vm.mockdata = data.reverse();
+						angular.forEach(vm.mockdata, function(value,index){
+							value.InstanceName = encodeURIComponent(value.InstanceName);
+						});
 						// for(var i=0;i<vm.mockdata.length;i++){
 						// 	vm.data2[0].push(vm.mockdata[i].MetricValue);
 						// 	vm.data2[1].push(vm.mockdata[i].ThresholdValue);
@@ -125,6 +128,28 @@ function HomeCtrl($scope,$route,$http,$interval,$routeParams,Helpers,$mdToast) {
 						console.log('Error: ' + data);
 						vm.error = data;
 				});
+
+		vm.dismissOccurence = function(key,value) {
+			$http.put('/dismissoccurence/' + key + '/' + value)
+				.success(function(data) {
+					vm.success = true;
+				})
+				.error(function(data) {
+						vm.error = 'error updating!';
+						console.log('Error: ' + data);
+				});
+		}
+
+		vm.dismissSeries = function(key,value) {
+			$http.put('/dismissseries/' + key + '/' + value)
+				.success(function(data) {
+					vm.success = true;
+				})
+				.error(function(data) {
+						vm.error = 'error updating!';
+						console.log('Error: ' + data);
+				});
+		}
 
 		vm.onClick = function (points, evt) {
 		};

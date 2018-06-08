@@ -15,17 +15,38 @@ script(type='text/ng-template', id='menu1.html').
 		});	
 	</script>
 ng-include(src="'menu1.html'")
-.row
-	.col.s12
-		h5.h5 Dashboard
-		h6 Events
-		div(ng-show='vm.mockdata.length>0')
-			table.responsive-table
-				thead
-					tr
-						th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
-				tbody
-					tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
-						td(ng-repeat='(key,value) in records') {{value}}
-		div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
+//- .row
+//- 	.col.s12
+//- 		h5.h5 Dashboard
+//- 		h6 Events
+//- 		div(ng-show='vm.mockdata.length>0')
+//- 			table.responsive-table
+//- 				thead
+//- 					tr
+//- 						th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
+//- 				tbody
+//- 					tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
+//- 						td(ng-repeat='(key,value) in records') {{value}}
+//- 		div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
 //- End Content
+.row
+	div(ng-repeat='record in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"').col.s12.m4
+		.card.red.lighten-1
+			.card-content.white-text
+				span.card-title {{record.Alias}} ({{record.InstanceName}} / {{record.DatabaseName}})
+				h4.center-align {{record.MetricValue}} / {{record.ThresholdValue}}
+				.row
+					.col.s3
+						p Metric:
+						p Value:
+						p Threshold:
+						p Timestamp:
+					.col.s6
+						p {{record.Metric}} 
+						p {{record.MetricValue}} 
+						p {{record.ThresholdValue}}
+						p {{record.Timestamp}}
+			.card-action.red.darken-1
+				a(href='/server/{{record.InstanceName}}/{{record.Alias}}/{{record.DatabaseName}}') Details
+				a(href='#') Dismiss this occurence
+				a(href='#') Dismiss series

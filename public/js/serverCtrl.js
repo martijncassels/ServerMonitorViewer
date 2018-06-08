@@ -35,6 +35,9 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe,$m
 		vm.pccpcalcs = [];
 		vm.pccpcalcsdata = [];
 		vm.pccpcalcslabels = [];
+		vm.pccpcalcsnew = [];
+		vm.pccpcalcsnewdata = [];
+		vm.pccpcalcsnewlabels = [];
 		vm.cpu_ = [];
 		vm.cpu_data = [];
 		vm.cpu_labels = [];
@@ -228,6 +231,23 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe,$m
 		// 					alert('The maximum of one thousand records reached');
 		// 			}
 		// 	});
+
+		//- get vmp calculations
+		vm.pccpcalcsnewdatastarting = true;
+		$http.post('/getpccpcalcsnewwithdate/'+$routeParams.alias+'/'+vm.db,vm.dates)
+				.success(function(data) {
+						vm.pccpcalcsnewdatastarting = false;
+						vm.pccpcalcsnew = data;
+
+						for(var i=0;i<data.length;i++){
+							vm.pccpcalcsnewdata.push(data[i].count);
+							vm.pccpcalcsnewlabels.push(data[i].PricingEngineID);
+						}
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
 
 		//- get cpu metrics
 		vm.cpu_starting = true;
@@ -615,6 +635,21 @@ vm.getLiveCustomerChartData = function() {
 				enddate: vm.enddate,
 				endtime: vm.endtime
 			}
+
+			$http.post('/getpccpcalcsnewwithdate/'+$routeParams.alias+'/'+vm.db,vm.dates)
+					.success(function(data) {
+							vm.pccpcalcsnewdatastarting = false;
+							vm.pccpcalcsnew = data;
+
+							for(var i=0;i<data.length;i++){
+								vm.pccpcalcsnewdata.push(data[i].count);
+								vm.pccpcalcsnewlabels.push(data[i].PricingEngineID);
+							}
+					})
+					.error(function(data) {
+							console.log('Error: ' + data);
+							vm.error = data;
+					});
 
 			$http.post('/getcustomerentitycountswithdate/'+$routeParams.alias+'/'+vm.db,vm.dates)
 				.success(function(data) {

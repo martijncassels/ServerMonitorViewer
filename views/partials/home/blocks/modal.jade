@@ -31,7 +31,7 @@
 		.row
 			form.col.s12
 				div(ng-hide="vm.thresholds.name=='SequelizeDatabaseError'")
-					div(ng-repeat='threshold in vm.thresholds').row
+					div(ng-repeat='threshold in vm.thresholds | orderBy: "MetricKey"').row
 						div(ng-if='threshold.ThresholdValue').col.s10 {{threshold.Description}}
 							span(data-badge-caption="avg").new.badge {{threshold.AVGValue}}
 							input.input-field.validate(id='threshold{{$index}}',type='number',ng-value='{{threshold.ThresholdValue}}',ng-model='threshold.ThresholdValue',aria-describedby='basic-addon3')

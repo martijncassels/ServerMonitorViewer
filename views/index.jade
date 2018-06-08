@@ -1,54 +1,38 @@
 extends layout
 
 block append body
-	//- div(ng-controller='MainCtrl as main')
-	//- 	//- Top menu
-	//- 	include ./header.jade
-	//- 	.container-fluid
-	//- 		.row
-	//- 			include ./menu.jade
-	//- 			//div(ng-view)
-	//- 			main.col-md-9.ml-sm-auto.col-lg-10.pt-3.px-4(role='main',ng-view)
-	nav.purple.darken-3
+	nav
 		// navbar content here
-		.nav-wrapper
+		.nav-wrapper.purple.darken-3
 			a.sidenav-trigger.show-on-large(href='#', data-target='slide-out')
 				i.material-icons menu
 			a.brand-logo(href='/') ServerMonitor
 			ul#nav-mobile.right.hide-on-med-and-down
 				li
-	ul(ng-controller='MainCtrl as main')#slide-out.sidenav
-		li
-			.user-view
-				.background
-					//- img(src='./img/Axerrio-Sierteelt.jpg').responsive-img
-					//- img(src='./img/flowerfield.jpg').responsive-img
-					img(src='./img/Flower_tours_Amsterdam_Holland-6.jpg').responsive-img
-					//- img(src='./img/Aalsmeer1.jpg').responsive-img
-				a(href='#user')
-					img.circle(src='http://www.axerrio.com/portals/3/C_Online1.jpg')
-				a(href='#name')
-					span.white-text.name Helpdesk
-				a(href='#email')
-					span.white-text.email helpdesk@axerrio.com
-		//- li
-		//- 	a(href='#!')
-		//- 		i.material-icons cloud
-		//- 		| First Link With Icon
-		li
-			input.validate(ng-model="main.searchAlias",type='text', placeholder='Search', aria-label='Search')
-		//- li
-		//- 	.divider
-		//- li
-		//- 	a.subheader Subheader
-		//- li
-		//- 	a.waves-effect(href='#!') Third Link With Waves
-		li(ng-repeat='server in main.servers | filter: {Alias:main.searchAlias}')
-			a(href='/server/{{server.escaped}}/{{server.Alias}}/{{server.Notes}}',ng-hide='((server.Description=="none") || !server.Alias)').sidenav-close
-				i(ng-class="{'green-text' : (server.hbMin_ago<30 && server.hbMin_ago!==null && server.Min_ago===null) , 'red-text' : (server.hbMin_ago>30 || server.Min_ago!==null)}").tiny.material-icons computer
-				| {{server.Alias}} - {{server.Description}}
-		//- </ul>
-	div(ng-view).container-fluid
+	.container-fluid
+		.row
+			.col.s12
+				ul(ng-controller='MainCtrl as main')#slide-out.sidenav
+					li
+						.user-view
+							.background
+								img(src='./img/Flower_tours_Amsterdam_Holland-6.jpg').responsive-img
+							a(href='#user')
+								img.circle(src='http://www.axerrio.com/portals/3/C_Online1.jpg')
+							a(href='#name')
+								span.white-text.name Helpdesk
+							a(href='#email')
+								span.white-text.email helpdesk@axerrio.com
+					li
+						.input-field
+							i.material-icons.prefix search
+							input.icon_prefix.validate(ng-model="main.searchAlias",type='text', placeholder='Search', aria-label='Search')
+					li(ng-repeat='server in main.servers | filter: {Alias:main.searchAlias}')
+						a(href='/server/{{server.escaped}}/{{server.Alias}}/{{server.Notes}}',ng-hide='((server.Description=="none") || !server.Alias)').sidenav-close
+							i(ng-class="{'green-text' : (server.hbMin_ago<30 && server.hbMin_ago!==null && server.Min_ago===null) , 'red-text' : (server.hbMin_ago>30 || server.Min_ago!==null)}").tiny.material-icons computer
+							| {{server.Alias}} - {{server.Description}}
+					//- </ul>
+				div(ng-view).container-fluid
 
 block scripts
 	script(src='https://code.jquery.com/jquery-1.12.4.min.js')

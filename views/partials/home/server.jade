@@ -6,9 +6,9 @@ script(type='text/ng-template', id='script.html').
 	</a>
 	<ul>
 		<li><a data-tooltip="Reports" role="button" href="/reporting/{{vm.servername}}/{{vm.alias}}/{{vm.db}}" class="btn-floating red tooltipped"><i class="material-icons">insert_drive_file</i>Reports</a></li>
-		<li><button data-tooltip="Metric Thresholds" data-target="modal1" class="btn-floating yellow darken-1 modal-trigger tooltipped"><i class="material-icons">update</i>Metric Thresholds</button></li>
-		<li><button data-tooltip="Update events" ng-click="vm.getLiveCustomerChartData()" class="btn-floating green tooltipped"><i class="material-icons">update</i>Update events</button></li>
-		<li><button data-tooltip="Update entitycounts" ng-click="vm.getlivecustomerentitycountmutations()" class="btn-floating blue tooltipped"><i class="material-icons">update</i>Update entitycounts</button></li>
+		<li><button role="button" data-tooltip="Metric Thresholds" data-target="modal1" class="btn-floating yellow darken-1 modal-trigger tooltipped"><i class="material-icons">update</i>Metric Thresholds</button></li>
+		<li><button role="button" data-tooltip="Update events" ng-click="vm.getLiveCustomerChartData()" class="btn-floating green tooltipped"><i class="material-icons">update</i>Update events</button></li>
+		<li><button role="button" data-tooltip="Update entitycounts" ng-click="vm.getlivecustomerentitycountmutations()" class="btn-floating blue tooltipped"><i class="material-icons">update</i>Update entitycounts</button></li>
 	</ul>
 	</div>
 	<script type="text/javascript">
@@ -90,8 +90,10 @@ ng-include(src="'script.html'")
 				include ./blocks/etradecounters
 		br
 		.row
-			.col.s12
+			.col.s12.m6.l6
 				include ./blocks/vmpcalcs
+			.col.s12.m6.l6
+				include ./blocks/vmpcalcsnew
 		br
 		.row
 			.col.s12

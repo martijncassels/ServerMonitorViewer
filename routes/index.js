@@ -164,12 +164,14 @@ order by [RemoteQueuedMetricKey] desc
 */
 exports.getqueue = function(req, res) {
 	if(config.sqlstring.database!= ''){
-	sequelize.query("SELECT max([RemoteQueuedMetricKey]) as [RemoteQueuedMetricKey],max([Timestamp]) as [Timestamp]\
-	,InstanceName,DatabaseName,Metric,max(MetricValue) as MetricValue,MetricThreshold,ThresholdValue\
-	,max(LastQueuedMetricKey) as LastQueuedMetricKey,[Message]\
-	FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] with(readuncommitted)\
+	sequelize.query("SELECT max(rqm.[RemoteQueuedMetricKey]) as [RemoteQueuedMetricKey],max(rqm.[Timestamp]) as [Timestamp]\
+	,rqm.InstanceName,rqm.DatabaseName,rqm.Metric,max(rqm.MetricValue) as MetricValue,rqm.MetricThreshold,rqm.ThresholdValue\
+	,max(rqm.LastQueuedMetricKey) as LastQueuedMetricKey,rqm.[Message],rs.Alias\
+	FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] as rqm with(readuncommitted)\
+	JOIN [ServerMonitor].[axerrio].[RegisteredServer] as rs with(readuncommitted)\
+	on rs.[Description] = rqm.InstanceName and rs.Notes = rqm.DatabaseName\
 	WHERE [Metric] NOT IN ('Heartbeat')\
-	group by InstanceName,DatabaseName,Metric,MetricThreshold,ThresholdValue,[Message]\
+	group by rqm.InstanceName,rqm.DatabaseName,rqm.Metric,rqm.MetricThreshold,rqm.ThresholdValue,rqm.[Message],rs.Alias\
 	order by [RemoteQueuedMetricKey] desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 		res.status(200).send(result);
 	})
@@ -191,6 +193,32 @@ else {
 		Message: null
 	}]);
 }
+}
+
+exports.dismissoccurence = function(req,res){
+	// if(config.sqlstring.database!= '' && req.params.db!='none'){
+	// 	if(req.params.alias && req.params.key && req.params.value){
+	// 		sequelize.query("update m set ThresholdValue = " + req.params.value + "\
+	// 		from [ServerMonitor].[axerrio].[RemoteQueuedMetric] m with(readuncommitted)\
+	// 		where m.RemoteQueuedMetricKey = " + req.params.key, {
+	// 		raw: true,
+	// 		type: sequelize.QueryTypes.UPDATE
+	// 		}).then(result => {
+	// 			res.status(200).send(result);
+	// 		})
+	// 		.catch(err => {
+	// 			console.log(err);
+	// 		});
+	// 		//res.status(200).send('ok!');
+	// 	}
+	// }
+	// else {
+	// 	res.status(200).send(null);
+	// }
+}
+
+exports.dismissseries = function(req,res){
+
 }
 
 /*
@@ -383,6 +411,38 @@ exports.getpccpcalcs2 = function(req, res) {
 	}
 }
 
+exports.getpccpcalcsnewwithdate = function(req,res) {
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
+		if (!req.body.startdate && !req.body.enddate && !req.body.starttime && !req.body.endtime){
+			datefrom = moment(moment().format("YYYY-MM-DD") + " 00:00:00.000").format("YYYY-MM-DD HH:mm:ss:SSS");
+			var dateuntil = moment(moment().format("YYYY-MM-DD") + " 23:59:59.999").format("YYYY-MM-DD HH:mm:ss:SSS");
+		}
+		else {
+			var datefrom = moment(req.body.startdate + " " + req.body.starttime).format("YYYY-MM-DD HH:mm:ss:SSS");
+			var dateuntil = moment(req.body.enddate + " " + req.body.endtime).format("YYYY-MM-DD HH:mm:ss:SSS");
+		}
+		sequelize.query("select \
+			convert(char(10),cq.EnqueuedTimestamp,105) as [date]\
+			, cq.PricingEngineID\
+			, cqps.[Description]\
+			, COUNT(1) as [count]\
+			from [" + req.params.alias + "].[" + req.params.db + "].dbo.CalculationQueuePCCP cq with (readuncommitted)\
+				join [" + req.params.alias + "].[" + req.params.db + "].dbo.CalculationQueueProcessingStatus cqps with (readuncommitted) on cqps.CalculationQueueProcessingStatusID = cq.CalculationQueueProcessingStatusID\
+			where cq.EnqueuedTimestamp between '"+datefrom+"' and '"+dateuntil+"'\
+			group by cq.PricingEngineID, cqps.[Description], convert(char(10),cq.EnqueuedTimestamp,105)\
+			order by [PricingEngineID], convert(char(10),cq.EnqueuedTimestamp,105)", {raw: true,type: sequelize.QueryTypes.SELECT})
+		.then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				//console.log(err);
+				res.status(200).send(err);
+			});
+	}
+	else {
+		res.status(200).send(null);
+	}
+}
 
 exports.getcustomermutations = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.lastkey){
@@ -656,11 +716,11 @@ where m.Active = 1
 exports.getthresholds = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		sequelize.query("select ec.AVGValue,m.*\
-		from [HOL].[FlowerCore].monitor.Metric m with(readuncommitted)\
+		from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
 			join \
 			(\
 			SELECT AVG(convert(int,Value)) as AVGValue, metrickey\
-			FROM [HOL].[ServerMonitor].[monitor].[AllMetrics]\
+			FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics]\
 			where DatabaseName = '" + req.params.db + "'\
 			and timestamp between DATEADD(month,-6,getdate()) and GETDATE()\
 			group by metrickey\

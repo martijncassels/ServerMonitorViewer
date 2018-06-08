@@ -1,0 +1,60 @@
+//- .card
+//- 	.card-header 
+//- 		h5 
+//- 			i.fas.fa-address-card
+//- 			|                   VMP Calculations
+//- 			button(ng-click="vm.isCollapsed = !vm.isCollapsed",type="button",data-toggle="collapse",data-target="#collapseVMP_Calculations",role="button",aria-expanded="false",aria-controls="collapseDiskSpace").btn.btn-default.btn-sm.float-right
+//- 				i(ng-show='vm.isCollapsed').fas.fa-plus
+//- 				//- |                   collapse
+//- 				i(ng-show='!vm.isCollapsed').fas.fa-minus
+//- 				//- |                   collapse
+//- 	div(id="collapseVMP_Calculations").collapse.show
+//- 		div(ng-if='!vm.pccpcalcsdatastarting')
+//- 			.row
+//- 				.col-md-6
+//- 					|	Department
+//- 				.col-md-6
+//- 					| To Calculate
+//- 		div(ng-if='vm.pccpcalcsdatastarting',align='center').loading
+//- 				i(aria-hidden="true").fas.fa-circle-notch.fa-spin.fa-3x.fa-lg
+//- 		div(uib-alert,ng-show="vm.pccpcalcs.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.pccpcalcs.name=null").alert-danger
+//- 			{{vm.pccpcalcs.original.message}}
+//- 		div(uib-alert,ng-show="vm.pccpcalcs.length<1 && !vm.pccpcalcsdatastarting",style='margin:5px;').alert-danger
+//- 			p No data!
+//- 		div(ng-repeat='pccpcalc in vm.pccpcalcs track by $index', style='padding:5px;',ng-hide="vm.pccpcalcs.name=='SequelizeDatabaseError'")
+//- 			.row
+//- 				.col-md-6
+//- 					{{pccpcalc.Description}}
+//- 				.col-md-6
+//- 					{{pccpcalc.ToCalculate}}
+script(type='text/ng-template', id='VMP_Calculationsnew.html').
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.collapsible').collapsible();
+		});
+ng-include(src="'VMP_Calculationsnew.html'")
+ul.collapsible
+	li.active
+		.collapsible-header
+			h5 VMP Calculations new {{vm.startdate}} - {{vm.enddate}}
+		.collapsible-body
+			span
+				div(ng-if='vm.pccpcalcsnewdatastarting',align='center').progress
+					.indeterminate
+				//- div(uib-alert,ng-show="vm.pccpcalcs.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.pccpcalcs.name=null").alert-danger
+				//- 	{{vm.pccpcalcs.original.message}}
+				div(ng-show="vm.pccpcalcsnew.name=='SequelizeDatabaseError'",style='margin:5px;').card.red.lighten-2
+					.card-content.white-text
+						{{vm.pccpcalcs.original.message}}
+				div(uib-alert,ng-show="vm.pccpcalcsnew.length<1 && !vm.pccpcalcsnewdatastarting",style='margin:5px;').alert-danger
+					p No data!
+				.row
+					div(ng-repeat='(key, value) in vm.pccpcalcsnew | groupBy: "PricingEngineID"', style='padding:5px;',ng-hide="vm.pccpcalcsnew.name=='SequelizeDatabaseError'").col.s12.m4.l4
+						.card-panel
+							p PricingEngineID: {{key}}
+							div(ng-repeat='(key2,value2) in value | groupBy: "date"')
+								{{key2}}
+								div
+									span(ng-repeat='pccpcalc in value2 track by $index')
+										{{pccpcalc.Description}} : {{pccpcalc.count}}
+										br
