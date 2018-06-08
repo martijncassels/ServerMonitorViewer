@@ -11,7 +11,11 @@ div(id='ThresholdsModal',tabindex='-1',role='dialog',aria-labelledby='Thresholds
 				div(ng-hide="vm.thresholds.name=='SequelizeDatabaseError'")
 					div(ng-repeat='threshold in vm.thresholds')
 						div(ng-if='threshold.ThresholdValue')
-							label {{threshold.ColumnName}}
+							.d-flex.flex-row.justify-content-between
+								.p-2
+									label {{threshold.ColumnName}}
+								.p-2
+									span.badge.badge-info Average: {{threshold.AVGValue}}
 							div.input-group.mb-2
 								.input-group-prepend
 									span#basic-addon3.input-group-text {{threshold.Description}}

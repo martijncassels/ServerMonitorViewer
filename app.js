@@ -78,6 +78,7 @@ var app = module.exports = express();
 //     saveUninitialized: false
 // }));
 // configure connect-mongo
+/*
 var sess = {
 		secret: 'vleesmes',
 		resave: false,
@@ -95,6 +96,7 @@ if (app.get('env') === 'production') {
 	sess.cookie.secure = true // serve secure cookies
 };
 app.use(session(sess));
+*/
 
 /**
 * Configuration

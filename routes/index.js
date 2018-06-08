@@ -549,11 +549,39 @@ join [" + req.params.alias + "].[" + req.params.db + "].monitor.MetricThreshold 
 on m.MetricThresholdKey = mt.MetricThresholdKey\
 where m.Active = 1
 */
+// exports.getthresholds = function(req, res) {
+// 	if(config.sqlstring.database!= '' && req.params.db!='none'){
+// 		sequelize.query("select m.*\
+// 	from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
+// 	where m.Active = 1", {
+// 			raw: true,
+// 			type: sequelize.QueryTypes.SELECT
+// 		}).then(result => {
+// 			res.status(200).send(result);
+// 		})
+// 		.catch(err => {
+// 			//console.log(err);
+// 			res.status(200).send(err);
+// 		});
+// 	}
+// 	else {
+// 		res.status(200).send(null);
+// 	}
+// }
+
 exports.getthresholds = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		sequelize.query("select m.*\
-	from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
-	where m.Active = 1", {
+		sequelize.query("select ec.AVGValue,m.*\
+		from [" + req.params.alias + "].[" + req.params.db + "].monitor.Metric m with(readuncommitted)\
+			join \
+			(\
+			SELECT AVG(convert(int,Value)) as AVGValue, metrickey\
+			FROM [" + req.params.alias + "].[ServerMonitor].[monitor].[AllMetrics]\
+			where DatabaseName = '" + req.params.db + "'\
+			and timestamp between DATEADD(month,-6,getdate()) and GETDATE()\
+			group by metrickey\
+		) ec on ec.metrickey = m.metrickey\
+		where m.Active = 1", {
 			raw: true,
 			type: sequelize.QueryTypes.SELECT
 		}).then(result => {
