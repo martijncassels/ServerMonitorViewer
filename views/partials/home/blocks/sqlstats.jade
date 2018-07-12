@@ -1,0 +1,65 @@
+script(type='text/ng-template', id='sqlstats.html').
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.collapsible').collapsible();
+			$('.tooltipped').tooltip({position: 'left', margin: 10});
+		});
+ng-include(src="'sqlstats.html'")
+button(role='button',ng-click='vm.getsqlstats()').btn Get SQL Stats
+ul(data-collapsible="accordion").collapsible
+	li.active
+		.collapsible-header
+			h5 SQL Stats
+		.collapsible-body
+			div(ng-repeat='stats in vm.sqlstats')
+				.row
+					.col.s6
+						{{stats.counter_name}}
+					.col.s6
+						{{stats.cntr_value}}
+			//- .row
+			//- 	.col.s12
+			//- 		ul(data-collapsible="accordion").collapsible.expandable
+			//- 			li(ng-repeat='stats in vm.sqlstats | groupBy: "instance_name" | toArray:true | orderBy: stats.length: true', style='padding:5px;',ng-hide="vm.sqlstats.name=='SequelizeDatabaseError'")
+			//- 				.collapsible-header
+			//- 					.row
+			//- 						.col.s12
+			//- 							.progress
+			//- 								div(ng-style="{ 'width': (({{stats.length}} / {{vm.sqlstats.length}})*100) + '%' }").determinate
+			//- 							{{stats.length}} x {{stats.$key}}
+			//- 				.collapsible-body
+			//- 					ul.collection
+			//- 						li(ng-repeat='stat in stats').collection-item
+			//- 							p(style='white-space:pre;') 
+			//- 								| Time: {{stat.LoggedTimestamp}}
+			//- 								| User: {{stat.LoggedUserLogin}}
+			//- 								| NTUsername: {{stat.LoggedNTUserName}}
+			//- 								| Hostname: {{stat.LoggedHostName}}
+			//- 								| Message : {{stat.Message}}
+							//- .col.s6
+							//- 	.progress
+							//- 		div(ng-style="{ 'width': (({{error.length}} / {{vm.top10errors.length}})*100) + '%' }").determinate
+							//- 	{{error.length}}
+						//- div(ng-repeat='error in value', style='padding:5px;',ng-hide="vm.top10errors.name=='SequelizeDatabaseError'")
+						//- 	.row
+						//- 		.col.s6
+						//- 			{{error.loggedfromsub}}
+						//- 			br
+						//- 			{{error.message}}
+						//- 		.col.s6
+						//- 			//- uib-progressbar(max='vm.top10errors[0].count', value='error.count',type='bg-danger')
+						//- 			//- 	span(style='color:white; white-space:nowrap;') {{error.count}}
+						//- 			.progress
+						//- 				div.determinate
+					//- div(ng-repeat='error in vm.top10errors track by $index', style='padding:5px;',ng-hide="vm.top10errors.name=='SequelizeDatabaseError'")
+					//- 	.row
+					//- 		.col.s6
+					//- 			{{error.loggedfromsub}}
+					//- 			br
+					//- 			{{error.message}}
+					//- 		.col.s6
+					//- 			//- uib-progressbar(max='vm.top10errors[0].count', value='error.count',type='bg-danger')
+					//- 			//- 	span(style='color:white; white-space:nowrap;') {{error.count}}
+					//- 			.progress
+					//- 				div(ng-style="{ 'width': (({{error.count}} / {{vm.top10errors[0].count}})*100) + '%' }").determinate
+					//- 			{{error.count}}

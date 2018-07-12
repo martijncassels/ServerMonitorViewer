@@ -22,6 +22,13 @@
 //- 				button(type='button',data-dismiss='modal').btn.btn-secondary Close
 // Modal Trigger
 //- a.waves-effect.waves-light.btn.modal-trigger(href='#modal1') Modal
+//- script(type='text/ng-template', id='tooltipped.html').
+//- 	<script type="text/javascript">
+//- 		$(document).ready(function(){
+//- 			$('.thresholdvalue').tooltip({position: 'top', margin: 10});
+//- 		});
+//- 	</script>
+//- ng-include(src="'tooltipped.html'")
 // Modal Structure
 #modal1.modal
 	.modal-content
@@ -32,8 +39,11 @@
 			form.col.s12
 				div(ng-hide="vm.thresholds.name=='SequelizeDatabaseError'")
 					div(ng-repeat='threshold in vm.thresholds | orderBy: "MetricKey"').row
+						//- a(data-tooltip='boe!').btn.thresholdvalue !
 						div(ng-if='threshold.ThresholdValue').col.s10 {{threshold.Description}}
-							span(data-badge-caption="avg").new.badge {{threshold.AVGValue}}
+							span(data-badge-caption="avg 1 month").new.badge {{threshold.AVGValue1}}
+							span(data-badge-caption="avg 3 months").new.badge {{threshold.AVGValue3}}
+							span(data-badge-caption="avg 6 months").new.badge {{threshold.AVGValue6}}
 							input.input-field.validate(id='threshold{{$index}}',type='number',ng-value='{{threshold.ThresholdValue}}',ng-model='threshold.ThresholdValue',aria-describedby='basic-addon3')
 							label(for='#threshold{{$index}}') {{threshold.ColumnName}}
 							span(data-error="invalid",data-success="valid").helper-text 

@@ -31,22 +31,37 @@ ng-include(src="'menu1.html'")
 //- End Content
 .row
 	div(ng-repeat='record in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"').col.s12.m4
-		.card.red.lighten-1
-			.card-content.white-text
-				span.card-title {{record.Alias}} ({{record.InstanceName}} / {{record.DatabaseName}})
-				h4.center-align {{record.MetricValue}} / {{record.ThresholdValue}}
-				.row
-					.col.s3
-						p Metric:
-						p Value:
-						p Threshold:
-						p Timestamp:
-					.col.s6
-						p {{record.Metric}} 
-						p {{record.MetricValue}} 
-						p {{record.ThresholdValue}}
-						p {{record.Timestamp}}
-			.card-action.red.darken-1
-				a(href='/server/{{record.InstanceName}}/{{record.Alias}}/{{record.DatabaseName}}') Details
-				a(href='#') Dismiss this occurence
-				a(href='#') Dismiss series
+		div(ng-if='record.Metric!="Heartbeat"')
+			.card.red.lighten-1
+				.card-content.white-text
+					span.card-title {{record.Alias}} ({{record.InstanceName}} / {{record.DatabaseName}})
+					h4.center-align {{record.MetricValue}} / {{record.ThresholdValue}}
+					.row
+						.col.s3
+							p Metric:
+							p Value:
+							p Threshold:
+							p Timestamp:
+						.col.s6
+							p {{record.Metric}} 
+							p {{record.MetricValue}} 
+							p {{record.ThresholdValue}}
+							p {{record.Timestamp}}
+				.card-action.red.darken-1
+					a(href='/server/{{record.InstanceName}}/{{record.Alias}}/{{record.DatabaseName}}') Details
+					a(href='#') Dismiss this occurence
+					a(href='#') Dismiss series
+		div(ng-if='record.Metric=="Heartbeat"')
+			.card.red.lighten-1
+				.card-content.white-text
+					span.card-title {{record.Alias}} ({{record.InstanceName}} / {{record.DatabaseName}})
+					h4.center-align No Heartbeat!
+					.row
+						.col.s3
+							p Last record
+						.col.s6
+							p {{record.Timestamp}}
+				.card-action.red.darken-1
+					a(href='/server/{{record.InstanceName}}/{{record.Alias}}/{{record.DatabaseName}}') Details
+					a(href='#') Dismiss this occurence
+					a(href='#') Dismiss series

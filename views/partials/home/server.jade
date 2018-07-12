@@ -1,15 +1,15 @@
 //- Start Content
 script(type='text/ng-template', id='script.html').
 	<div class="fixed-action-btn">
-	<a class="btn-floating btn-large purple darken-3">
-		<i class="large material-icons">mode_edit</i>
-	</a>
-	<ul>
-		<li><a data-tooltip="Reports" role="button" href="/reporting/{{vm.servername}}/{{vm.alias}}/{{vm.db}}" class="btn-floating red tooltipped"><i class="material-icons">insert_drive_file</i>Reports</a></li>
-		<li><button role="button" data-tooltip="Metric Thresholds" data-target="modal1" class="btn-floating yellow darken-1 modal-trigger tooltipped"><i class="material-icons">update</i>Metric Thresholds</button></li>
-		<li><button role="button" data-tooltip="Update events" ng-click="vm.getLiveCustomerChartData()" class="btn-floating green tooltipped"><i class="material-icons">update</i>Update events</button></li>
-		<li><button role="button" data-tooltip="Update entitycounts" ng-click="vm.getlivecustomerentitycountmutations()" class="btn-floating blue tooltipped"><i class="material-icons">update</i>Update entitycounts</button></li>
-	</ul>
+		<a class="btn-floating btn-large purple darken-3">
+			<i class="large material-icons">mode_edit</i>
+		</a>
+		<ul>
+			<li><a data-tooltip="Reports" role="button" href="/reporting/{{vm.servername}}/{{vm.alias}}/{{vm.db}}" class="btn-floating red tooltipped"><i class="material-icons">insert_drive_file</i>Reports</a></li>
+			<li><button role="button" data-tooltip="Metric Thresholds" data-target="modal1" class="btn-floating yellow darken-1 modal-trigger tooltipped"><i class="material-icons">update</i>Metric Thresholds</button></li>
+			<li><button role="button" data-tooltip="Update events" ng-click="vm.getLiveCustomerChartData()" class="btn-floating green tooltipped"><i class="material-icons">update</i>Update events</button></li>
+			<li><button role="button" data-tooltip="Update entitycounts" ng-click="vm.getlivecustomerentitycountmutations()" class="btn-floating blue tooltipped"><i class="material-icons">update</i>Update entitycounts</button></li>
+		</ul>
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function(){
@@ -17,25 +17,25 @@ script(type='text/ng-template', id='script.html').
 			$('.modal').modal();
 			$('.datepicker').datepicker({format: 'yyyy-mm-dd',autoClose: true});
 			$('.timepicker').timepicker({twelveHour: false,autoClose: true});
-			$('.tooltipped').tooltip({position: 'left'});
+			$('.tooltipped').tooltip({position: 'left', margin: 10});
 		});
 	</script>
 ng-include(src="'script.html'")
 .row
 	.col.s12
 		.container-fluid
-			script(id='pagination.html',type='text/ng-template')
-				ul.pagination
-					li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noPrevious()||ngDisabled}").page-item
-						button(ng-click="selectPage(1,$event)",ng-disabled="noPrevious()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('first')}}
-					li(role="menuitem",ng-if="::directionLinks",ng-class="{disabled: noPrevious()||ngDisabled}").page-item
-						button(ng-click="selectPage(page-1,$event)",ng-disabled="noPrevious()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('previous')}}
-					li(role="menuitem",ng-repeat="page in pages track by $index",ng-class="{active: page.active,disabled: ngDisabled&&!page.active}").page-item
-						button(ng-click="selectPage(page.number,$event)",ng-disabled="ngDisabled&&!page.active",uib-tabindex-toggle).page-link {{page.text}}
-					li(role="menuitem",ng-if="::directionLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
-						button(ng-click="selectPage(page+1,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('next')}}
-					li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
-						button(ng-click="selectPage(totalPages,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('last')}}
+			//- script(id='pagination.html',type='text/ng-template')
+			//- 	ul.pagination
+			//- 		li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noPrevious()||ngDisabled}").page-item
+			//- 			button(ng-click="selectPage(1,$event)",ng-disabled="noPrevious()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('first')}}
+			//- 		li(role="menuitem",ng-if="::directionLinks",ng-class="{disabled: noPrevious()||ngDisabled}").page-item
+			//- 			button(ng-click="selectPage(page-1,$event)",ng-disabled="noPrevious()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('previous')}}
+			//- 		li(role="menuitem",ng-repeat="page in pages track by $index",ng-class="{active: page.active,disabled: ngDisabled&&!page.active}").page-item
+			//- 			button(ng-click="selectPage(page.number,$event)",ng-disabled="ngDisabled&&!page.active",uib-tabindex-toggle).page-link {{page.text}}
+			//- 		li(role="menuitem",ng-if="::directionLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
+			//- 			button(ng-click="selectPage(page+1,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('next')}}
+			//- 		li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
+			//- 			button(ng-click="selectPage(totalPages,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('last')}}
 			h4.h4 Dashboard {{vm.alias}}
 			//- .btn-toolbar.mb-2.mb.s0
 			//- 	.btn-group.mr-2
@@ -58,9 +58,9 @@ ng-include(src="'script.html'")
 						input.timepicker(type='text',id='time2',ng-model='vm.endtime')
 						label(for='time2') End time
 				button(ng-show='vm.startdate && vm.starttime && vm.enddate && vm.endtime',type="submit",name="action",ng-click='vm.getstuffwithdate()').btn.waves-effect.waves-light Go
-			//- Modal goes here
-			include ./blocks/modal
-			//- end of modal
+		//- Modal goes here
+		include ./blocks/modal
+		//- end of modal
 		h5.h5 Events
 		include ./blocks/remotequeuedmetrics
 		br 
@@ -70,6 +70,10 @@ ng-include(src="'script.html'")
 			.col.s12.m6.l6
 				//include ./blocks/vmpcalcs
 				include ./blocks/diskspace
+		br
+		.row
+			.col.s12
+				include ./blocks/gettop10tableusage
 		br
 		.row
 			.col.s12.m6.l6
@@ -114,5 +118,13 @@ ng-include(src="'script.html'")
 		.row
 			.col.s12
 				include ./blocks/getcpu
+		br
+		.row
+			.col.s12
+				include ./blocks/sqlstats
+		br
+		.row
+			.col.s12
+				include ./blocks/gettop10queries
 		br
 //- End Content

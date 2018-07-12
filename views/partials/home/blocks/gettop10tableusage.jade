@@ -1,0 +1,22 @@
+script(type='text/ng-template', id='gettop10tableusage.html').
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.collapsible').collapsible();
+		});
+ng-include(src="'gettop10tableusage.html'")
+ul.collapsible
+	li.active
+		.collapsible-header
+			h5 Top 10 Table Usage
+		.collapsible-body
+			canvas(id='bar',chart-data='[vm.gettop10tableusagechartdata[1],vm.gettop10tableusagechartdata[2],vm.gettop10tableusagechartdata[3],vm.gettop10tableusagechartdata[4],vm.gettop10tableusagechartdata[5]]',chart-labels='vm.gettop10tableusagechartdata[0]',chart-series='vm.gettop10tableusagechartseries',chart-options='{scales:{xAxes: [{display: true,	ticks: {beginAtZero: true,autoSkip: false,fontSize: 10}}]},legend: {display: true}}',height='100').chart.chart-bar
+//- br
+//- .table-responsive
+//- 	table(ng-hide="vm.archivecounters.name=='SequelizeDatabaseError'").table.table-striped.table-sm
+//- 		thead
+//- 			th(ng-repeat='(key,value) in vm.archivecounters[0]') {{key}}
+//- 		tbody
+//- 			tr(ng-repeat='counter in vm.archivecounters | orderBy:"-ArchiveCounterKey"')
+//- 				td(ng-repeat='(key,value) in counter') {{value}}
+//- 	div(ng-show="vm.archivecounters.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
+//- 		{{vm.archivecounters.original.message}}

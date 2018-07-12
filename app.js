@@ -212,6 +212,9 @@ app.get('/getblocking/:alias/:db', routes.getblocking);
 app.get('/getthresholds/:alias/:db', routes.getthresholds);
 app.put('/updatethreshold/:alias/:db/:key/:value', routes.updatethreshold);
 app.get('/getcpu/:alias/:db/:lastkey', routes.getcpu);
+app.get('/gettop10tableusage/:alias/:db', routes.gettop10tableusage);
+app.get('/getsqlstats/:alias/:db', routes.getsqlstats);
+app.get('/gettop10queries/:alias/:db', routes.gettop10queries);
 
 //app.get('/reporting/getreport/:alias/:db/:datefrom/:dateuntil',reporting.getreport);
 app.post('/reporting/getreport/:alias/:db',reporting.getreport);

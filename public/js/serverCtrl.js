@@ -50,6 +50,8 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe,$m
 		vm.customerentitycountdata = [];
 		vm.customerentitycountseries = ["ID","Timestamp","TotalLots","RealLots","VirtualLots","VirtualLotsToBeDeleted","TotalOrders","TotalOrderRows","ABSOrders","ABSOrderRows","WebShopOrders","WebShopOrderRows","ProductionOrders","ProductionOrderRows","PCCPTotal","PCCPToBeCalculated","VPSupplyLineTotal","TotalPricelists","TotalPricelistRows"];
 		//vm.customerentitycountseriesselection = ["ID","Timestamp","TotalLots","RealLots","VirtualLots","VirtualLotsToBeDeleted","TotalOrders","TotalOrderRows","ABSOrders","ABSOrderRows","WebShopOrders","WebShopOrderRows","ProductionOrders","ProductionOrderRows","PCCPTotal","PCCPToBeCalculated","VPSupplyLineTotal","TotalPricelists","TotalPricelistRows"];
+		vm.gettop10tableusagechartdata = [];
+		vm.gettop10tableusagechartseries = [];
 		vm.max = 60000;
 		vm.dynamic = vm.max;
 		vm.isCollapsed = false;
@@ -341,6 +343,31 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe,$m
 						vm.error = data;
 				});
 
+		//- get vmp mutation counters
+		vm.gettop10tableusagestarting = true;
+		$http.get('/gettop10tableusage/'+$routeParams.alias+'/'+vm.db)
+				.success(function(data) {
+					//data = Helpers.parseTimestamps(data);
+					vm.gettop10tableusagestarting = false;
+					vm.gettop10tableusage = data;
+					vm.gettop10tableusagechartdata = [[],[],[],[],[],[]];
+					vm.gettop10tableusagechartseries = ['row_count','reserved_mb','data_mb','index_size_mb','unused_mb'];
+
+					for(var i=0;i<data.length;i++){
+						vm.gettop10tableusagechartdata[0].push(data[i].SchemaName+"."+data[i].TableName);
+						vm.gettop10tableusagechartdata[1].push(data[i].Row_Count);
+						vm.gettop10tableusagechartdata[2].push(data[i].reserved_mb);
+						vm.gettop10tableusagechartdata[3].push(data[i].data_mb);
+						vm.gettop10tableusagechartdata[4].push(data[i].index_size_mb);
+						vm.gettop10tableusagechartdata[5].push(data[i].unused_mb);
+						//vm.gettop10tableusagechartseries.push(data[i].SchemaName+"."+data[i].TableName);
+					}
+				})
+				.error(function(data) {
+						console.log('Error: ' + data);
+						vm.error = data;
+				});
+
 		//- get archivecounters
 		vm.archivecountersstarting = true;
 		$http.get('/getarchivecounters/'+$routeParams.alias+'/'+vm.db)
@@ -415,6 +442,28 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe,$m
 						vm.error = data;
 				});
 
+		vm.getsqlstats = function(){
+				$http.get('/getsqlstats/'+$routeParams.alias+'/'+$routeParams.db)
+					.success(function(data) {
+						vm.sqlstats = data;
+					})
+					.error(function(data) {
+							console.log('Error: ' + data);
+							vm.error = data;
+					});
+		}
+
+		vm.gettop10queries = function(){
+				$http.get('/gettop10queries/'+$routeParams.alias+'/'+$routeParams.db)
+					.success(function(data) {
+						vm.gettop10queries = data;
+					})
+					.error(function(data) {
+							console.log('Error: ' + data);
+							vm.error = data;
+					});
+		}
+
 		vm.onClick = function (points, evt) {
 		};
 		//vm.datasetOverride = [{ yAxisID: 'y-axis-1', fill: +1 }, { yAxisID: 'y-axis-2', fill: false }];
@@ -485,9 +534,9 @@ var interval = $interval(function () {
 	vm.getLiveCustomerChartData();
 	vm.getlivecpumutations();
 }, vm.max);
-var interval2 = $interval(function () {
-	vm.setcustomerprogressbarvalue();
-}, 1000);
+// var interval2 = $interval(function () {
+// 	vm.setcustomerprogressbarvalue();
+// }, 1000);
 var interval3 = $interval(function () {
 	vm.getlivecustomerentitycountmutations();
 }, (15*60000));
@@ -730,7 +779,7 @@ vm.getLiveCustomerChartData = function() {
 
 	$scope.$on('$destroy', function() {
 		$interval.cancel(interval);
-		$interval.cancel(interval2);
+		//$interval.cancel(interval2);
 		$interval.cancel(interval3);
 	});
 }
