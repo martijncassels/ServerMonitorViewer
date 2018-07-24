@@ -203,6 +203,7 @@ function HomeCtrl($scope,$route,$http,$interval,$routeParams,Helpers,$mdToast) {
 
 		vm.getLiveChartData = function() {
 			if(vm.mockdata[vm.mockdata.length-1]!=undefined) {
+				/* not relevant anymore!
 				$http.get('/getmutations/'+vm.mockdata[vm.mockdata.length-1].RemoteQueuedMetricKey)
 					.success(function(data) {
 						data = Helpers.parseTimestamps(data);
@@ -231,9 +232,33 @@ function HomeCtrl($scope,$route,$http,$interval,$routeParams,Helpers,$mdToast) {
 					.error(function(data) {
 							console.log('Error: ' + data);
 							vm.error = data;
-					});
-				} // end $http
-			} // end if
+					}); // end $http
+					*/
+					$http.get('/getqueue')
+							.success(function(data) {
+									data = Helpers.parseTimestamps(data);
+									vm.mockdata = null;
+									vm.mockdata = data.reverse();
+									angular.forEach(vm.mockdata, function(value,index){
+										value.InstanceName = encodeURIComponent(value.InstanceName);
+									});
+									// for(var i=0;i<vm.mockdata.length;i++){
+									// 	vm.data2[0].push(vm.mockdata[i].MetricValue);
+									// 	vm.data2[1].push(vm.mockdata[i].ThresholdValue);
+									// 	// set next dataset to negative to plot this dataset on other side of x-axis!
+									// 	vm.data2[2].push(vm.mockdata[i].ThresholdValue-vm.mockdata[i].MetricValue);
+									// 	vm.labels2.push(vm.mockdata[i].RemoteQueuedMetricKey + ' ' + vm.mockdata[i].InstanceName);
+									// }
+									// vm.series = ['MetricValue', 'ThresholdValue','Difference'];
+									//console.log(vm.mockdata[vm.mockdata.length-1]);
+									console.log('updating '+data.length+' record(s)...');
+							})
+							.error(function(data) {
+									console.log('Error: ' + data);
+									vm.error = data;
+							});
+				} // end if
+			} // end function
 
 		$scope.$on('$destroy', function() {
 			$interval.cancel(interval);

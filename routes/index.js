@@ -95,9 +95,9 @@ isnull(rg.[Description],'none') as [Description]\
 ,rg.[Alias]\
 ,rg.[Notes]\
 ,max(hb.[timestamp]) as [hbtimestamp]\
-,datediff(MINUTE,max(hb.[timestamp]),getdate()) as [hbMin_ago]\
+,datediff(MINUTE,max(hb.[timestamp]),getdate())-(case when rg.Description in ('JVC-SQL01','JVC-SQL02') then 60 else 0 end) as [hbMin_ago]\
 ,max(rq.[timestamp]) as [timestamp]\
-,datediff(MINUTE,max(rq.[timestamp]),getdate()) as [Min_ago]\
+,datediff(MINUTE,max(rq.[timestamp]),getdate())-(case when rg.Description in ('JVC-SQL01','JVC-SQL02') then 60 else 0 end) as [Min_ago]\
 FROM [ServerMonitor].[axerrio].[RegisteredServer] rg with(readuncommitted)\
 OUTER APPLY	(\
 	SELECT  TOP 1 * FROM [ServerMonitor].[axerrio].[RemoteQueuedMetric] rq with(readuncommitted)\
@@ -384,7 +384,7 @@ select top 10\
 */
 exports.gettop10errors = function(req,res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
-		sequelize.query("select top 100 *\
+		sequelize.query("select top 1000 *\
 			from [" + req.params.alias + "].[" + req.params.db + "].[dbo].errorlog el with(readuncommitted)\
 			where loggedfromsub not in ('FlowerPower\\DBProcessBoughtVirtualParties.ProcessBoughtVirtualParties')\
 			order by loggedtimestamp desc", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {

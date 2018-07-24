@@ -31,8 +31,8 @@ script(type='text/ng-template', id='top10errors.html').
 			$('.tooltipped').tooltip({position: 'left', margin: 10});
 		});
 ng-include(src="'top10errors.html'")
-ul(data-collapsible="accordion").collapsible
-	li.active
+ul(data-collapsible="accordion").collapsible.expandable
+	li
 		.collapsible-header
 			h5 top 10 errors
 		.collapsible-body
