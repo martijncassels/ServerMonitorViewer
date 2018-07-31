@@ -13,16 +13,16 @@ module.exports = {
 			},
 			instances: 1,
 			exec_mode: "fork"
-		}],
-		"deploy" : {
-		 // "production" is the environment name
-		 "production" : {
-			 "user" : "MCassels",
-			 "host" : ["ax-wts37.local"],
-			 "ref"  : "origin/material",
-			 "repo" : "git@github.com:martijncassels/ServerMonitorViewer.git",
-			 "path" : "c:\\nodes\\servermonitorviewer_dev\\",
-			 "post-deploy" : "npm install"
-			},
-	 }
+		}]
+		// ,"deploy" : {
+		//  // "production" is the environment name
+		//  "production" : {
+		// 	 "user" : "MCassels",
+		// 	 "host" : ["ax-wts37.local"],
+		// 	 "ref"  : "origin/material",
+		// 	 "repo" : "git@github.com:martijncassels/ServerMonitorViewer.git",
+		// 	 "path" : "c:\\nodes\\servermonitorviewer_dev\\",
+		// 	 "post-deploy" : "npm install"
+		// 	},
+	 // }
 }
