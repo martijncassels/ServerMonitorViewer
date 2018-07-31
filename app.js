@@ -215,6 +215,7 @@ app.get('/getcpu/:alias/:db/:lastkey', routes.getcpu);
 app.get('/gettop10tableusage/:alias/:db', routes.gettop10tableusage);
 app.get('/getsqlstats/:alias/:db', routes.getsqlstats);
 app.get('/gettop10queries/:alias/:db', routes.gettop10queries);
+app.get('/gettempdb', routes.gettempdb);
 
 //app.get('/reporting/getreport/:alias/:db/:datefrom/:dateuntil',reporting.getreport);
 app.post('/reporting/getreport/:alias/:db',reporting.getreport);

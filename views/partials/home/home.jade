@@ -15,6 +15,16 @@ script(type='text/ng-template', id='menu1.html').
 		});	
 	</script>
 ng-include(src="'menu1.html'")
+.row
+	.col.s12.m12
+		.card
+			.card-content
+				| tempdb on AXE-SQL01 ({{vm.gettempdb[0].Log_file_used}}MB / {{vm.gettempdb[0].Log_file}}MB) :
+				//- p Data file (MB): {{vm.gettempdb[0]["Data_file"]}}
+				//- p Log file (MB): {{vm.gettempdb[0]["Log_file"]}}
+				//- p Log file space used (MB): {{vm.gettempdb[0]["Log_file_used"]}}
+				.progress
+					div(ng-style="{ 'width': (vm.gettempdb[0].Log_file_used / vm.gettempdb[0].Log_file)*100 + '%' }").determinate
 //- .row
 //- 	.col.s12
 //- 		h5.h5 Dashboard

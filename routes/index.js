@@ -214,6 +214,34 @@ else {
 }
 }
 
+exports.gettempdb = function(req, res) {
+	if(config.sqlstring.database!= ''){
+	sequelize.query("SELECT instance_name AS 'Database',\
+		[Data File(s) Size (KB)]/1024 AS [Data_file],\
+		[Log File(s) Size (KB)]/1024 AS [Log_file],\
+		[Log File(s) Used Size (KB)]/1024 AS [Log_file_used]\
+		FROM (SELECT * FROM [A4Y].[master].sys.dm_os_performance_counters\
+		WHERE counter_name IN\
+		('Data File(s) Size (KB)',\
+		'Log File(s) Size (KB)',\
+		'Log File(s) Used Size (KB)')\
+		AND instance_name = 'tempdb') AS A\
+		PIVOT\
+		(MAX(cntr_value) FOR counter_name IN\
+		([Data File(s) Size (KB)],\
+		[LOG File(s) Size (KB)],\
+		[Log File(s) Used Size (KB)])) AS B", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		res.status(200).send(result);
+	})
+	.catch(err => {
+		console.log(err);
+	});
+}
+else {
+	res.status(200).send(null);
+}
+}
+
 exports.dismissoccurence = function(req,res){
 	// if(config.sqlstring.database!= '' && req.params.db!='none'){
 	// 	if(req.params.alias && req.params.key && req.params.value){
@@ -346,19 +374,45 @@ else {
 }
 }
 
+/*
+select * \
+from openquery ([" + req.params.alias + "], '\
+SELECT distinct dovs.logical_volume_name AS LogicalName,\
+dovs.volume_mount_point AS Drive,\
+CONVERT(INT,dovs.available_bytes/1048576.0) AS FreeSpaceInMB\
+,CONVERT(INT,total_bytes/1048576.0) AS TotalSpaceInMB\
+FROM [" + req.params.db + "].sys.master_files mf with(readuncommitted)\
+CROSS APPLY sys.dm_os_volume_stats(mf.database_id, mf.FILE_ID) dovs\
+ORDER BY FreeSpaceInMB ASC')
+*/
 exports.getdiskspace = function(req, res) {
 	if(config.sqlstring.database!= '' && req.params.db!='none'){
 		//var query = req.body.sp.toString();
 		sequelize
 		//.query("select * from openquery(["+req.params.alias+"],'[master].[dbo].xp_fixeddrives')",
 		.query("select * \
-		from openquery ([" + req.params.alias + "], '\
-		SELECT distinct dovs.logical_volume_name AS LogicalName,\
+		from openquery ([" + req.params.alias + "], 'SELECT distinct dovs.logical_volume_name AS LogicalName,\
 		dovs.volume_mount_point AS Drive,\
 		CONVERT(INT,dovs.available_bytes/1048576.0) AS FreeSpaceInMB\
 		,CONVERT(INT,total_bytes/1048576.0) AS TotalSpaceInMB\
 		FROM [" + req.params.db + "].sys.master_files mf with(readuncommitted)\
 		CROSS APPLY sys.dm_os_volume_stats(mf.database_id, mf.FILE_ID) dovs\
+		union all\
+		SELECT instance_name AS LogicalName,\
+		'''' as Drive,\
+		convert(int,(([Log File(s) Size (KB)]/1024)-([Log File(s) Used Size (KB)]/1024))) AS FreeSpaceInMB,\
+		convert(int,[Log File(s) Size (KB)]/1024) AS TotalSpaceInMB\
+		FROM (SELECT * FROM [master].sys.dm_os_performance_counters\
+		WHERE counter_name IN\
+		(''Data File(s) Size (KB)'',\
+		''Log File(s) Size (KB)'',\
+		''Log File(s) Used Size (KB)'')\
+		AND instance_name = ''tempdb'') AS A\
+		PIVOT\
+		(MAX(cntr_value) FOR counter_name IN\
+		([Data File(s) Size (KB)],\
+		[LOG File(s) Size (KB)],\
+		[Log File(s) Used Size (KB)])) AS B\
 		ORDER BY FreeSpaceInMB ASC')",
 		{raw: true,type: sequelize.QueryTypes.SELECT})
 		.then(function(result) {

@@ -102,6 +102,7 @@ function HomeCtrl($scope,$route,$http,$interval,$routeParams,Helpers,$mdToast) {
 		vm.series = [];
 		vm.data2 = [[],[],[]];
 		vm.labels2 = [];
+		vm.gettempdb = {};
 
 		vm.max = 60000;
 		vm.dynamic = vm.max;
@@ -150,6 +151,15 @@ function HomeCtrl($scope,$route,$http,$interval,$routeParams,Helpers,$mdToast) {
 						console.log('Error: ' + data);
 				});
 		}
+
+		$http.get('/gettempdb')
+				.success(function(data) {
+					vm.gettempdb = data;
+				})
+				.error(function(data) {
+					vm.error = 'error getting data!';
+					console.log('Error: ' + data);
+				});
 
 		vm.onClick = function (points, evt) {
 		};
@@ -257,6 +267,16 @@ function HomeCtrl($scope,$route,$http,$interval,$routeParams,Helpers,$mdToast) {
 									console.log('Error: ' + data);
 									vm.error = data;
 							});
+
+							$http.get('/gettempdb')
+									.success(function(data) {
+										vm.gettempdb = null;
+										vm.gettempdb = data;
+									})
+									.error(function(data) {
+										vm.error = 'error getting data!';
+										console.log('Error: ' + data);
+									});
 				} // end if
 			} // end function
 
