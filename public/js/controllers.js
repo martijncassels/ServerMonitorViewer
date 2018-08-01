@@ -103,6 +103,8 @@ function HomeCtrl($scope,$route,$http,$interval,$routeParams,Helpers,$mdToast) {
 		vm.data2 = [[],[],[]];
 		vm.labels2 = [];
 		vm.gettempdb = {};
+		vm.dismissedseries = [];
+		vm.dismissedoccurences= [];
 
 		vm.max = 60000;
 		vm.dynamic = vm.max;
@@ -130,26 +132,39 @@ function HomeCtrl($scope,$route,$http,$interval,$routeParams,Helpers,$mdToast) {
 						vm.error = data;
 				});
 
-		vm.dismissOccurence = function(key,value) {
-			$http.put('/dismissoccurence/' + key + '/' + value)
-				.success(function(data) {
-					vm.success = true;
-				})
-				.error(function(data) {
-						vm.error = 'error updating!';
-						console.log('Error: ' + data);
-				});
+		vm.dismissOccurence = function(key) {
+			vm.dismissedoccurences.push(key);
 		}
 
-		vm.dismissSeries = function(key,value) {
-			$http.put('/dismissseries/' + key + '/' + value)
-				.success(function(data) {
-					vm.success = true;
-				})
-				.error(function(data) {
-						vm.error = 'error updating!';
-						console.log('Error: ' + data);
-				});
+		vm.removeOccurence = function(key) {
+			var index = vm.dismissedoccurences.indexOf(key);
+			if (index !== -1) vm.dismissedoccurences.splice(index, 1);
+			//vm.dismissedoccurences.splice(key);
+		}
+
+		vm.dismissSeries = function(key) {
+			vm.dismissedseries.push(key);
+		}
+
+		vm.removeSeries = function(key) {
+			var index = vm.dismissedseries.indexOf(key);
+			if (index !== -1) vm.dismissedseries.splice(index, 1);
+			//vm.dismissedseries.splice(key);
+		}
+
+		vm.clearFilter = function() {
+			vm.dismissedoccurences = [];
+			vm.dismissedseries = [];
+		}
+
+		vm.dismissedentities = function() {
+			// combine the two arrays
+			return vm.dismissedseries.concat(vm.dismissedoccurences);
+		}
+
+		vm.filterdismissedentities = function(item) {
+			// return everything BUT these
+			return (vm.dismissedentities().indexOf(item.Alias) == -1 && vm.dismissedentities().indexOf(item.RemoteQueuedMetricKey) == -1);
 		}
 
 		$http.get('/gettempdb')

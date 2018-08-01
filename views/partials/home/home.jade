@@ -12,6 +12,9 @@ script(type='text/ng-template', id='menu1.html').
 		$(document).ready(function(){
 			$('.fixed-action-btn').floatingActionButton();
 			$('.tooltipped').tooltip({position: 'left'});
+			$('.chips').chips({
+				onChipAdd:
+			});
 		});	
 	</script>
 ng-include(src="'menu1.html'")
@@ -40,7 +43,18 @@ ng-include(src="'menu1.html'")
 //- 		div(ng-hide='vm.mockdata.length>0').alert.alert-info No events!
 //- End Content
 .row
-	div(ng-repeat='record in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"').col.s12.m4
+	.col.s6.m6
+		form(name="OccurenceForm")
+			md-chips(ng-model="vm.dismissedoccurences",name="RemoteQueuedMetricKey",md-max-chips="5",placeholder="Enter key")
+				md-chip-template
+					strong {{$chip}}
+	.col.s6.m6
+		form(name="AliasForm")
+			md-chips(ng-model="vm.dismissedseries",name="Alias",md-max-chips="5",placeholder="Enter code")
+				md-chip-template
+					strong {{$chip}}
+.row
+	div(ng-repeat='record in vm.mockdata | orderBy: "-RemoteQueuedMetricKey" | filter:vm.filterdismissedentities').col.s12.m4
 		div(ng-if='record.Metric!="Heartbeat"')
 			.card.red.lighten-1
 				.card-content.white-text
@@ -59,8 +73,8 @@ ng-include(src="'menu1.html'")
 							p {{record.Timestamp}}
 				.card-action.red.darken-1
 					a(href='/server/{{record.InstanceName}}/{{record.Alias}}/{{record.DatabaseName}}') Details
-					a(href='#') Dismiss this occurence
-					a(href='#') Dismiss series
+					a(ng-click='vm.dismissOccurence(record.RemoteQueuedMetricKey)') Dismiss this occurence
+					a(ng-click='vm.dismissSeries(record.Alias)') Dismiss this serie
 		div(ng-if='record.Metric=="Heartbeat"')
 			.card.red.lighten-1
 				.card-content.white-text
@@ -73,5 +87,25 @@ ng-include(src="'menu1.html'")
 							p {{record.Timestamp}}
 				.card-action.red.darken-1
 					a(href='/server/{{record.InstanceName}}/{{record.Alias}}/{{record.DatabaseName}}') Details
-					a(href='#') Dismiss this occurence
-					a(href='#') Dismiss series
+//- .row
+//- 	.col.s6.m6
+//- 		input(type='number',ng-model='vm.tmpoccurence')
+//- 		button(ng-click='vm.dismissOccurence(vm.tmpoccurence)').btn.btn-small Dismiss another occurence
+//- 		div(ng-repeat='entity in vm.dismissedoccurences')
+//- 			div(ng-click='vm.removeOccurence(entity)') {{entity}}
+//- 	.col.s6.m6
+//- 		input(type='text',ng-model='vm.tmpserie')
+//- 		button(ng-click='vm.dismissSeries(vm.tmpserie)').btn.btn-small Dismiss another serie
+//- 		div(ng-repeat='entity in vm.dismissedseries')
+//- 			div(ng-click='vm.removeSeries(entity)') {{entity}}
+//- 	.col.s12.m12
+//- 		button(ng-click='vm.clearFilter()').btn.btn-small Clear filter
+//- .row
+//- 	.col.s6.s6
+//- 		.chips
+//- 			div(ng-repeat='entity in vm.dismissedoccurences').chip {{entity}}
+//- 				i(ng-click='vm.removeOccurence(entity)').close.material-icons close
+//- 	.col.s6.s6
+//- 		.chips
+//- 			div(ng-repeat='entity in vm.dismissedseries').chip {{entity}}
+//- 				i(ng-click='vm.removeSeries(entity)').close.material-icons close
