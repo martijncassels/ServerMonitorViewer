@@ -46,10 +46,10 @@ ul.collapsible
 				div(ng-repeat='license in vm.licenses track by $index', style='padding:5px;',ng-hide="vm.licenses.name=='SequelizeDatabaseError'")
 					.row
 						.col.s6
-							{{license.description}} ({{license.hostname}})
+							{{::license.description}} ({{::license.hostname}})
 						.col.s6
 							//- uib-progressbar(max='license.licenses', value='license.ActiveLicenses')
 							//- 	span(style='color:white; white-space:nowrap;') {{license.ActiveLicenses}} / {{license.licenses}}
 							.progress
-								div(ng-style="{ 'width': (({{license.ActiveLicenses}} / {{license.licenses}})*100) + '%' }").determinate
-							{{license.ActiveLicenses}} / {{license.licenses}}
+								div(ng-style="::{ 'width': (({{license.ActiveLicenses}} / {{license.licenses}})*100) + '%' }").determinate
+							{{::license.ActiveLicenses}} / {{::license.licenses}}

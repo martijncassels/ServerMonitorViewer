@@ -9,7 +9,7 @@ ul.collapsible
 		.collapsible-header
 			h5 Archive counters
 		.collapsible-body
-			canvas(id='line',chart-data='vm.archivecounterschartdata',chart-labels='vm.archivecounterschartdata[1]',chart-series='vm.archivecounterschartseries',chart-options='vm.options',height='100').chart.chart-line
+			canvas(id='line',chart-data='::vm.archivecounterschartdata',chart-labels='::vm.archivecounterschartdata[1]',chart-series='::vm.archivecounterschartseries',chart-options='::vm.options',height='100').chart.chart-line
 //- br
 //- .table-responsive
 //- 	table(ng-hide="vm.archivecounters.name=='SequelizeDatabaseError'").table.table-striped.table-sm

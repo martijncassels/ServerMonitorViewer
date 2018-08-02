@@ -445,6 +445,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe,$m
 		vm.getsqlstats = function(){
 				$http.get('/getsqlstats/'+$routeParams.alias+'/'+$routeParams.db)
 					.success(function(data) {
+						vm.sqlstats = null;
 						vm.sqlstats = data;
 					})
 					.error(function(data) {
@@ -456,6 +457,7 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe,$m
 		vm.gettop10queries = function(){
 				$http.get('/gettop10queries/'+$routeParams.alias+'/'+$routeParams.db)
 					.success(function(data) {
+						vm.gettop10queries = null;
 						vm.gettop10queries = data;
 					})
 					.error(function(data) {

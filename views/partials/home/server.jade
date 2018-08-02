@@ -5,7 +5,7 @@ script(type='text/ng-template', id='script.html').
 			<i class="large material-icons">mode_edit</i>
 		</a>
 		<ul>
-			<li><a data-tooltip="Reports" role="button" href="/reporting/{{vm.servername}}/{{vm.alias}}/{{vm.db}}" class="btn-floating red tooltipped"><i class="material-icons">insert_drive_file</i>Reports</a></li>
+			<li><a data-tooltip="Reports" role="button" href="/reporting/{{::vm.servername}}/{{::vm.alias}}/{{::vm.db}}" class="btn-floating red tooltipped"><i class="material-icons">insert_drive_file</i>Reports</a></li>
 			<li><button role="button" data-tooltip="Metric Thresholds" data-target="modal1" class="btn-floating yellow darken-1 modal-trigger tooltipped"><i class="material-icons">update</i>Metric Thresholds</button></li>
 			<li><button role="button" data-tooltip="Update events" ng-click="vm.getLiveCustomerChartData()" class="btn-floating green tooltipped"><i class="material-icons">update</i>Update events</button></li>
 			<li><button role="button" data-tooltip="Update entitycounts" ng-click="vm.getlivecustomerentitycountmutations()" class="btn-floating blue tooltipped"><i class="material-icons">update</i>Update entitycounts</button></li>
@@ -36,7 +36,7 @@ ng-include(src="'script.html'")
 			//- 			button(ng-click="selectPage(page+1,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('next')}}
 			//- 		li(role="menuitem",ng-if="::boundaryLinks",ng-class="{disabled: noNext()||ngDisabled}").page-item
 			//- 			button(ng-click="selectPage(totalPages,$event)",ng-disabled="noNext()||ngDisabled",uib-tabindex-toggle).page-link {{::getText('last')}}
-			h4.h4 Dashboard {{vm.alias}}
+			h4.h4 Dashboard {{::vm.alias}}
 			//- .btn-toolbar.mb-2.mb.s0
 			//- 	.btn-group.mr-2
 			//- 		a(role='button',href='/reporting/{{vm.servername}}/{{vm.alias}}/{{vm.db}}').btn.btn-sm.btn-outline-secondary Reports
@@ -57,7 +57,7 @@ ng-include(src="'script.html'")
 					.col.s3.m3.l3
 						input.timepicker(type='text',id='time2',ng-model='vm.endtime')
 						label(for='time2') End time
-				button(ng-show='vm.startdate && vm.starttime && vm.enddate && vm.endtime',type="submit",name="action",ng-click='vm.getstuffwithdate()').btn.waves-effect.waves-light Go
+				button(ng-show='vm.startdate && vm.starttime && vm.enddate && vm.endtime',type="submit",name="action",ng-click='::vm.getstuffwithdate()').btn.waves-effect.waves-light Go
 		//- Modal goes here
 		include ./blocks/modal
 		//- end of modal

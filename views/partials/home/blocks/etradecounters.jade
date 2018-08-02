@@ -39,4 +39,4 @@ ul.collapsible
 						{{vm.etradeservercounters.original.message}}
 				div(uib-alert,ng-show="vm.etradeservercounters.length<1 && !vm.etradeservercountersstarting",style='margin:5px;').alert-danger
 					p No data!
-			canvas(ng-hide="vm.etradeservercounters.name=='SequelizeDatabaseError'",id='bar',chart-data='vm.etradeservercounterdata',chart-labels='vm.etradeservercounterlabels',chart-series='["NumberOfSuccesfullPurchases","NumberOfFailedPurchases"]',chart-options='vm.options2',chart-colors='["#5cb85c","#d9534f"]',height='150').chart.chart-bar
+			canvas(ng-hide="vm.etradeservercounters.name=='SequelizeDatabaseError'",id='bar',chart-data='::vm.etradeservercounterdata',chart-labels='::vm.etradeservercounterlabels',chart-series='["NumberOfSuccesfullPurchases","NumberOfFailedPurchases"]',chart-options='::vm.options2',chart-colors='["#5cb85c","#d9534f"]',height='150').chart.chart-bar

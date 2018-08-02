@@ -16,11 +16,11 @@ div(ng-show='vm.mockdata.length>0')
 	table.responsive-table
 		thead
 			tr
-				th(ng-repeat='(key,value) in vm.mockdata[0]') {{key}}
+				th(ng-repeat='(key,value) in ::vm.mockdata[0]') {{::key}}
 		tbody
 			tr(ng-repeat='records in vm.mockdata | orderBy: "-RemoteQueuedMetricKey"')
-				td(ng-repeat='(key,value) in records') 
+				td(ng-repeat='(key,value) in ::records') 
 					div(ng-if='key=="Message" && $parent.records.Metric=="Blocking occurred, job was started"')
-						a(href='/serverblocking/{{vm.alias}}/{{vm.db}}') {{value}}
+						a(href='/serverblocking/{{::vm.alias}}/{{::vm.db}}') {{value}}
 					div(ng-if='key!="Message"') {{value}}
 div(ng-show='vm.mockdata.length<1').alert.alert-info No events!

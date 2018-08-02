@@ -4,7 +4,7 @@ script(type='text/ng-template', id='top10queries.html').
 			$('.collapsible').collapsible();
 		});
 ng-include(src="'top10queries.html'")
-button(role='button',ng-click='vm.gettop10queries()').btn Get top 10 queries
+button(role='button',ng-click='::vm.gettop10queries()').btn Get top 10 queries
 ul(data-collapsible="accordion").collapsible
 	li.active
 		.collapsible-header
@@ -22,14 +22,14 @@ ul(data-collapsible="accordion").collapsible
 						th Statement
 				tbody
 					tr(ng-repeat='query in vm.gettop10queries')
-						td {{query.ObjectName}}
-						td {{query.AvgCPU}}
-						td {{query.AvgLogicalReads}}
-						td {{query.NumExecutionPlans}}
-						td {{query.TotalExecutions}}
-						td {{query.DatabaseName}}
+						td {{::query.ObjectName}}
+						td {{::query.AvgCPU}}
+						td {{::query.AvgLogicalReads}}
+						td {{::query.NumExecutionPlans}}
+						td {{::query.TotalExecutions}}
+						td {{::query.DatabaseName}}
 						td 
-							a(data-toggle="tooltip",data-placement="top",title="{{query.Statement}}") {{query.Statement | cut:true:100}}
+							a(data-toggle="tooltip",data-placement="top",title="{{::query.Statement}}") {{::query.Statement | cut:true:100}}
 			//- .row
 			//- 	.col.s12
 			//- 		ul(data-collapsible="accordion").collapsible.expandable

@@ -37,4 +37,4 @@ ul.collapsible
 						{{vm.getvirtualmarketplacemutations.original.message}}
 				div(uib-alert,ng-show="vm.getvirtualmarketplacemutations.length<1 && !vm.getvirtualmarketplacemutationsstarting",style='margin:5px;').alert-danger
 					p No data!
-			canvas(ng-hide="vm.getvirtualmarketplacemutations.name=='SequelizeDatabaseError'",id='line',chart-data='vm.getvirtualmarketplacemutationsdata',chart-labels='vm.getvirtualmarketplacemutationslabels',chart-series='["NewOrMutatedSupplylines","DeletedSupplylines","InsertedParties","InsertedPCCPs","PurchaseAttempts"]',chart-options='vm.options2',height='150').chart.chart-line
+			canvas(ng-hide="vm.getvirtualmarketplacemutations.name=='SequelizeDatabaseError'",id='line',chart-data='::vm.getvirtualmarketplacemutationsdata',chart-labels='::vm.getvirtualmarketplacemutationslabels',chart-series='["NewOrMutatedSupplylines","DeletedSupplylines","InsertedParties","InsertedPCCPs","PurchaseAttempts"]',chart-options='::vm.options2',height='150').chart.chart-line

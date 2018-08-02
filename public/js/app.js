@@ -40,6 +40,11 @@ ServerMonitorViewer
 		$locationProvider.html5Mode(true);
 		//tmhDynamicLocaleProvider.localeLocationPattern('js/lib/angular/i18n/angular-locale_{{locale}}.js');
 }])
+.config(function($mdThemingProvider) {
+	$mdThemingProvider.theme('default')
+		.primaryPalette('deep-purple')
+		.accentPalette('teal');
+})
 .run(function($rootScope, $interval) {
 		// add the register task to the rootScope. This will allow for autoUnregister when the
 		// scope is destroyed to prevent tasks from leaking.

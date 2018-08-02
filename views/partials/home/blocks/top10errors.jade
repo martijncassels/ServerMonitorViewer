@@ -44,17 +44,17 @@ ul(data-collapsible="accordion").collapsible.expandable
 								.row
 									.col.s12
 										.progress
-											div(ng-style="{ 'width': (({{error.length}} / {{vm.top10errors.length}})*100) + '%' }").determinate
-										{{error.length}} x {{error.$key}}
+											div(ng-style="::{ 'width': (({{error.length}} / {{vm.top10errors.length}})*100) + '%' }").determinate
+										{{::error.length}} x {{::error.$key}}
 							.collapsible-body
 								ul.collection
-									li(ng-repeat='value in error').collection-item
+									li(ng-repeat='value in ::error').collection-item
 										p(style='white-space:pre;') 
-											| Time: {{value.LoggedTimestamp}}
-											| User: {{value.LoggedUserLogin}}
-											| NTUsername: {{value.LoggedNTUserName}}
-											| Hostname: {{value.LoggedHostName}}
-											| Message : {{value.Message}}
+											| Time: {{::value.LoggedTimestamp}}
+											| User: {{::value.LoggedUserLogin}}
+											| NTUsername: {{::value.LoggedNTUserName}}
+											| Hostname: {{::value.LoggedHostName}}
+											| Message : {{::value.Message}}
 							//- .col.s6
 							//- 	.progress
 							//- 		div(ng-style="{ 'width': (({{error.length}} / {{vm.top10errors.length}})*100) + '%' }").determinate

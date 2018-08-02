@@ -51,10 +51,10 @@ ul.collapsible
 				.row
 					div(ng-repeat='(key, value) in vm.pccpcalcsnew | groupBy: "PricingEngineID"', style='padding:5px;',ng-hide="vm.pccpcalcsnew.name=='SequelizeDatabaseError'").col.s12.m4.l4
 						.card-panel
-							p PricingEngineID: {{key}}
+							p PricingEngineID: {{::key}}
 							div(ng-repeat='(key2,value2) in value | groupBy: "date"')
-								{{key2}}
+								{{::key2}}
 								div
 									span(ng-repeat='pccpcalc in value2 track by $index')
-										{{pccpcalc.Description}} : {{pccpcalc.count}}
+										{{::pccpcalc.Description}} : {{::pccpcalc.count}}
 										br

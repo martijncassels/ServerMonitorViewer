@@ -51,7 +51,7 @@ ul.collapsible
 				div(ng-repeat='pccpcalc in vm.pccpcalcs track by $index', style='padding:5px;',ng-hide="vm.pccpcalcs.name=='SequelizeDatabaseError'")
 					.row
 						.col.s6
-							{{pccpcalc.Description}}
+							{{::pccpcalc.Description}}
 						.col.s6
-							{{pccpcalc.ToCalculate}}
+							{{::pccpcalc.ToCalculate}}
 							<div id="card-alert" class="card red">

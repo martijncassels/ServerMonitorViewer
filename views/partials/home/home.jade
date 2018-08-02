@@ -15,6 +15,11 @@ script(type='text/ng-template', id='menu1.html').
 			$('.chips').chips();
 		});	
 	</script>
+	<style>
+		.md-chips.md-focused {
+			box-shadow: none;
+		}
+	</style>
 ng-include(src="'menu1.html'")
 .row
 	.col.s12.m12
@@ -56,8 +61,8 @@ ng-include(src="'menu1.html'")
 		div(ng-if='record.Metric!="Heartbeat"')
 			.card.red.lighten-1
 				.card-content.white-text
-					span.card-title {{record.Alias}} ({{record.InstanceName}} / {{record.DatabaseName}})
-					h4.center-align {{record.MetricValue}} / {{record.ThresholdValue}}
+					span.card-title {{::record.Alias}} ({{::record.InstanceName}} / {{::record.DatabaseName}})
+					h4.center-align {{::record.MetricValue}} / {{::record.ThresholdValue}}
 					.row
 						.col.s3
 							p Metric:
@@ -65,26 +70,26 @@ ng-include(src="'menu1.html'")
 							p Threshold:
 							p Timestamp:
 						.col.s6
-							p {{record.Metric}} 
-							p {{record.MetricValue}} 
-							p {{record.ThresholdValue}}
-							p {{record.Timestamp}}
+							p {{::record.Metric}} 
+							p {{::record.MetricValue}} 
+							p {{::record.ThresholdValue}}
+							p {{::record.Timestamp}}
 				.card-action.red.darken-1
-					a(href='/server/{{record.InstanceName}}/{{record.Alias}}/{{record.DatabaseName}}') Details
+					a(href='/server/{{::record.InstanceName}}/{{::record.Alias}}/{{::record.DatabaseName}}') Details
 					a(ng-click='vm.dismissOccurence(record.RemoteQueuedMetricKey)') Dismiss this occurence
 					a(ng-click='vm.dismissSeries(record.Alias)') Dismiss this serie
 		div(ng-if='record.Metric=="Heartbeat"')
 			.card.red.lighten-1
 				.card-content.white-text
-					span.card-title {{record.Alias}} ({{record.InstanceName}} / {{record.DatabaseName}})
+					span.card-title {{::record.Alias}} ({{::record.InstanceName}} / {{::record.DatabaseName}})
 					h4.center-align No Heartbeat!
 					.row
 						.col.s3
 							p Last record
 						.col.s6
-							p {{record.Timestamp}}
+							p {{::record.Timestamp}}
 				.card-action.red.darken-1
-					a(href='/server/{{record.InstanceName}}/{{record.Alias}}/{{record.DatabaseName}}') Details
+					a(href='/server/{{::record.InstanceName}}/{{::record.Alias}}/{{::record.DatabaseName}}') Details
 //- .row
 //- 	.col.s6.m6
 //- 		input(type='number',ng-model='vm.tmpoccurence')

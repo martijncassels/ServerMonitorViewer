@@ -46,10 +46,10 @@ ul.collapsible
 				div(ng-repeat='disk in vm.diskspace track by $index', style='padding:5px;',ng-hide="vm.diskspace.name=='SequelizeDatabaseError'")
 					.row
 						.col.s6
-							{{disk.LogicalName}}, {{disk.Drive}}
+							{{::disk.LogicalName}}, {{::disk.Drive}}
 						.col.s6
 							//- uib-progressbar(max='disk.TotalSpaceInMB', value='disk.FreeSpaceInMB',type='bg-danger')
 							//- 	span(style='color:white; white-space:nowrap;',ng-class='{"bg-danger": ({{disk.FreeSpaceInMB}}/{{disk.TotalSpaceInMB}})>0.9, "bg-success": ({{disk.FreeSpaceInMB}}/{{disk.TotalSpaceInMB}})<0.3, "bg-warning": (({{disk.FreeSpaceInMB}}/{{disk.TotalSpaceInMB}})>0.7 && ({{disk.FreeSpaceInMB}}/{{disk.TotalSpaceInMB}})<0.9)}') {{disk.FreeSpaceInMB}} MB / {{disk.TotalSpaceInMB}} MB
 							.progress
-								div(ng-style="{ 'width': (({{disk.FreeSpaceInMB}} / {{disk.TotalSpaceInMB}})*100) + '%' }").determinate 
-							{{disk.FreeSpaceInMB}} MB / {{disk.TotalSpaceInMB}} MB
+								div(ng-style="::{ 'width': (({{disk.FreeSpaceInMB}} / {{disk.TotalSpaceInMB}})*100) + '%' }").determinate 
+							{{::disk.FreeSpaceInMB}} MB / {{::disk.TotalSpaceInMB}} MB
