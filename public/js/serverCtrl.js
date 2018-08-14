@@ -368,6 +368,18 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe,$m
 						vm.error = data;
 				});
 
+		//- get vmp mutation counters
+		vm.getwseventerrors = true;
+		$http.get('/getwseventerrors/'+$routeParams.alias+'/'+$routeParams.db)
+			.success(function(data) {
+				vm.getwseventerrors = null;
+				vm.getwseventerrors = data;
+			})
+			.error(function(data) {
+					console.log('Error: ' + data);
+					vm.error = data;
+			});
+
 		//- get archivecounters
 		vm.archivecountersstarting = true;
 		$http.get('/getarchivecounters/'+$routeParams.alias+'/'+vm.db)
@@ -466,6 +478,18 @@ function ServerCtrl($scope,$route,$http,$interval,$routeParams,_,Helpers,Oboe,$m
 					});
 		}
 
+		vm.getwseventerrors = function(){
+				$http.get('/getwseventerrors/'+$routeParams.alias+'/'+$routeParams.db)
+					.success(function(data) {
+						vm.getwseventerrors = null;
+						vm.getwseventerrors = data;
+					})
+					.error(function(data) {
+							console.log('Error: ' + data);
+							vm.error = data;
+					});
+		}
+
 		vm.onClick = function (points, evt) {
 		};
 		//vm.datasetOverride = [{ yAxisID: 'y-axis-1', fill: +1 }, { yAxisID: 'y-axis-2', fill: false }];
@@ -539,9 +563,9 @@ var interval = $interval(function () {
 // var interval2 = $interval(function () {
 // 	vm.setcustomerprogressbarvalue();
 // }, 1000);
-var interval3 = $interval(function () {
-	vm.getlivecustomerentitycountmutations();
-}, (15*60000));
+// var interval3 = $interval(function () {
+// 	vm.getlivecustomerentitycountmutations();
+// }, (15*60000));
 
 vm.setcustomerprogressbarvalue = function() {
 	if(vm.dynamic>0){
@@ -782,6 +806,6 @@ vm.getLiveCustomerChartData = function() {
 	$scope.$on('$destroy', function() {
 		$interval.cancel(interval);
 		//$interval.cancel(interval2);
-		$interval.cancel(interval3);
+		//$interval.cancel(interval3);
 	});
 }

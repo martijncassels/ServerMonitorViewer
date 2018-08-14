@@ -217,6 +217,8 @@ app.get('/getsqlstats/:alias/:db', routes.getsqlstats);
 app.get('/gettop10queries/:alias/:db', routes.gettop10queries);
 app.get('/gettempdb', routes.gettempdb);
 
+app.get('/getwseventerrors/:alias/:db', routes.getwseventerrors);
+
 //app.get('/reporting/getreport/:alias/:db/:datefrom/:dateuntil',reporting.getreport);
 app.post('/reporting/getreport/:alias/:db',reporting.getreport);
 app.post('/reporting/getreport2/:alias/:db',reporting.getreport2);

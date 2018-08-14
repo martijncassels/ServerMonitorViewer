@@ -88,6 +88,11 @@ exports.index = function(req, res){
 	// res.render('index_semanticui');
 }
 
+/*
+== ABS
+==========================================
+*/
+
 exports.listservers = function(req, res) {
 	if(config.sqlstring.database!= ''){
 	sequelize.query("SELECT \
@@ -1028,6 +1033,33 @@ exports.gettop10queries = function(req, res) {
 		res.status(200).send(null);
 	}
 }
+/*
+== WEBSHOP
+==========================================
+*/
+exports.getwseventerrors = function(req, res) {
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
+			sequelize.query("declare @webdb nvarchar(15)\
+			select @webdb = value from [EZF].[EZF_ABS].dbo.setting where name = 'WebshopDatabaseNameAndSchema'\
+			declare @query nvarchar(4000)\
+			set @query = 'select top 100 * from openquery([EZF],''select top 100 * from '+@webdb+'.[event] where eventtypeid = 6 order by [key] desc'')'\
+			exec(@query)", {raw: true,type: sequelize.QueryTypes.SELECT})
+			.then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+	}
+	else {
+		res.status(200).send(null);
+	}
+}
+
+/*
+== MISC
+==========================================
+*/
 
 exports.partial = function (req, res) {
 	var name = req.params.name;

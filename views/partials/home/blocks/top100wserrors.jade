@@ -1,0 +1,38 @@
+script(type='text/ng-template', id='top100wserrors.html').
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.collapsible').collapsible();
+			$('.tooltipped').tooltip({position: 'left', margin: 10});
+		});
+ng-include(src="'top100wserrors.html'")
+ul(data-collapsible="accordion").collapsible.expandable
+	li
+		.collapsible-header
+			h5 top 100 Webshop errors
+		.collapsible-body
+			.row
+				.col.s12
+				.table-responsive
+					table(ng-hide="vm.getwseventerrors.name=='SequelizeDatabaseError'").table.table-striped.table-sm
+						thead
+							//- th(ng-repeat='(key,value) in vm.getwseventerrors') {{key}}
+							tr
+								td Key
+								td Start
+								td WebUserKey
+								td Log
+								td amount
+								td DatabaseServerID
+								td OrderRowKey
+								td ClientID
+						tbody
+							tr(ng-repeat="entitycount in vm.getwseventerrors")
+								//- td(ng-repeat='(key,value) in entitycount') {{value}}
+								td {{entitycount.Key}}
+								td {{entitycount.Start}}
+								td {{entitycount.WebUserKey}}
+								td {{entitycount.Log}}
+								td {{entitycount.amount}}
+								td {{entitycount.DatabaseServerID}}
+								td {{entitycount.OrderRowKey}}
+								td {{entitycount.ClientID}}
