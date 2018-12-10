@@ -216,6 +216,7 @@ app.get('/gettop10tableusage/:alias/:db', routes.gettop10tableusage);
 app.get('/getsqlstats/:alias/:db', routes.getsqlstats);
 app.get('/gettop10queries/:alias/:db', routes.gettop10queries);
 app.get('/gettempdb', routes.gettempdb);
+app.get('/getfailedjobs/:alias/:db', routes.getfailedjobs);
 
 app.get('/getwseventerrors/:alias/:db', routes.getwseventerrors);
 

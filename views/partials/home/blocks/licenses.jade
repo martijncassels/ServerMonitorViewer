@@ -38,10 +38,10 @@ ul.collapsible
 					.indeterminate
 				//- div(uib-alert,ng-show="vm.licenses.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.licenses.name=null").alert-danger
 				//- 	{{vm.licenses.original.message}}
-				div(ng-show="vm.licenses.name=='SequelizeDatabaseError'",style='margin:5px;').card.red.lighten-2
+				div(ng-if="vm.licenses.name=='SequelizeDatabaseError'",style='margin:5px;').card.red.lighten-2
 					.card-content.white-text
 						{{vm.licenses.original.message}}
-				div(uib-alert,ng-show="vm.licenses.length<1 && !vm.licensesstarting",style='margin:5px;').alert-danger
+				div(uib-alert,ng-if="vm.licenses.length<1 && !vm.licensesstarting",style='margin:5px;').alert-danger
 					p No data!
 				div(ng-repeat='license in vm.licenses track by $index', style='padding:5px;',ng-hide="vm.licenses.name=='SequelizeDatabaseError'")
 					.row

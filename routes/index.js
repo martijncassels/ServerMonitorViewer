@@ -536,7 +536,7 @@ exports.getpccpcalcsnewwithdate = function(req,res) {
 				join [" + req.params.alias + "].[" + req.params.db + "].dbo.CalculationQueueProcessingStatus cqps with (readuncommitted) on cqps.CalculationQueueProcessingStatusID = cq.CalculationQueueProcessingStatusID\
 			where cq.EnqueuedTimestamp between '"+datefrom+"' and '"+dateuntil+"'\
 			group by cq.PricingEngineID, cqps.[Description], convert(char(10),cq.EnqueuedTimestamp,105)\
-			order by [PricingEngineID], convert(char(10),cq.EnqueuedTimestamp,105)", {raw: true,type: sequelize.QueryTypes.SELECT})
+			order by [PricingEngineID], convert(char(10),cq.EnqueuedTimestamp,105),cqps.[Description]", {raw: true,type: sequelize.QueryTypes.SELECT})
 		.then(result => {
 				res.status(200).send(result);
 			})
@@ -717,14 +717,17 @@ exports.getetradeservercounter = function(req, res) {
 		WHERE TABLE_SCHEMA = 'axerrio' \
 		AND TABLE_NAME = 'ETradeServerCounter'))\
 		BEGIN\
-			select top 100 \
+			declare @query nvarchar(4000)\
+			set @query = 'select * from openquery([" + req.params.alias + "],''select top 100 \
 			es.ETradeServerCounterkey,eu.Remark,es.LoggedTimeStamp,es.NumberOfSuccesfullPurchases,es.NumberOfFailedPurchases,es.AvgResponseTimeMS,es.MinResponseTimeMS,es.MaxResponseTimeMS\
-			from [" + req.params.alias + "].[" + req.params.db + "].axerrio.ETradeServerCounter es with(readuncommitted)\
-			join [" + req.params.alias + "].[" + req.params.db + "].etradeserver.EtradeUser eu with(readuncommitted) on eu.[EtradeUserKey] = es.EtradeUserKey\
-			order by ETradeServerCounterkey desc\
+			from [" + req.params.db + "].axerrio.ETradeServerCounter es with(readuncommitted)\
+			join [" + req.params.db + "].etradeserver.EtradeUser eu with(readuncommitted) on eu.[EtradeUserKey] = es.EtradeUserKey\
+			order by ETradeServerCounterkey desc'')'\
+			exec(@query)\
 		END\
 		ELSE\
-		select null", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
+		select null as ETradeServerCounterkey,null as Remark,null as LoggedTimeStamp,null as NumberOfSuccesfullPurchases,null as NumberOfFailedPurchases\
+		,null as AvgResponseTimeMS,null as MinResponseTimeMS,null as MaxResponseTimeMS", {raw: true,type: sequelize.QueryTypes.SELECT}).then(result => {
 			res.status(200).send(result);
 		})
 		.catch(err => {
@@ -1033,6 +1036,31 @@ exports.gettop10queries = function(req, res) {
 		res.status(200).send(null);
 	}
 }
+
+exports.getfailedjobs = function(req, res) {
+	if(config.sqlstring.database!= '' && req.params.db!='none'){
+			sequelize.query("select j.name\
+			, jh.job_id\
+			, CAST(CAST(jh.[run_date] AS CHAR(8)) AS DATE) as [run_date]\
+			, max(jh.message) as [message]\
+			, count(*) as [count]\
+			FROM [" + req.params.alias + "].[msdb].[dbo].[sysjobhistory] jh \
+				join [" + req.params.alias + "].[msdb].[dbo].[sysjobs] j on j.job_id = jh.job_id\
+			where jh.run_status = 0 and jh.step_id = 0\
+			group by j.name,jh.job_id,jh.run_date\
+			order by jh.run_date desc", {raw: true,type: sequelize.QueryTypes.SELECT})
+			.then(result => {
+				res.status(200).send(result);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+	}
+	else {
+		res.status(200).send(null);
+	}
+}
+
 /*
 == WEBSHOP
 ==========================================

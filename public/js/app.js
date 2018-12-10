@@ -25,7 +25,7 @@ var ServerMonitorViewer = angular.module('ServerMonitorViewer',[
 	]);
 
 ServerMonitorViewer
-.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider,tmhDynamicLocaleProvider) {
+.config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider, tmhDynamicLocaleProvider) {
 		$routeProvider
 				.when('/home', {templateUrl: 'partials/home/home', controller: 'HomeCtrl', controllerAs: 'vm', access: {restricted: false}})
 				.when('/server/:servername/:alias/:db', {params: {servername: {raw:true}},templateUrl: 'partials/home/server', controller: 'ServerCtrl', controllerAs: 'vm', access: {restricted: false}})
@@ -40,10 +40,18 @@ ServerMonitorViewer
 		$locationProvider.html5Mode(true);
 		//tmhDynamicLocaleProvider.localeLocationPattern('js/lib/angular/i18n/angular-locale_{{locale}}.js');
 }])
+.config(function($httpProvider) {
+	$httpProvider.useApplyAsync(true);
+})
 .config(function($mdThemingProvider) {
 	$mdThemingProvider.theme('default')
 		.primaryPalette('deep-purple')
 		.accentPalette('teal');
+})
+.run(function($rootScope) {
+		$rootScope.$on("$locationChangeStart", function(event, next, current) {
+				$rootScope = null;
+		});
 })
 .run(function($rootScope, $interval) {
 		// add the register task to the rootScope. This will allow for autoUnregister when the

@@ -1,0 +1,39 @@
+//- div(ng-show='vm.getfailedjobs.length>0')
+//- 	table.responsive-table
+//- 		thead
+//- 			tr
+//- 				th(ng-repeat='(key,value) in ::vm.getfailedjobs[0]') {{::key}}
+//- 		tbody
+//- 			tr(ng-repeat='records in vm.getfailedjobs | orderBy: "-run_date"')
+//- 				td(ng-repeat='(key,value) in ::records') 
+//- 					div {{value}}
+//- div(ng-show='vm.getfailedjobs.length<1').alert.alert-info No events!
+script(type='text/ng-template', id='getfailedjobs.html').
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.collapsible').collapsible();
+		});
+ng-include(src="'getfailedjobs.html'")
+button(role='button',ng-click='::vm.getfailedjobs()').btn Get Failed jobs
+ul(data-collapsible="accordion").collapsible
+	li.active
+		.collapsible-header
+			h5 Failed jobs
+		.collapsible-body
+			table.striped.responsive-table
+				thead
+					tr
+						th name
+						th job_id
+						th run_date
+						th message
+						th count
+				tbody
+					tr(ng-repeat='job in vm.getfailedjobs')
+						td {{::job.name}}
+						td {{::job.job_id}}
+						td {{::job.run_date}}
+						td {{::job.message}}
+						td {{::job.count}}
+						//- td 
+						//- 	a(data-toggle="tooltip",data-placement="top",title="{{::job.message}}") {{::job.message | cut:true:100}}
