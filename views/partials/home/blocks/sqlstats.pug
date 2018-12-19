@@ -13,10 +13,8 @@ ul(data-collapsible="accordion").collapsible
 		.collapsible-body
 			div(ng-repeat='stats in ::vm.sqlstats')
 				.row
-					.col.s6
-						{{::stats.counter_name}}
-					.col.s6
-						{{::stats.cntr_value}}
+					.col.s6 {{::stats.counter_name}}
+					.col.s6 {{::stats.cntr_value}}
 			//- .row
 			//- 	.col.s12
 			//- 		ul(data-collapsible="accordion").collapsible.expandable

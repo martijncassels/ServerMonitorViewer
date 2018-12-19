@@ -3,7 +3,7 @@
   "version": "0.3.5",
   "private": true,
   "scripts": {
-    "start": "set debug=servermonitorviewer:* & set port=4400 & nodemon app"
+    "start": "set debug=servermonitorviewer:* & set port=4000 & nodemon app"
   },
   "apps": [
     {
@@ -15,7 +15,8 @@
     }
   ],
   "dependencies": {
-    "JSONStream": "^1.3.3",
+    "JSONStream": "latest",
+    "ajv-keywords": "^3.2.0",
     "angular-dynamic-locale": "^0.1.37",
     "angular-oboe": "^0.6.0",
     "angular-recaptcha": "^4.2.0",
@@ -23,40 +24,42 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
-    "connect-mongo": "^1.3.2",
+    "connect-mongo": "^2.0.3",
     "cookie-parser": "^1.4.3",
-    "debug": "^3.1.0",
-    "express": "^3.21.2",
+    "debug": "^4.1.0",
+    "express": "^4.16.4",
     "express-seojs": "0.0.5",
     "express-session": "^1.15.6",
-    "jade": "~0.31.2",
-    "method-override": "^2.3.10",
+    "method-override": "^3.0.0",
     "moment": "^2.22.2",
-    "mongoose": "^4.13.14",
+    "mongoose": "^5.4.0",
     "mongoose-paginate": "^5.0.3",
-    "msnodesqlv8": "^0.4.18",
+    "morgan": "^1.9.1",
+    "msnodesqlv8": "^0.6.11",
     "mssql": "^4.2.0",
     "oboe": "^2.1.5",
-    "passport": "^0.3.2",
+    "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^4.5.0",
+    "passport-local-mongoose": "^5.0.1",
     "pmx": "^1.6.7",
-    "prerender-node": "^2.8.0",
+    "prerender-node": "^3.2.1",
+    "pug": "^2.0.3",
+    "remove": "^0.1.5",
     "semver": "^5.5.0",
     "sequelize": "^4.38.0",
     "serve-static": "^1.13.2",
     "socket.io": "^2.1.1",
     "streaming-json-stringify": "^3.1.0",
-    "tedious": "^2.6.4"
+    "tedious": "^3.0.1",
+    "uglify-js": "^3.4.9"
   },
   "devDependencies": {
     "grunt": "^1.0.3",
-    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-concat": "^1.0.1",
-    "grunt-contrib-jshint": "^1.1.0",
-    "grunt-contrib-uglify": "^3.4.0",
+    "grunt-contrib-jshint": "^2.0.0",
+    "grunt-contrib-uglify": "^4.0.0",
     "grunt-contrib-watch": "^1.1.0",
-    "sequelize-auto": "^0.4.29",
-    "uglify-js": "^3.4.6"
+    "sequelize-auto": "^0.4.29"
   }
 }

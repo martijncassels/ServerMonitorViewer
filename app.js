@@ -4,8 +4,9 @@
  */
 
 var express 	      = require('express'),
-		routes 		      = require('./routes/index'),
-		reporting				=	require('./routes/reporting'),
+		routes 		  = require('./routes/index'),
+		//routes2 	  = require('./routes/index2'),
+		reporting	  =	require('./routes/reporting'),
 		//msgapi 		      = require('./routes/msgapi'),
 		//proapi 		      = require('./routes/proapi'),
 		//facapi          = require('./routes/facapi'),
@@ -16,6 +17,7 @@ var express 	      = require('express'),
 		path 		        = require('path'),
 		cookieParser    = require('cookie-parser'),
 		bodyParser      = require('body-parser'),
+		logger			= require('morgan'),
 		passport        = require('passport'),
 		localStrategy   = require('passport-local' ).Strategy,
 		mongoose        = require('mongoose'),
@@ -106,13 +108,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 4000);
 app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 app.set('counter', function (counter) {
 	counter.inc();
 });
-app.use(express.logger('dev'));
+// app.use(express.logger('dev'));
+app.use(logger('dev'));
 //app.use(express.bodyParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -150,7 +153,7 @@ app.use(express.static(path.join(__dirname, 'node_modules')));
 //   setHeaders: setCustomCacheControl
 // }))
 
-app.use(app.router);
+// app.use(app.router);
 
 // configure passport
 passport.use(new localStrategy(Profile.authenticate()));
@@ -180,7 +183,9 @@ if (app.get('env') === 'production') {
 /**
 * Routes
 */
-app.get('/', routes.index);
+//app.use('/', routes2)
+
+//app.get('/', routes.index);
 app.get('/partials/:sub/:name', routes.partial);
 
 // JSON API
@@ -233,6 +238,7 @@ app.get('/status', routes.status);
 
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);
+//app.get('*', routes2);
 
 // Need to review this code, breaks angular and API
 //

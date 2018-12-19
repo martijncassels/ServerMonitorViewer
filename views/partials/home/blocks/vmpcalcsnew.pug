@@ -44,17 +44,14 @@ ul.collapsible
 				//- div(uib-alert,ng-show="vm.pccpcalcs.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.pccpcalcs.name=null").alert-danger
 				//- 	{{vm.pccpcalcs.original.message}}
 				div(ng-show="vm.pccpcalcsnew.name=='SequelizeDatabaseError'",style='margin:5px;').card.red.lighten-2
-					.card-content.white-text
-						{{vm.pccpcalcs.original.message}}
+					.card-content.white-text {{vm.pccpcalcs.original.message}}
 				div(uib-alert,ng-show="vm.pccpcalcsnew.length<1 && !vm.pccpcalcsnewdatastarting",style='margin:5px;').alert-danger
 					p No data!
 				.row
 					div(ng-repeat='(key, value) in vm.pccpcalcsnew | groupBy: "PricingEngineID"', style='padding:5px;',ng-hide="vm.pccpcalcsnew.name=='SequelizeDatabaseError'").col.s12.m4.l4
 						.card-panel
 							p PricingEngineID: {{::key}}
-							div(ng-repeat='(key2,value2) in value | groupBy: "date"')
-								{{::key2}}
+							div(ng-repeat='(key2,value2) in value | groupBy: "date"') {{::key2}}
 								div
-									span(ng-repeat='pccpcalc in value2 track by $index')
-										{{::pccpcalc.Description}} : {{::pccpcalc.count}}
+									span(ng-repeat='pccpcalc in value2 track by $index') {{::pccpcalc.Description}} : {{::pccpcalc.count}}
 										br

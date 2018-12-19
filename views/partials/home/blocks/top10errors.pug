@@ -43,9 +43,10 @@ ul(data-collapsible="accordion").collapsible.expandable
 							.collapsible-header
 								.row
 									.col.s12
+										div {{::error.length}} x {{::error.$key}}
 										.progress
 											div(ng-style="::{ 'width': (({{error.length}} / {{vm.top10errors.length}})*100) + '%' }").determinate
-										{{::error.length}} x {{::error.$key}}
+										
 							.collapsible-body
 								ul.collection
 									li(ng-repeat='value in ::error').collection-item

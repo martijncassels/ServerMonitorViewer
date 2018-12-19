@@ -11,8 +11,7 @@ br
 	//- div(ng-show="vm.customerentitycounts.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
 	//- 	{{vm.customerentitycounts.original.message}}
 	div(ng-show="vm.customerentitycounts.name=='SequelizeDatabaseError'",style='margin:5px;').card.red.lighten-2
-		.card-content.white-text
-			{{vm.customerentitycounts.original.message}}
+		.card-content.white-text {{vm.customerentitycounts.original.message}}
 	//- div(uib-alert,ng-show="vm.customerentitycounts.length<1",style='margin:5px;').alert-danger
 	//- 	p No data!
 	div(ng-show="vm.customerentitycounts.length<1",style='margin:5px;').card.red.lighten-2

@@ -39,17 +39,15 @@ ul.collapsible
 				//- div(uib-alert,ng-show="vm.licenses.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.licenses.name=null").alert-danger
 				//- 	{{vm.licenses.original.message}}
 				div(ng-if="vm.licenses.name=='SequelizeDatabaseError'",style='margin:5px;').card.red.lighten-2
-					.card-content.white-text
-						{{vm.licenses.original.message}}
+					.card-content.white-text {{vm.licenses.original.message}}
 				div(uib-alert,ng-if="vm.licenses.length<1 && !vm.licensesstarting",style='margin:5px;').alert-danger
 					p No data!
 				div(ng-repeat='license in vm.licenses track by $index', style='padding:5px;',ng-hide="vm.licenses.name=='SequelizeDatabaseError'")
 					.row
-						.col.s6
-							{{::license.description}} ({{::license.hostname}})
+						.col.s6 {{::license.description}} ({{::license.hostname}})
 						.col.s6
 							//- uib-progressbar(max='license.licenses', value='license.ActiveLicenses')
 							//- 	span(style='color:white; white-space:nowrap;') {{license.ActiveLicenses}} / {{license.licenses}}
 							.progress
-								div(ng-style="::{ 'width': (({{license.ActiveLicenses}} / {{license.licenses}})*100) + '%' }").determinate
-							{{::license.ActiveLicenses}} / {{::license.licenses}}
+								div(ng-style="::{ 'width': (({{license.ActiveLicenses}} / {{license.licenses}})*100) + '%' }").determinate 
+							div {{::license.ActiveLicenses}} / {{::license.licenses}}

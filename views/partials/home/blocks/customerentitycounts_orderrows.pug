@@ -33,8 +33,7 @@ ul.collapsible
 				//- div(uib-alert,ng-show="vm.customerentitycountdata.name=='SequelizeDatabaseError'",style='margin:5px;',close="vm.customerentitycountdata.name=null").alert-danger
 				//- 	{{vm.customerentitycountdata.original.message}}
 				div(ng-show="vm.customerentitycountdata.name=='SequelizeDatabaseError'",style='margin:5px;').card.red.lighten-2
-					.card-content.white-text
-						{{vm.customerentitycountdata.original.message}}
+					.card-content.white-text {{vm.customerentitycountdata.original.message}}
 				div(uib-alert,ng-show="vm.customerentitycountdata.length<1 && !vm.customerentitycountdatastarting",style='margin:5px;').alert-danger
 					p No data!
 			canvas(id='line',chart-data='::[vm.customerentitycountdata[7],vm.customerentitycountdata[9],vm.customerentitycountdata[11],vm.customerentitycountdata[13]]',chart-labels='::vm.customerentitycountdata[1]',chart-series='::[vm.customerentitycountseries[7],vm.customerentitycountseries[9],vm.customerentitycountseries[11],vm.customerentitycountseries[13]]',chart-options='::vm.options2',height='100',chart-dataset-override="[{pointRadius:2},{pointRadius:2},{pointRadius:2},{pointRadius:2}]").chart.chart-line

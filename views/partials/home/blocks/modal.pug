@@ -33,8 +33,7 @@
 #modal1.modal
 	.modal-content
 		h4 Metric Thresholds
-		div(ng-show="vm.thresholds.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger
-			{{vm.thresholds.original.message}}
+		div(ng-show="vm.thresholds.name=='SequelizeDatabaseError'",style='margin:5px;').alert-danger {{vm.thresholds.original.message}}
 		.row
 			form.col.s12
 				div(ng-hide="vm.thresholds.name=='SequelizeDatabaseError'")
