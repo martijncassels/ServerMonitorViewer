@@ -29,7 +29,7 @@ ul(data-collapsible="accordion").collapsible
 						th message
 						th count
 				tbody
-					tr(ng-repeat='job in vm.getfailedjobs')
+					tr(ng-repeat='job in vm.getfailedjobs track by $index')
 						td {{::job.name}}
 						td {{::job.job_id}}
 						td {{::job.run_date}}
